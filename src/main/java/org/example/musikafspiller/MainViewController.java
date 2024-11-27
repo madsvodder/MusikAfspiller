@@ -60,17 +60,26 @@ public class MainViewController {
 
     @FXML
     private void switchToAlbumsView() throws IOException {
+        // Load the new FXML file (albums-overview.fxml)
         FXMLLoader loader = new FXMLLoader(getClass().getResource("albums-overview.fxml"));
         BorderPane newView = loader.load();
 
+        // Get the controller of the new FXML view
         AlbumsOverviewController albumsOverviewController = loader.getController();
-
         albumsOverviewController.setUserLibrary(userLibrary);
-
         albumsOverviewController.test();
 
+        // Add the loaded view to the center of anchorCenter
         anchorCenter.getChildren().add(newView);
+
+
+        // Ensure the new view fills the AnchorPane completely by setting anchors
+        AnchorPane.setTopAnchor(newView, 0.0);
+        AnchorPane.setBottomAnchor(newView, 0.0);
+        AnchorPane.setLeftAnchor(newView, 0.0);
+        AnchorPane.setRightAnchor(newView, 0.0);
     }
+
 
     @FXML
     private void importSong() {

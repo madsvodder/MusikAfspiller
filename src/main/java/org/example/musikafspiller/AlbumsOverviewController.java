@@ -27,6 +27,8 @@ public class AlbumsOverviewController {
         int column = 0;
         int row = 0;
 
+        grid_Albums.getChildren().clear(); // Clear any previous content
+
         for (Album album : userLibrary.getAlbums()) {
             VBox albumBox = showcaseAlbum(album);
             if (albumBox != null) {

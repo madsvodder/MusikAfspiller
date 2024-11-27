@@ -38,7 +38,7 @@ public class SongParser {
             String songTitle = tag.getFirst(FieldKey.TITLE);
             String songArtist = tag.getFirst(FieldKey.ARTIST);
             String songAlbum = tag.getFirst(FieldKey.ALBUM);
-            int songYear = Integer.parseInt(tag.getFirst(FieldKey.YEAR));
+            String songYear = tag.getFirst(FieldKey.YEAR);
             String songGenre = tag.getFirst(FieldKey.GENRE);
 
             Image albumCover = null;

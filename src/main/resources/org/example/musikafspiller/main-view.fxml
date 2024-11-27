@@ -46,10 +46,6 @@
       <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </bottom>
    <center>
-      <HBox BorderPane.alignment="CENTER">
-         <children>
-            <AnchorPane fx:id="anchorCenter" prefHeight="613.0" prefWidth="1027.0" />
-         </children>
-      </HBox>
+      <AnchorPane fx:id="anchorCenter" />
    </center>
 </BorderPane>

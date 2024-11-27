@@ -20,7 +20,7 @@ public class UserLibrary {
     public void createNewAlbumFromSong(Song song) {
         String albumName = song.getAlbumTitle();
         String albumArtist = song.getSongArtist();
-        int albumYear = song.getSongYear();
+        String albumYear = song.getSongYear();
         Image albumCover = song.getAlbumCover();
 
         Album newAlbum = new Album(albumName, albumArtist, albumYear, albumCover);

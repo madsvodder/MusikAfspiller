@@ -20,14 +20,14 @@ public class Song {
     private int songDuration;
     @Getter
     @Setter
-    private int songYear;
+    private String songYear;
     @Getter
     @Setter
     private Image albumCover;
     // enum
     // private String genre;
 
-    public Song(String title, String artist, String album, int songYear, int duration, Image albumCover) {
+    public Song(String title, String artist, String album, String songYear, int duration, Image albumCover) {
         this.songTitle = title;
         this.songArtist = artist;
         this.albumTitle = album;

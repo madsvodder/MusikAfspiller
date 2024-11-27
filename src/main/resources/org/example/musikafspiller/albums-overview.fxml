@@ -7,24 +7,25 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.musikafspiller.AlbumsOverviewController">
-   <center>
-      <HBox>
-         <children>
-            <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
-               <content>
-                  <GridPane fx:id="grid_Albums">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                  </GridPane>
-               </content>
-            </ScrollPane>
-         </children>
-      </HBox>
-   </center>
+    <center>
+        <HBox fillHeight="true">
+            <children>
+                <ScrollPane fitToHeight="true" fitToWidth="true" HBox.hgrow="ALWAYS">
+                    <content>
+                        <GridPane fx:id="grid_Albums">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints vgrow="ALWAYS" minHeight="50.0" prefHeight="150.0" />
+                            </rowConstraints>
+                        </GridPane>
+                    </content>
+                </ScrollPane>
+            </children>
+        </HBox>
+    </center>
 </BorderPane>
