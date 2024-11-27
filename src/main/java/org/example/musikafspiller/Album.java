@@ -2,6 +2,7 @@ package org.example.musikafspiller;
 
 import javafx.scene.image.Image;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -29,5 +30,10 @@ public class Album {
 
     public void addSongToAlbum(Song song) {
         this.songs.add(song);
+    }
+
+    @Override
+    public String toString() {
+        return albumName;
     }
 }

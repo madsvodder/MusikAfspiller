@@ -162,7 +162,7 @@ public class MainViewController {
         // Get the controller of the new FXML view
         AlbumsOverviewController albumsOverviewController = loader.getController();
         albumsOverviewController.setUserLibrary(userLibrary);
-        albumsOverviewController.test();
+        albumsOverviewController.populateAlbumGrid();
 
         // Add the loaded view to the center of anchorCenter
         anchorCenter.getChildren().add(newView);

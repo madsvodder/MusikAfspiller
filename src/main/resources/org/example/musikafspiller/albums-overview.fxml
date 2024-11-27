@@ -9,19 +9,23 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.musikafspiller.AlbumsOverviewController">
     <center>
-        <HBox fillHeight="true">
+        <HBox fillHeight="true" BorderPane.alignment="TOP_LEFT">
             <children>
-                <ScrollPane fitToHeight="true" fitToWidth="true" HBox.hgrow="ALWAYS">
+                <ScrollPane fitToWidth="true" HBox.hgrow="ALWAYS">
                     <content>
-                        <GridPane fx:id="grid_Albums">
+                        <GridPane fx:id="grid_Albums" hgap="10.0" vgap="10.0">
+                            <!-- Column Constraints -->
                             <columnConstraints>
-                                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
-                                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
-                                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="ALWAYS" minWidth="50.0" prefWidth="100.0" />
                             </columnConstraints>
+
+                            <!-- Row Constraints -->
                             <rowConstraints>
-                                <RowConstraints vgrow="ALWAYS" minHeight="50.0" prefHeight="150.0" />
+                                <RowConstraints minHeight="50.0" prefHeight="100.0" vgrow="ALWAYS" />
                             </rowConstraints>
+
+                            <!-- Example of adding elements to the GridPane -->
+                            
                         </GridPane>
                     </content>
                 </ScrollPane>
