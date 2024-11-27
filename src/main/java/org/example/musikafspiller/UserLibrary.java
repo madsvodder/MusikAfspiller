@@ -29,6 +29,8 @@ public class UserLibrary {
 
         Album newAlbum = new Album(albumName, albumArtist, albumYear, albumCover);
 
+        newAlbum.addSongToAlbum(song);
+
         addAlbum(newAlbum);
     }
 
