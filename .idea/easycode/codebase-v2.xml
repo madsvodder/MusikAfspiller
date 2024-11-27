@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="com.obiscr.chatgpt.settings.EasyCodeState">
+    <option name="projectFiles" value="$PROJECT_DIR$/src/main/java/org/example/musikafspiller/MainApplication.java;/Users/madsvodder/IdeaProjects/MusikAfspiller/src/main/java/org/example/musikafspiller/MainViewController.java;/Users/madsvodder/IdeaProjects/MusikAfspiller/src/main/java/org/example/musikafspiller/Playlist.java;/Users/madsvodder/IdeaProjects/MusikAfspiller/src/main/java/org/example/musikafspiller/Song.java;/Users/madsvodder/IdeaProjects/MusikAfspiller/src/main/java/org/example/musikafspiller/SongParser.java;/Users/madsvodder/IdeaProjects/MusikAfspiller/src/main/java/module-info.java;/Users/madsvodder/IdeaProjects/MusikAfspiller/pom.xml;/Users/madsvodder/IdeaProjects/MusikAfspiller/README.md" />
+  </component>
+</project>
