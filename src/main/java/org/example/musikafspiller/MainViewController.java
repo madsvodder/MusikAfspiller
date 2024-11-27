@@ -2,7 +2,9 @@ package org.example.musikafspiller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -22,10 +24,15 @@ public class MainViewController {
     // Logger
     private static final Logger logger = Logger.getLogger(MainViewController.class.getName());
 
+    Image testImage = new Image("file:src/test/resources/OasisDefinitelyMaybealbumcover.jpg");
+
 
     UserLibrary userLibrary = new UserLibrary();
 
     private void initialize() {
+    }
+
+    public MainViewController() {
     }
 
     @FXML
@@ -52,24 +59,56 @@ public class MainViewController {
     }
 
     @FXML
+    private void switchToAlbumsView() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("albums-overview.fxml"));
+        BorderPane newView = loader.load();
+
+        AlbumsOverviewController albumsOverviewController = loader.getController();
+
+        albumsOverviewController.setUserLibrary(userLibrary);
+
+        albumsOverviewController.test();
+
+        anchorCenter.getChildren().add(newView);
+    }
+
+    @FXML
     private void importSong() {
 
         // create a File chooser
         FileChooser fil_chooser = new FileChooser();
 
+        // Make a filter of which file types the user can import
         fil_chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Audio Files", "*.FLAC", "*.MP3", "*.WAV"));
 
+        // Show to file chooser dialog window
         File selectedFile = fil_chooser.showOpenDialog(anchorCenter.getScene().getWindow());
 
+        // Did the user select a file?
         if (selectedFile != null) {
+            // Create a new songParser object
             SongParser songParser = new SongParser();
 
-            userLibrary.addSong(songParser.parseSong(selectedFile));
+            // Grab all the metadata from the song file
+            Song newSong = songParser.parseSong(selectedFile);
 
+            // Add the song to the users library
+            userLibrary.addSong(newSong);
+
+            // Log
             logger.info("Added song: " + userLibrary.songs.getLast());
 
-        }
+            // If this album doesn't exist in the users library, create it here
+            if (!userLibrary.doesAlbumExist(newSong.getAlbumTitle())) {
+                // If the album doesn't exist, create a new one
+                userLibrary.createNewAlbumFromSong(newSong);
 
+            } else if (userLibrary.doesAlbumExist(newSong.getAlbumTitle())) {
+                // If the imported song comes from the same album, then add it to the album
+                Album album = userLibrary.findAlbum(newSong.getAlbumTitle());
+                album.addSongToAlbum(newSong);
+            }
+        }
     }
 
 }

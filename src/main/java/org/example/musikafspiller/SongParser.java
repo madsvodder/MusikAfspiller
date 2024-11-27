@@ -38,7 +38,7 @@ public class SongParser {
             String songTitle = tag.getFirst(FieldKey.TITLE);
             String songArtist = tag.getFirst(FieldKey.ARTIST);
             String songAlbum = tag.getFirst(FieldKey.ALBUM);
-            String songYear = tag.getFirst(FieldKey.YEAR);
+            int songYear = Integer.parseInt(tag.getFirst(FieldKey.YEAR));
             String songGenre = tag.getFirst(FieldKey.GENRE);
 
             Image albumCover = null;
@@ -57,7 +57,7 @@ public class SongParser {
                 logger.warning("Failed to load album art: " + e.getMessage());
             }
 
-            return new Song(songTitle, songArtist, songAlbum, trackLengthInSeconds);
+            return new Song(songTitle, songArtist, songAlbum, songYear, trackLengthInSeconds, albumCover);
 
         } catch (CannotReadException | TagException | InvalidAudioFrameException | ReadOnlyFileException e) {
             logger.warning("Error reading the audio file: " + e.getMessage());
