@@ -24,6 +24,11 @@ public class AlbumsOverviewController {
     }
 
     public void test() {
+
+        for (Album album : userLibrary.getAlbums()) {
+            System.out.println("New Album: " + album);
+        }
+
         int column = 0;
         int row = 0;
 
@@ -35,7 +40,7 @@ public class AlbumsOverviewController {
                 grid_Albums.add(albumBox, column, row);
 
                 column++;
-                if (column == 3) { // Assuming 3 albums per row
+                if (column == 5) { // Assuming 3 albums per row
                     column = 0;
                     row++;
                 }

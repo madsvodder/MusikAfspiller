@@ -32,9 +32,11 @@ public class UserLibrary {
         albums.add(album);
     }
 
-    public boolean doesAlbumExist(String albumName) {
+    public boolean doesAlbumExist(String title) {
         for (Album album : albums) {
-            return album.getAlbumName().equals(albumName);
+            if (album.getAlbumName().equals(title)) {
+                return true;
+            }
         }
         return false;
     }

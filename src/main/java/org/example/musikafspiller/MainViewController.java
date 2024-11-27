@@ -11,6 +11,12 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MainViewController {
@@ -22,17 +28,106 @@ public class MainViewController {
     private VBox vbox_playlists;
 
     // Logger
-    private static final Logger logger = Logger.getLogger(MainViewController.class.getName());
+    Logger logger = Logger.getLogger(MainViewController.class.getName());
 
-    Image testImage = new Image("file:src/test/resources/OasisDefinitelyMaybealbumcover.jpg");
+
+    // Directory of the users music
+    private String libraryPath;
 
 
     UserLibrary userLibrary = new UserLibrary();
 
-    private void initialize() {
+    public void initialize() {
+        setupUserDocuments();
+        parseSongs();
+        //getAudioFilesFromDocuments();
     }
 
-    public MainViewController() {
+    private void setupUserDocuments() {
+        // Get the users home directory
+        String userHome = System.getProperty("user.home");
+
+        // Define the path to the documents
+        Path documentsFolder = Paths.get(userHome, "Documents");
+
+        // Define the name of the directory to create
+        Path newDir = documentsFolder.resolve("JavaMytunesPlayer");
+
+        // Define the name of the next folder, which is inside the first one (nested folder)
+        Path nestedDir = newDir.resolve("Music");
+
+        // Try to create the directory
+        try {
+            // Check if the directory already exists
+            if (!Files.exists(newDir)) {
+                // Create directory
+                Files.createDirectories(nestedDir);
+                libraryPath = nestedDir.toAbsolutePath().toString();
+                logger.info("Created new directory: " + newDir.toString());
+            } else {
+                logger.info("Directory already exists: " + newDir.toString());
+                libraryPath = nestedDir.toAbsolutePath().toString();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private ArrayList<File> getAudioFilesFromDocuments () {
+
+            ArrayList<File> audioFiles = new ArrayList<>();
+
+            if (libraryPath != null) {
+                Path dir = Paths.get(libraryPath);
+                try {
+                    if (Files.exists(dir)) {
+                        Files.walk(dir)
+                                .filter(path -> Files.isRegularFile(path) && (
+                                        path.toString().endsWith(".mp3") ||
+                                                path.toString().endsWith(".flac") ||
+                                                path.toString().endsWith(".wav")))
+                                .forEach(path -> {
+                                    File file = path.toFile();
+                                    audioFiles.add(file);
+                                    logger.info("Found audio file: " + file.getAbsolutePath());
+                                });
+                    } else {
+                        logger.info("No audio files found in " + libraryPath);
+                    }
+                } catch (IOException e) {
+                    logger.severe("Error reading files from the directory: " + libraryPath);
+                    e.printStackTrace();
+                }
+            } else {
+                logger.info("No audio files found in " + libraryPath);
+            }
+            return audioFiles;
+        }
+
+    private void parseSongs() {
+        ArrayList<File> songsToParse = new ArrayList<>();
+
+        SongParser songParser = new SongParser();
+
+        songsToParse = getAudioFilesFromDocuments();
+
+        for (File file : songsToParse) {
+
+            Song newSong = songParser.parseSong(file);
+
+            // If this album doesn't exist in the users library, create it here
+            if (!userLibrary.doesAlbumExist(newSong.getAlbumTitle())) {
+                // If the album doesn't exist, create a new one
+                userLibrary.createNewAlbumFromSong(newSong);
+
+            } else if (userLibrary.doesAlbumExist(newSong.getAlbumTitle())) {
+                // If the imported song comes from the same album, then add it to the album
+                Album album = userLibrary.findAlbum(newSong.getAlbumTitle());
+                album.addSongToAlbum(newSong);
+            }
+        }
+
     }
 
     @FXML

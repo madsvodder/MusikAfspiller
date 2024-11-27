@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public class Album {
 
+    @Getter
     UUID uuid = UUID.randomUUID();
     @Getter
     private String albumName;
