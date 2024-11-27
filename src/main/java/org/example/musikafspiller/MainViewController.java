@@ -33,13 +33,11 @@ public class MainViewController {
     // Directory of the users music
     private String libraryPath;
 
-
     UserLibrary userLibrary = new UserLibrary();
 
     public void initialize() {
         setupUserDocuments();
         parseSongs();
-        //getAudioFilesFromDocuments();
     }
 
     private void setupUserDocuments() {
@@ -71,7 +69,6 @@ public class MainViewController {
             e.printStackTrace();
         }
     }
-
 
     private ArrayList<File> getAudioFilesFromDocuments () {
 
@@ -166,6 +163,7 @@ public class MainViewController {
         albumsOverviewController.populateAlbumGrid();
 
         // Add the loaded view to the center of anchorCenter
+        anchorCenter.getChildren().clear();
         anchorCenter.getChildren().add(newView);
 
 
@@ -192,6 +190,7 @@ public class MainViewController {
             controller.setPlaylist(playlist); // Set the selected playlist in the PlaylistViewController
             controller.setUserLibrary(userLibrary); // Optionally, pass the user library to the playlist view
 
+            anchorCenter.getChildren().clear();
             anchorCenter.getChildren().add(newView); // Set the new view in the center of the BorderPane
         } catch (IOException e) {
             e.printStackTrace();
