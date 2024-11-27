@@ -17,4 +17,7 @@ public class Playlist {
         this.playlistName = name;
         this.playlistDuration = duration;
     }
+
+    public Playlist() {
+    }
 }

@@ -9,7 +9,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.musikafspiller.AlbumsOverviewController">
     <center>
-        <HBox fillHeight="true" BorderPane.alignment="TOP_LEFT">
+        <HBox fillHeight="true">
             <children>
                 <ScrollPane fitToWidth="true" HBox.hgrow="ALWAYS">
                     <content>

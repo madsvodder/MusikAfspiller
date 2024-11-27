@@ -5,8 +5,12 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 public class UserLibrary {
+
+    Logger logger = Logger.getLogger(UserLibrary.class.getName());
+
 
     ArrayList<Playlist> playlists = new ArrayList<>();
     @Getter
@@ -48,6 +52,13 @@ public class UserLibrary {
             }
         }
         return null;
+    }
+
+    public Playlist newPlaylist() {
+        Playlist newPlaylist = new Playlist("New Playlist", 0);
+        playlists.add(newPlaylist);
+        logger.info("Created new playlist in User Library");
+        return newPlaylist;
     }
 
 }

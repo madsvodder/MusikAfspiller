@@ -15,8 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
+
 import java.util.logging.Logger;
 
 public class MainViewController {
@@ -146,8 +145,10 @@ public class MainViewController {
             // Set reference to MenuController
             playlistItemController.setMainViewController(this);
 
-            // Set reference to user library in the playlist item controller
-            playlistItemController.setUserLibrary(userLibrary);
+            // Create a new playlist, and assign it to the controller
+
+            playlistItemController.setPlaylist(userLibrary.newPlaylist());
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -175,6 +176,27 @@ public class MainViewController {
         AnchorPane.setRightAnchor(newView, 0.0);
     }
 
+    public void onPlaylistSelected(Playlist playlist) {
+        if (playlist != null) {
+            switchToPlaylistView(playlist); // Switch to the playlist view
+        }
+    }
+
+    // Method to switch to the selected playlist view
+    private void switchToPlaylistView(Playlist playlist) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist-view.fxml"));
+            BorderPane newView = loader.load();
+
+            PlaylistViewController controller = loader.getController(); // Get PlaylistViewController
+            controller.setPlaylist(playlist); // Set the selected playlist in the PlaylistViewController
+            controller.setUserLibrary(userLibrary); // Optionally, pass the user library to the playlist view
+
+            anchorCenter.getChildren().add(newView); // Set the new view in the center of the BorderPane
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     private void importSong() {
