@@ -57,7 +57,10 @@ public class SongParser {
                 logger.warning("Failed to load album art: " + e.getMessage());
             }
 
-            return new Song(songTitle, songArtist, songAlbum, songYear, trackLengthInSeconds, albumCover);
+            Song newSong = new Song(songTitle, songArtist, songAlbum, songYear, trackLengthInSeconds, albumCover);
+            newSong.setSongFile(audioFile);
+
+            return newSong;
 
         } catch (CannotReadException | TagException | InvalidAudioFrameException | ReadOnlyFileException e) {
             logger.warning("Error reading the audio file: " + e.getMessage());

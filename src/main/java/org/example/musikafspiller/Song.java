@@ -4,6 +4,8 @@ import javafx.scene.image.Image;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.File;
+
 public class Song {
 
     @Getter
@@ -27,6 +29,9 @@ public class Song {
     @Getter
     @Setter
     private String songDurationFormatted;
+    @Getter
+    @Setter
+    private File songFile;
     // enum
     // private String genre;
 

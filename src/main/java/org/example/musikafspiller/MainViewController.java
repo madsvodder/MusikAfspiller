@@ -8,6 +8,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,11 +31,16 @@ public class MainViewController {
     // Logger
     Logger logger = Logger.getLogger(MainViewController.class.getName());
 
+    @Getter
+    @Setter
+    Song selectedSong;
 
     // Directory of the users music
     private String libraryPath;
 
     UserLibrary userLibrary = new UserLibrary();
+
+    SongPlayer songPlayer = new SongPlayer();
 
     public void initialize() {
         setupUserDocuments();
@@ -194,6 +201,7 @@ public class MainViewController {
             // Pass the required data to the controller
             controller.setPlaylist(playlist);
             controller.setUserLibrary(userLibrary);
+            controller.setMainViewController(this);
             controller.customInit();
 
             // Log for debugging
@@ -254,4 +262,19 @@ public class MainViewController {
         }
     }
 
+    @FXML
+    private void onPressedPlay() {
+        songPlayer.playSong(selectedSong);
+    }
+
+    // Toggle between Play and Pause
+    private void togglePlayPause() {
+        if (songPlayer.isPlaying()) {
+            songPlayer.pauseSong();
+            //playPauseButton.setText("Play");
+        } else {
+            songPlayer.resumeSong();
+            //playPauseButton.setText("Pause");
+        }
+    }
 }

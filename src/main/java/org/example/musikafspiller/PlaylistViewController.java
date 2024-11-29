@@ -100,6 +100,14 @@ public class PlaylistViewController {
             int rowIndex = tableview_playlist.getItems().indexOf(param.getValue());
             return new javafx.beans.property.SimpleIntegerProperty(rowIndex + 1).asObject();
         });
+
+        tableview_playlist.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                Song selectedSong = tableview_playlist.getSelectionModel().getSelectedItem();
+                mainViewController.setSelectedSong(selectedSong);
+                logger.info("Selected song: " + selectedSong);
+            }
+        });
     }
 
     private void populateTableView() {
