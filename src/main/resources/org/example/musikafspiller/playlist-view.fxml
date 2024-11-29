@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -23,17 +24,18 @@
                   <Font size="29.0" />
                </font>
             </Label>
+            <Button mnemonicParsing="false" onAction="#addSongToPlaylist" text="add song" />
          </children>
       </HBox>
    </top>
    <center>
-      <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <TableView fx:id="tableview_playlist" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn prefWidth="75.0" text="#" />
-            <TableColumn prefWidth="75.0" text="Billede" />
-          <TableColumn prefWidth="224.0" text="Title" />
-            <TableColumn minWidth="0.0" prefWidth="222.0" text="Album" />
-            <TableColumn prefWidth="188.0" text="Tid" />
+          <TableColumn fx:id="kolonne_number" prefWidth="75.0" text="#" />
+            <TableColumn fx:id="kolonne_cover" prefWidth="75.0" text="Billede" />
+          <TableColumn fx:id="kolonne_title" prefWidth="224.0" text="Title" />
+            <TableColumn fx:id="kolonne_album" minWidth="0.0" prefWidth="222.0" text="Album" />
+            <TableColumn fx:id="kolonne_duration" prefWidth="188.0" text="Tid" />
         </columns>
       </TableView>
    </center>

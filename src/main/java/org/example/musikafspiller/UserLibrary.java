@@ -12,10 +12,11 @@ public class UserLibrary {
     Logger logger = Logger.getLogger(UserLibrary.class.getName());
 
 
-    ArrayList<Playlist> playlists = new ArrayList<>();
+    private ArrayList<Playlist> playlists = new ArrayList<>();
     @Getter
-    ArrayList<Album> albums = new ArrayList<>();
-    ArrayList<Song> songs = new ArrayList<>();
+    private ArrayList<Album> albums = new ArrayList<>();
+    @Getter
+    private ArrayList<Song> songs = new ArrayList<>();
 
     public void addSong(Song song) {
         songs.add(song);

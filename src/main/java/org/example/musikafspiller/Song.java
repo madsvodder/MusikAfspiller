@@ -24,6 +24,9 @@ public class Song {
     @Getter
     @Setter
     private Image albumCover;
+    @Getter
+    @Setter
+    private String songDurationFormatted;
     // enum
     // private String genre;
 
@@ -34,6 +37,15 @@ public class Song {
         this.songDuration = duration;
         this.songYear = songYear;
         this.albumCover = albumCover;
+        songDurationFormatted = getSongDurationFormatted();
+    }
+
+    public String getSongDurationFormatted() {
+        int minutes = songDuration / 60; // Get full minutes
+        int seconds = songDuration % 60; // Get remaining seconds
+
+        // Format seconds to always be 2 digits
+        return String.format("%d:%02d", minutes, seconds);
     }
 
     @Override

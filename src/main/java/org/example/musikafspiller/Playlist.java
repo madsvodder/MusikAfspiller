@@ -24,4 +24,8 @@ public class Playlist {
 
     public Playlist() {
     }
+
+    public void addSong(Song song) {
+        songs.add(song);
+    }
 }

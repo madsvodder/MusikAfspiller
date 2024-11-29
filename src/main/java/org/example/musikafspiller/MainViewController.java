@@ -112,6 +112,9 @@ public class MainViewController {
 
             Song newSong = songParser.parseSong(file);
 
+            // Add the songs to the user library as "standalone"
+            userLibrary.addSong(newSong);
+
             // If this album doesn't exist in the users library, create it here
             if (!userLibrary.doesAlbumExist(newSong.getAlbumTitle())) {
                 // If the album doesn't exist, create a new one
@@ -143,7 +146,6 @@ public class MainViewController {
             playlistItemController.setMainViewController(this);
 
             // Create a new playlist, and assign it to the controller
-
             playlistItemController.setPlaylist(userLibrary.newPlaylist());
 
         } catch (IOException e) {
@@ -186,13 +188,29 @@ public class MainViewController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist-view.fxml"));
             BorderPane newView = loader.load();
 
-            PlaylistViewController controller = loader.getController(); // Get PlaylistViewController
-            controller.setPlaylist(playlist); // Set the selected playlist in the PlaylistViewController
-            controller.setUserLibrary(userLibrary); // Optionally, pass the user library to the playlist view
+            // Retrieve the controller instance created by FXMLLoader
+            PlaylistViewController controller = loader.getController();
 
+            // Pass the required data to the controller
+            controller.setPlaylist(playlist);
+            controller.setUserLibrary(userLibrary);
+            controller.customInit();
+
+            // Log for debugging
+            logger.info("Switching to playlist view with playlist: " + playlist + " and userLibrary: " + userLibrary);
+
+            // Update the UI with the new view
             anchorCenter.getChildren().clear();
-            anchorCenter.getChildren().add(newView); // Set the new view in the center of the BorderPane
+            anchorCenter.getChildren().add(newView);
+
+            // Ensure the view fits the parent
+            AnchorPane.setTopAnchor(newView, 0.0);
+            AnchorPane.setBottomAnchor(newView, 0.0);
+            AnchorPane.setLeftAnchor(newView, 0.0);
+            AnchorPane.setRightAnchor(newView, 0.0);
+
         } catch (IOException e) {
+            logger.severe("Error loading playlist-view.fxml");
             e.printStackTrace();
         }
     }
@@ -221,7 +239,7 @@ public class MainViewController {
             userLibrary.addSong(newSong);
 
             // Log
-            logger.info("Added song: " + userLibrary.songs.getLast());
+            logger.info("Added song: " + userLibrary.getSongs().getLast());
 
             // If this album doesn't exist in the users library, create it here
             if (!userLibrary.doesAlbumExist(newSong.getAlbumTitle())) {
