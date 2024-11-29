@@ -16,7 +16,7 @@
          <children>
             <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../images/MusicFolder.png" />
+                  <Image url="@../../../images/dark/MusicFolder.png" />
                </image>
             </ImageView>
             <Label text="Playlist Navn">

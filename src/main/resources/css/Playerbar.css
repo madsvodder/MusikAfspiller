@@ -1,0 +1,10 @@
+VBox {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    -fx-background-color: #1e1f23;
+}
