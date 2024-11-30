@@ -3,6 +3,8 @@ package org.example.musikafspiller;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -10,6 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.util.Duration;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,6 +39,10 @@ public class MainViewController {
     private Label label_songDuration;
     @FXML
     private ImageView image_PlayPause;
+    @FXML
+    private ProgressBar progressBar_SongProgress;
+    @FXML
+    private Slider slider_songProgress;
 
     // These images are the ones that we change during runtime.
     private Image playImage;
@@ -62,6 +69,10 @@ public class MainViewController {
 
         // Bind the label in the corner for the song duration
         label_songDuration.textProperty().bind(mediaPlayer.getCurrentTimeProperty());
+
+        slider_songProgress.valueProperty().addListener((observable, oldValue, newValue) -> {
+            progressBar_SongProgress.setProgress(newValue.doubleValue() / slider_songProgress.getMax());
+        });
 
         // Load play and pause images
         playImage = new Image(getClass().getResourceAsStream("/images/CircledPlay.png"));
@@ -294,6 +305,7 @@ public class MainViewController {
     public void playSong(Song song) {
         mediaPlayer.playSong(song);
         image_PlayPause.setImage(pauseImage);
+        setupSongProgressSlider();
     }
 
     // Toggle between Play and Pause
@@ -304,6 +316,45 @@ public class MainViewController {
         } else {
             mediaPlayer.resumeSong();
             image_PlayPause.setImage(pauseImage);
+        }
+    }
+
+    private void setupSongProgressSlider() {
+        if (mediaPlayer != null) {
+
+            // Update slider max to match the song's duration once the media is ready
+            mediaPlayer.getMediaPlayer().setOnReady(() -> {
+                slider_songProgress.setMax(mediaPlayer.getMediaPlayer().getTotalDuration().toSeconds());
+            });
+
+            // Sync slider position with current time from custom MediaPlayer
+            mediaPlayer.getCurrentTimeProperty().addListener((observable, oldValue, newValue) -> {
+                String[] timeParts = newValue.split(":");
+                int minutes = Integer.parseInt(timeParts[0]);
+                int seconds = Integer.parseInt(timeParts[1]);
+                double totalSeconds = minutes * 60 + seconds;
+
+                slider_songProgress.setValue(totalSeconds);
+            });
+
+            // Allow user to seek to a new position by dragging the slider
+            slider_songProgress.valueChangingProperty().addListener((observable, oldValue, newValue) -> {
+                if (!slider_songProgress.isValueChanging()) {
+                    mediaPlayer.getMediaPlayer().seek(Duration.seconds(slider_songProgress.getValue()));
+                }
+            });
+
+            // Allow user to click on the slider to jump to a position
+            slider_songProgress.setOnMouseReleased(event -> {
+                // Get the current value from the slider
+                double targetTime = slider_songProgress.getValue();
+
+                // Round to the nearest second (no fractional seconds)
+                long roundedTime = Math.round(targetTime); // Round to the nearest whole second
+
+                // Seek to the rounded time in seconds
+                mediaPlayer.getMediaPlayer().seek(Duration.seconds(roundedTime));
+            });
         }
     }
 }

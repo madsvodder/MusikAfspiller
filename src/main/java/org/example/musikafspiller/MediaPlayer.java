@@ -14,6 +14,7 @@ public class MediaPlayer {
     Logger logger = Logger.getLogger(MediaPlayer.class.getName());
 
 
+    @Getter
     private javafx.scene.media.MediaPlayer mediaPlayer;
 
     @Getter
