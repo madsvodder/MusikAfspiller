@@ -105,6 +105,7 @@ public class PlaylistViewController {
             if (event.getClickCount() == 2) {
                 Song selectedSong = tableview_playlist.getSelectionModel().getSelectedItem();
                 mainViewController.setSelectedSong(selectedSong);
+                mainViewController.playSong(selectedSong);
                 logger.info("Selected song: " + selectedSong);
             }
         });

@@ -2,7 +2,9 @@ package org.example.musikafspiller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -22,31 +24,49 @@ import java.util.logging.Logger;
 
 public class MainViewController {
 
-    @FXML
-    private AnchorPane anchorCenter;
-
-    @FXML
-    private VBox vbox_playlists;
-
     // Logger
     Logger logger = Logger.getLogger(MainViewController.class.getName());
 
-    @Getter
-    @Setter
+    // JavaFX
+    @FXML
+    private AnchorPane anchorCenter;
+    @FXML
+    private VBox vbox_playlists;
+    @FXML
+    private Label label_songDuration;
+    @FXML
+    private ImageView image_PlayPause;
+
+    // These images are the ones that we change during runtime.
+    private Image playImage;
+    private Image pauseImage;
+
+    // A reference to the selected song that is playing or paused
+    @Setter @Getter
     Song selectedSong;
 
     // Directory of the users music
     private String libraryPath;
 
+    // The main classes. The user library, and the media player.
     UserLibrary userLibrary = new UserLibrary();
+    MediaPlayer mediaPlayer = new MediaPlayer();
 
-    SongPlayer songPlayer = new SongPlayer();
-
+    // Initialize
     public void initialize() {
+        // Set up the user documents folder
         setupUserDocuments();
-        parseSongs();
-    }
 
+        // Read all the songs in the documents folder
+        parseSongs();
+
+        // Bind the label in the corner for the song duration
+        label_songDuration.textProperty().bind(mediaPlayer.getCurrentTimeProperty());
+
+        // Load play and pause images
+        playImage = new Image(getClass().getResourceAsStream("/images/CircledPlay.png"));
+        pauseImage = new Image(getClass().getResourceAsStream("/images/PauseButton.png"));
+    }
     private void setupUserDocuments() {
         // Get the users home directory
         String userHome = System.getProperty("user.home");
@@ -76,7 +96,6 @@ public class MainViewController {
             e.printStackTrace();
         }
     }
-
     private ArrayList<File> getAudioFilesFromDocuments () {
 
             ArrayList<File> audioFiles = new ArrayList<>();
@@ -107,7 +126,6 @@ public class MainViewController {
             }
             return audioFiles;
         }
-
     private void parseSongs() {
         ArrayList<File> songsToParse = new ArrayList<>();
 
@@ -136,6 +154,7 @@ public class MainViewController {
 
     }
 
+    // Adds a new playlist to the ui, and creates a new one in the user library.
     @FXML
     private void addPlaylistToSidebar() {
         try {
@@ -160,6 +179,7 @@ public class MainViewController {
         }
     }
 
+    // Window for viewing all the albums that's imported
     @FXML
     private void switchToAlbumsView() throws IOException {
         // Load the new FXML file (albums-overview.fxml)
@@ -183,6 +203,7 @@ public class MainViewController {
         AnchorPane.setRightAnchor(newView, 0.0);
     }
 
+    // This method runs when you select a playlist in the sidebar
     public void onPlaylistSelected(Playlist playlist) {
         if (playlist != null) {
             switchToPlaylistView(playlist); // Switch to the playlist view
@@ -223,6 +244,7 @@ public class MainViewController {
         }
     }
 
+    // Method for importing a song using the file chooser
     @FXML
     private void importSong() {
 
@@ -262,19 +284,26 @@ public class MainViewController {
         }
     }
 
+    // Press play button for the ui
     @FXML
     private void onPressedPlay() {
-        songPlayer.playSong(selectedSong);
+        togglePlayPause();
+    }
+
+    // Play a specific song. This is also used when double-clicking a song in a playlist.
+    public void playSong(Song song) {
+        mediaPlayer.playSong(song);
+        image_PlayPause.setImage(pauseImage);
     }
 
     // Toggle between Play and Pause
     private void togglePlayPause() {
-        if (songPlayer.isPlaying()) {
-            songPlayer.pauseSong();
-            //playPauseButton.setText("Play");
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pauseSong();
+            image_PlayPause.setImage(playImage);
         } else {
-            songPlayer.resumeSong();
-            //playPauseButton.setText("Pause");
+            mediaPlayer.resumeSong();
+            image_PlayPause.setImage(pauseImage);
         }
     }
 }

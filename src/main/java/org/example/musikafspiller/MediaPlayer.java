@@ -1,20 +1,29 @@
 package org.example.musikafspiller;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
+import lombok.Getter;
 
 import java.io.File;
+import java.util.logging.Logger;
 
-public class SongPlayer {
+public class MediaPlayer {
 
-    private MediaPlayer mediaPlayer;
+    Logger logger = Logger.getLogger(MediaPlayer.class.getName());
+
+
+    private javafx.scene.media.MediaPlayer mediaPlayer;
+
+    @Getter
+    private StringProperty currentTimeProperty = new SimpleStringProperty("0:00");
 
     // Play the song
     public void playSong(Song songToPlay) {
         // Check if the song file exists
         if (songToPlay.getSongFile() == null || !songToPlay.getSongFile().exists()) {
-            System.out.println("Invalid song file.");
+            logger.warning("Invalid song file.");
             return;
         }
 
@@ -23,16 +32,20 @@ public class SongPlayer {
         Media media = new Media(songFile.toURI().toString());
 
         // Create a MediaPlayer to control playback
-        mediaPlayer = new MediaPlayer(media);
+        mediaPlayer = new javafx.scene.media.MediaPlayer(media);
+
+        // Bind currentTimeProperty to update dynamically
+        mediaPlayer.currentTimeProperty().addListener((observable, oldTime, newTime) -> {
+            currentTimeProperty.set(formatDuration(newTime));
+        });
 
         // Set up media player events
         mediaPlayer.setOnReady(() -> {
-            System.out.println("Media is ready to play.");
-            System.out.println("Song: " + songToPlay.getSongTitle() + " - " + songToPlay.getSongArtist());
+            logger.info("Song: " + songToPlay.getSongTitle() + " - " + songToPlay.getSongArtist());
         });
 
         mediaPlayer.setOnEndOfMedia(() -> {
-            System.out.println("Song finished playing.");
+            logger.info("Song finished playing");
             mediaPlayer.stop();
         });
 
@@ -64,9 +77,16 @@ public class SongPlayer {
     // Check if the song is currently playing
     public boolean isPlaying() {
         if (mediaPlayer != null) {
-            return mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING;
+            return mediaPlayer.getStatus() == javafx.scene.media.MediaPlayer.Status.PLAYING;
         }
         return false;
+    }
+
+    // Helper method to format Duration into a string
+    private String formatDuration(Duration duration) {
+        int minutes = (int) duration.toMinutes();
+        int seconds = (int) duration.toSeconds() % 60;
+        return String.format("%d:%02d", minutes, seconds);
     }
 
     // Get the current play time of the song

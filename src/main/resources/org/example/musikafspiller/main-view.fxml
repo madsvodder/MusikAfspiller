@@ -88,9 +88,9 @@
                   </Button>
                   <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" layoutX="600.0" layoutY="31.0" mnemonicParsing="false" onAction="#onPressedPlay" text="Button">
                      <graphic>
-                        <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="image_PlayPause" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../../images/Circled%20Play.png" />
+                              <Image url="@../../../images/CircledPlay.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -105,7 +105,7 @@
                      </graphic>
                   </Button>
                   <Region layoutX="200.0" layoutY="20.0" prefWidth="400.0" />
-                  <Label text="2:40 / 4:42" />
+                  <Label fx:id="label_songDuration" text="2:40 / 4:42" />
                   <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" layoutX="719.0" layoutY="38.0" mnemonicParsing="false" text="Button">
                      <graphic>
                         <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
