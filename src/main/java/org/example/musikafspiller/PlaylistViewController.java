@@ -42,6 +42,8 @@ public class PlaylistViewController {
     @FXML
     private TableView<Song> tableview_playlist;
 
+
+
     private static final Logger logger = Logger.getLogger(PlaylistViewController.class.getName());
 
     private void logInitialize() {

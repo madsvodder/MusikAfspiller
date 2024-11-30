@@ -1,5 +1,6 @@
 package org.example.musikafspiller;
 
+import com.jfoenix.controls.JFXSlider;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
@@ -43,6 +44,10 @@ public class MainViewController {
     private ProgressBar progressBar_SongProgress;
     @FXML
     private Slider slider_songProgress;
+    @FXML
+    private JFXSlider JFX_songSlider;
+    @FXML
+    private Label label_songDurationFinal;
 
     // These images are the ones that we change during runtime.
     private Image playImage;
@@ -306,6 +311,7 @@ public class MainViewController {
         mediaPlayer.playSong(song);
         image_PlayPause.setImage(pauseImage);
         setupSongProgressSlider();
+        label_songDurationFinal.setText(song.getSongDurationFormatted());
     }
 
     // Toggle between Play and Pause
@@ -322,39 +328,43 @@ public class MainViewController {
     private void setupSongProgressSlider() {
         if (mediaPlayer != null) {
 
-            // Update slider max to match the song's duration once the media is ready
-            mediaPlayer.getMediaPlayer().setOnReady(() -> {
-                slider_songProgress.setMax(mediaPlayer.getMediaPlayer().getTotalDuration().toSeconds());
-            });
+            // Set the max value for the slider when the media is ready
+            mediaPlayer.getMediaPlayer().setOnReady(() ->
+                    slider_songProgress.setMax(mediaPlayer.getMediaPlayer().getTotalDuration().toSeconds())
+            );
 
-            // Sync slider position with current time from custom MediaPlayer
+            // Update the slider position based on the current time (but only if the user isn't dragging the slider)
             mediaPlayer.getCurrentTimeProperty().addListener((observable, oldValue, newValue) -> {
-                String[] timeParts = newValue.split(":");
-                int minutes = Integer.parseInt(timeParts[0]);
-                int seconds = Integer.parseInt(timeParts[1]);
-                double totalSeconds = minutes * 60 + seconds;
-
-                slider_songProgress.setValue(totalSeconds);
-            });
-
-            // Allow user to seek to a new position by dragging the slider
-            slider_songProgress.valueChangingProperty().addListener((observable, oldValue, newValue) -> {
                 if (!slider_songProgress.isValueChanging()) {
-                    mediaPlayer.getMediaPlayer().seek(Duration.seconds(slider_songProgress.getValue()));
+                    // Parse the time from newValue and convert to total seconds
+                    String[] timeParts = newValue.split(":");
+                    int minutes = Integer.parseInt(timeParts[0]);
+                    int seconds = Integer.parseInt(timeParts[1]);
+                    double totalSeconds = minutes * 60 + seconds; // Calculate total seconds
+
+                    // Set the slider value rounded to two decimal places
+                    slider_songProgress.setValue(Math.round(totalSeconds * 100.0) / 100.0);
                 }
             });
 
-            // Allow user to click on the slider to jump to a position
-            slider_songProgress.setOnMouseReleased(event -> {
-                // Get the current value from the slider
-                double targetTime = slider_songProgress.getValue();
+            // Handle seeking when the user drags the slider or releases it
+            slider_songProgress.setOnMouseReleased(event ->
+                    seekToSliderPosition()
+            );
 
-                // Round to the nearest second (no fractional seconds)
-                long roundedTime = Math.round(targetTime); // Round to the nearest whole second
-
-                // Seek to the rounded time in seconds
-                mediaPlayer.getMediaPlayer().seek(Duration.seconds(roundedTime));
+            slider_songProgress.valueChangingProperty().addListener((observable, oldValue, newValue) -> {
+                if (!slider_songProgress.isValueChanging()) {
+                    seekToSliderPosition();
+                }
             });
         }
     }
+
+    private void seekToSliderPosition() {
+        long targetTime = Math.round(slider_songProgress.getValue()); // Round to nearest second
+        mediaPlayer.getMediaPlayer().seek(Duration.seconds(targetTime));
+    }
+
+
+
 }
