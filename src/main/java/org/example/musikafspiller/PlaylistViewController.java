@@ -106,9 +106,11 @@ public class PlaylistViewController {
         tableview_playlist.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 Song selectedSong = tableview_playlist.getSelectionModel().getSelectedItem();
-                mainViewController.setSelectedSong(selectedSong);
-                mainViewController.playSong(selectedSong);
-                logger.info("Selected song: " + selectedSong);
+                if (selectedSong != null) {
+                    mainViewController.setSelectedSong(selectedSong);
+                    mainViewController.playSong(selectedSong);
+                    logger.info("Selected song: " + selectedSong);
+                }
             }
         });
     }
@@ -129,9 +131,6 @@ public class PlaylistViewController {
         ChoiceBox<Song> songChoiceBox = new ChoiceBox<>();
         // Get a list of all the songs from the users library
         songChoiceBox.getItems().addAll(userLibrary.getSongs());
-        for (Song song : userLibrary.getSongs()) {
-            System.out.println("Song");
-        }
 
         // Create and show the dialog
         VBox content = new VBox(songChoiceBox);
@@ -159,5 +158,4 @@ public class PlaylistViewController {
         dialog.getDialogPane().setContent(content);
         return dialog.showAndWait();
     }
-
 }

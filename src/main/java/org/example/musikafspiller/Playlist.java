@@ -8,13 +8,15 @@ import java.util.UUID;
 
 public class Playlist {
 
-    @Getter
+    @Getter @Setter
     UUID uuid = UUID.randomUUID();
 
-    @Getter
-    @Setter
+
+    @Getter @Setter
     ArrayList<Song> songs = new ArrayList<>();
+    @Getter @Setter
     private String playlistName;
+    @Getter @Setter
     private int playlistDuration;
 
     public Playlist(String name, int duration) {

@@ -7,7 +7,7 @@ module org.example.musikafspiller {
     requires com.jfoenix;
     requires javafx.controls;
     requires java.logging;
-
+    requires com.fasterxml.jackson.databind;
 
     opens org.example.musikafspiller to javafx.fxml;
     exports org.example.musikafspiller;

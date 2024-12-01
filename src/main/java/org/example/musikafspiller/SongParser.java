@@ -15,6 +15,7 @@ import org.jaudiotagger.tag.images.Artwork;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,23 +42,20 @@ public class SongParser {
             String songYear = tag.getFirst(FieldKey.YEAR);
             String songGenre = tag.getFirst(FieldKey.GENRE);
 
-            Image albumCover = null;
+            byte[] albumCoverData = null;
             try {
                 Artwork artwork = tag.getFirstArtwork();
                 if (artwork != null) {
-                    byte[] imageData = artwork.getBinaryData();
-                    try (InputStream inputStream = new ByteArrayInputStream(imageData)) {
-                        albumCover = new Image(inputStream);
-                    }
+                    albumCoverData= artwork.getBinaryData();
                 } else {
-                    // Placeholder image
-                    albumCover = new Image("src/main/resources/images/MusicRecord.png");
+                    File fi = new File("src/main/resources/images/MusicRecord.png");
+                    albumCoverData = Files.readAllBytes(fi.toPath());
                 }
             } catch (Exception e) {
                 logger.warning("Failed to load album art: " + e.getMessage());
             }
 
-            Song newSong = new Song(songTitle, songArtist, songAlbum, songYear, trackLengthInSeconds, albumCover);
+            Song newSong = new Song(songTitle, songArtist, songAlbum, songYear, trackLengthInSeconds, albumCoverData);
             newSong.setSongFile(audioFile);
 
             return newSong;

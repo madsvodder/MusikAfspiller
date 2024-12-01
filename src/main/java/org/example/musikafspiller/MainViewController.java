@@ -59,10 +59,12 @@ public class MainViewController {
 
     // Directory of the users music
     private String libraryPath;
+    private String saveDataPath;
 
     // The main classes. The user library, and the media player.
     UserLibrary userLibrary = new UserLibrary();
     MediaPlayer mediaPlayer = new MediaPlayer();
+    DataSaver dataSaver;
 
     // Initialize
     public void initialize() {
@@ -82,36 +84,45 @@ public class MainViewController {
         // Load play and pause images
         playImage = new Image(getClass().getResourceAsStream("/images/CircledPlay.png"));
         pauseImage = new Image(getClass().getResourceAsStream("/images/PauseButton.png"));
+
+
+
+        load();
     }
+
+
     private void setupUserDocuments() {
-        // Get the users home directory
         String userHome = System.getProperty("user.home");
-
-        // Define the path to the documents
         Path documentsFolder = Paths.get(userHome, "Documents");
+        Path baseDir = documentsFolder.resolve("JavaMytunesPlayer");
+        Path musicDir = baseDir.resolve("Music");
+        Path saveDataDir = baseDir.resolve("SaveData");
 
-        // Define the name of the directory to create
-        Path newDir = documentsFolder.resolve("JavaMytunesPlayer");
-
-        // Define the name of the next folder, which is inside the first one (nested folder)
-        Path nestedDir = newDir.resolve("Music");
-
-        // Try to create the directory
         try {
-            // Check if the directory already exists
-            if (!Files.exists(newDir)) {
-                // Create directory
-                Files.createDirectories(nestedDir);
-                libraryPath = nestedDir.toAbsolutePath().toString();
-                logger.info("Created new directory: " + newDir.toString());
-            } else {
-                logger.info("Directory already exists: " + newDir.toString());
-                libraryPath = nestedDir.toAbsolutePath().toString();
+            if (!Files.exists(baseDir)) {
+                Files.createDirectories(musicDir);
+                Files.createDirectories(saveDataDir);
+                logger.info("Created directories: " + baseDir);
             }
+
+            libraryPath = musicDir.toAbsolutePath().toString();
+            saveDataPath = saveDataDir.toAbsolutePath().toString();
+
+            if (saveDataPath == null || saveDataPath.isEmpty()) {
+                logger.severe("saveDataPath is null or empty. Cannot initialize DataSaver.");
+                return;
+            }
+
+            dataSaver = new DataSaver(saveDataPath); // Initialize here.
+            logger.info("DataSaver initialized with path: " + saveDataPath);
+
         } catch (IOException e) {
+            logger.severe("Error creating directories: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
+
     private ArrayList<File> getAudioFilesFromDocuments () {
 
             ArrayList<File> audioFiles = new ArrayList<>();
@@ -142,7 +153,7 @@ public class MainViewController {
             }
             return audioFiles;
         }
-    private void parseSongs() {
+    public void parseSongs() {
         ArrayList<File> songsToParse = new ArrayList<>();
 
         SongParser songParser = new SongParser();
@@ -189,6 +200,29 @@ public class MainViewController {
 
             // Create a new playlist, and assign it to the controller
             playlistItemController.setPlaylist(userLibrary.newPlaylist());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadPlaylistToSidebar(Playlist playlist) {
+        try {
+            // Load FXML file and add it to the side
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist-item.fxml"));
+            HBox playlistItem = loader.load();
+            vbox_playlists.getChildren().add(playlistItem);
+
+            logger.info("Added playlist item");
+
+            // Get the controller from the FXML playlistitem
+            PlaylistItemController playlistItemController = loader.getController();
+
+            // Set reference to MenuController
+            playlistItemController.setMainViewController(this);
+
+            // Create a new playlist, and assign it to the controller
+            playlistItemController.setPlaylist(playlist);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -365,6 +399,64 @@ public class MainViewController {
         mediaPlayer.getMediaPlayer().seek(Duration.seconds(targetTime));
     }
 
+    @FXML
+    public void save() {
+        if (dataSaver == null) {
+            logger.severe("DataSaver is not initialized. Skipping save operation.");
+            return;
+        }
+
+        try {
+            dataSaver.saveDataSaver();
+            for (Playlist playlist : userLibrary.getPlaylists()) {
+                dataSaver.savePlaylist(playlist);
+            }
+            logger.info("Save operation completed successfully.");
+        } catch (Exception e) {
+            logger.severe("Error during save operation: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
+    @FXML
+    private void load() {
+        if (dataSaver == null) {
+            logger.severe("DataSaver is not initialized. Skipping load operation.");
+            return;
+        }
+
+        try {
+            DataSaver loadedSaver = dataSaver.loadDataSaver();
+            if (loadedSaver != null) {
+                dataSaver = loadedSaver;
+            } else {
+                logger.warning("No existing DataSaver found. Skipping playlist load.");
+                return;
+            }
+
+            ArrayList<Playlist> loadedPlaylists = new ArrayList<>();
+            for (String playlistPath : dataSaver.getSavedPlaylists()) {
+                if (playlistPath == null || playlistPath.isEmpty()) {
+                    logger.warning("Invalid playlist path encountered during load.");
+                    continue;
+                }
+
+                Playlist playlist = dataSaver.loadPlaylist(playlistPath);
+                if (playlist != null) {
+                    loadedPlaylists.add(playlist);
+                    loadPlaylistToSidebar(playlist);
+                } else {
+                    logger.warning("Failed to load playlist: " + playlistPath);
+                }
+            }
+            userLibrary.setPlaylists(loadedPlaylists);
+            logger.info("Load operation completed successfully.");
+        } catch (Exception e) {
+            logger.severe("Error during load operation: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
 
 }

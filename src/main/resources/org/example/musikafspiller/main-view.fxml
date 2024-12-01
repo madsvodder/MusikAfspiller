@@ -157,6 +157,8 @@
           <Menu mnemonicParsing="false" text="File">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#importSong" text="Import Song" />
+                  <MenuItem mnemonicParsing="false" onAction="#save" text="Save" />
+                  <MenuItem mnemonicParsing="false" onAction="#load" text="Load" />
                   <MenuItem mnemonicParsing="false" text="Close" />
             </items>
           </Menu>

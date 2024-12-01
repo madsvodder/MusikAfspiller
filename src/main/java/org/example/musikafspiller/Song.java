@@ -1,9 +1,11 @@
 package org.example.musikafspiller;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javafx.scene.image.Image;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 
 public class Song {
@@ -25,6 +27,7 @@ public class Song {
     private String songYear;
     @Getter
     @Setter
+    @JsonIgnore
     private Image albumCover;
     @Getter
     @Setter
@@ -32,17 +35,29 @@ public class Song {
     @Getter
     @Setter
     private File songFile;
-    // enum
-    // private String genre;
 
-    public Song(String title, String artist, String album, String songYear, int duration, Image albumCover) {
+    @Getter @Setter
+    private byte[] albumCoverBytes; // Store album cover as bytes, to make serialization easy
+
+    public Song(){}
+
+    public Song(String title, String artist, String album, String songYear, int duration, byte[] albumCoverBytes) {
         this.songTitle = title;
         this.songArtist = artist;
         this.albumTitle = album;
         this.songDuration = duration;
         this.songYear = songYear;
-        this.albumCover = albumCover;
+        this.albumCoverBytes = albumCoverBytes;
+        setAlbumCoverUsingBytes(albumCoverBytes);
         songDurationFormatted = getSongDurationFormatted();
+    }
+
+    public Image getAlbumCover() {
+        return new Image(new ByteArrayInputStream(albumCoverBytes));
+    }
+
+    public void setAlbumCoverUsingBytes(byte[] albumCoverBytes) {
+        albumCover = new Image(new ByteArrayInputStream(albumCoverBytes));
     }
 
     public String getSongDurationFormatted() {

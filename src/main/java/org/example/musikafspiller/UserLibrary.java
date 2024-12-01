@@ -2,16 +2,16 @@ package org.example.musikafspiller;
 
 import javafx.scene.image.Image;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 public class UserLibrary {
 
     Logger logger = Logger.getLogger(UserLibrary.class.getName());
 
-
+    @Getter @Setter
     private ArrayList<Playlist> playlists = new ArrayList<>();
     @Getter
     private ArrayList<Album> albums = new ArrayList<>();
@@ -58,7 +58,7 @@ public class UserLibrary {
     }
 
     public Playlist newPlaylist() {
-        Playlist newPlaylist = new Playlist("New Playlist", 0);
+        Playlist newPlaylist = new Playlist("New Playlist " + playlists.size(), 0);
         playlists.add(newPlaylist);
         logger.info("Created new playlist in User Library");
         return newPlaylist;
