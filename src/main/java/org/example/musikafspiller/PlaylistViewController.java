@@ -53,6 +53,7 @@ public class PlaylistViewController {
             if (playlist != null) {
                 // Set the playlist name in the playlist class
                 playlist.setPlaylistName(newValue);
+                mainViewController.updatePlaylistNameInSidebar(playlist);
             }
         });
     }

@@ -15,9 +15,6 @@ import lombok.Setter;
 
 public class DataSaver {
 
-    @Getter @Setter
-    private ArrayList<String> savedPlaylists = new ArrayList<>();
-
     Logger logger = Logger.getLogger(DataSaver.class.getName());
 
     private ObjectMapper objectMapper = new ObjectMapper();

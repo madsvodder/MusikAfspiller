@@ -2,6 +2,7 @@ package org.example.musikafspiller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import lombok.Getter;
 import lombok.Setter;
 
 import java.awt.event.ActionEvent;
@@ -12,7 +13,7 @@ public class PlaylistItemController {
     MainViewController mainViewController;
     @Setter
     UserLibrary userLibrary;
-    @Setter
+    @Setter @Getter
     Playlist playlist;
 
     @FXML
@@ -28,7 +29,7 @@ public class PlaylistItemController {
         }
     }
 
-    public void updatePlaylistNameUI(String newPlaylistName) {
-        label_PlaylistName.setText(newPlaylistName);
+    public void updatePlaylistNameUI() {
+        label_PlaylistName.setText(playlist.getPlaylistName());
     }
 }

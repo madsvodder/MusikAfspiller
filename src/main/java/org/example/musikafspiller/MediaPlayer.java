@@ -13,6 +13,7 @@ public class MediaPlayer {
 
     Logger logger = Logger.getLogger(MediaPlayer.class.getName());
 
+    private boolean isSongPlaying= false;
 
     @Getter
     private javafx.scene.media.MediaPlayer mediaPlayer;
@@ -28,6 +29,20 @@ public class MediaPlayer {
             return;
         }
 
+        if (!isSongPlaying) {
+            getReadyToPlaySong(songToPlay);
+            isSongPlaying = true;
+        } else {
+            mediaPlayer.stop();
+            mediaPlayer.dispose();
+            mediaPlayer = null;
+            isSongPlaying = false;
+            getReadyToPlaySong(songToPlay);
+        }
+
+    }
+
+    private void getReadyToPlaySong(Song songToPlay) {
         // Create a Media object from the song's file path
         File songFile = songToPlay.getSongFile();
         Media media = new Media(songFile.toURI().toString());

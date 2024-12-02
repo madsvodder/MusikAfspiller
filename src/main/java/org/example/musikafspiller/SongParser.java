@@ -12,9 +12,7 @@ import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.images.Artwork;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,7 +44,7 @@ public class SongParser {
             try {
                 Artwork artwork = tag.getFirstArtwork();
                 if (artwork != null) {
-                    albumCoverData= artwork.getBinaryData();
+                    albumCoverData = artwork.getBinaryData();
                 } else {
                     File fi = new File("src/main/resources/images/MusicRecord.png");
                     albumCoverData = Files.readAllBytes(fi.toPath());
@@ -56,6 +54,7 @@ public class SongParser {
             }
 
             Song newSong = new Song(songTitle, songArtist, songAlbum, songYear, trackLengthInSeconds, albumCoverData);
+
             newSong.setSongFile(audioFile);
 
             return newSong;

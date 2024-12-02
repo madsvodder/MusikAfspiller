@@ -3,6 +3,7 @@ package org.example.musikafspiller;
 import com.jfoenix.controls.JFXSlider;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
@@ -45,8 +46,6 @@ public class MainViewController {
     @FXML
     private Slider slider_songProgress;
     @FXML
-    private JFXSlider JFX_songSlider;
-    @FXML
     private Label label_songDurationFinal;
 
     // These images are the ones that we change during runtime.
@@ -56,6 +55,9 @@ public class MainViewController {
     // A reference to the selected song that is playing or paused
     @Setter @Getter
     Song selectedSong;
+
+    // Selected playlist
+    Playlist selectedPlaylist;
 
     // Directory of the users music
     private String libraryPath;
@@ -86,8 +88,7 @@ public class MainViewController {
         playImage = new Image(getClass().getResourceAsStream("/images/CircledPlay.png"));
         pauseImage = new Image(getClass().getResourceAsStream("/images/PauseButton.png"));
 
-
-
+        // Load everything
         load();
     }
 
@@ -125,8 +126,6 @@ public class MainViewController {
             e.printStackTrace();
         }
     }
-
-
     private ArrayList<File> getAudioFilesFromDocuments () {
 
             ArrayList<File> audioFiles = new ArrayList<>();
@@ -158,6 +157,7 @@ public class MainViewController {
             return audioFiles;
         }
     public void parseSongs() {
+
         ArrayList<File> songsToParse = new ArrayList<>();
 
         SongParser songParser = new SongParser();
@@ -182,7 +182,6 @@ public class MainViewController {
                 album.addSongToAlbum(newSong);
             }
         }
-
     }
 
     // Adds a new playlist to the ui, and creates a new one in the user library.
@@ -208,11 +207,13 @@ public class MainViewController {
             // Create a new playlist, and assign it to the controller
             playlistItemController.setPlaylist(newPlaylist);
 
+            // Set the userData of the HBox to the controller
+            playlistItem.setUserData(playlistItemController);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
     private void loadPlaylistToSidebar(Playlist playlist) {
         try {
             // Load FXML file and add it to the side
@@ -233,6 +234,33 @@ public class MainViewController {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void updatePlaylistNameInSidebar(Playlist playlist) {
+        // Print the UUID of the playlist being passed in
+        logger.info("Attempting to update playlist with UUID: " + playlist.getUuid());
+
+        for (Node node : vbox_playlists.getChildren()) {
+            if (node instanceof HBox) {
+                // Get the PlaylistItemController from userData
+                PlaylistItemController itemController = (PlaylistItemController) node.getUserData();
+
+                // Check if the controller is not null
+                if (itemController != null) {
+                    // Debug print for the UUID of the playlist in the sidebar
+                    logger.info("Sidebar playlist UUID: " + itemController.getPlaylist().getUuid());
+
+                    // Compare UUIDs instead of playlist names
+                    if (itemController.getPlaylist().getUuid().equals(playlist.getUuid())) {
+                        logger.info("UUIDs match! Updating playlist name...");
+                        itemController.updatePlaylistNameUI();
+                        break;
+                    }
+                } else {
+                    logger.info("Item controller is null for this node.");
+                }
+            }
         }
     }
 
@@ -282,6 +310,9 @@ public class MainViewController {
             controller.setMainViewController(this);
             controller.customInit();
 
+            // Set reference to selected playlist
+            selectedPlaylist = playlist;
+
             // Log for debugging
             logger.info("Switching to playlist view with playlist: " + playlist + " and userLibrary: " + userLibrary);
 
@@ -302,6 +333,7 @@ public class MainViewController {
     }
 
     // Method for importing a song using the file chooser
+
     @FXML
     private void importSong() {
 
@@ -341,11 +373,10 @@ public class MainViewController {
         }
     }
 
+
     // Press play button for the ui
     @FXML
-    private void onPressedPlay() {
-        togglePlayPause();
-    }
+    private void onPressedPlay() {togglePlayPause();}
 
     // Play a specific song. This is also used when double-clicking a song in a playlist.
     public void playSong(Song song) {
@@ -437,6 +468,7 @@ public class MainViewController {
             userLibrary.clearPlaylists();
 
             for (Playlist playlists : dataSaver.findPlaylists()) {
+                userLibrary.addPlaylist(playlists);
                 loadPlaylistToSidebar(playlists);
             }
 
