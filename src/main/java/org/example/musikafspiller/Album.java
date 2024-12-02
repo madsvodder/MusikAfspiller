@@ -1,5 +1,6 @@
 package org.example.musikafspiller;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import javafx.scene.image.Image;
 import lombok.Getter;
 import lombok.ToString;
@@ -9,17 +10,17 @@ import java.util.UUID;
 
 public class Album {
 
+    @Getter @JsonProperty
+    public UUID uuid = UUID.randomUUID();
     @Getter
-    UUID uuid = UUID.randomUUID();
+    public String albumName;
+    public String albumArtist;
+    public String albumGenre;
+    public String albumYear;
     @Getter
-    private String albumName;
-    private String albumArtist;
-    private String albumGenre;
-    private String albumYear;
-    @Getter
-    private Image albumCover;
+    public Image albumCover;
 
-    private ArrayList<Song> songs = new ArrayList<>();
+    public ArrayList<Song> songs = new ArrayList<>();
 
     public Album(String name, String artist, String year, Image albumCover) {
         this.albumName = name;

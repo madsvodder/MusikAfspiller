@@ -12,32 +12,32 @@ public class Song {
 
     @Getter
     @Setter
-    private String songTitle;
+    public String songTitle;
     @Getter
     @Setter
-    private String songArtist;
+    public String songArtist;
     @Getter
     @Setter
-    private String albumTitle;
+    public String albumTitle;
     @Getter
     @Setter
-    private int songDuration;
+    public int songDuration;
     @Getter
     @Setter
-    private String songYear;
+    public String songYear;
     @Getter
     @Setter
     @JsonIgnore
-    private Image albumCover;
+    public transient Image albumCover;
     @Getter
     @Setter
-    private String songDurationFormatted;
+    public String songDurationFormatted;
     @Getter
     @Setter
-    private File songFile;
+    public File songFile;
 
     @Getter @Setter
-    private byte[] albumCoverBytes; // Store album cover as bytes, to make serialization easy
+    public byte[] albumCoverBytes; // Store album cover as bytes, to make serialization easy
 
     public Song(){}
 

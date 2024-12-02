@@ -1,5 +1,6 @@
 package org.example.musikafspiller;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import javafx.scene.image.Image;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,11 +13,11 @@ public class UserLibrary {
     Logger logger = Logger.getLogger(UserLibrary.class.getName());
 
     @Getter @Setter
-    private ArrayList<Playlist> playlists = new ArrayList<>();
-    @Getter
-    private ArrayList<Album> albums = new ArrayList<>();
-    @Getter
-    private ArrayList<Song> songs = new ArrayList<>();
+    public ArrayList<Playlist> playlists = new ArrayList<>();
+    @Getter @JsonProperty
+    public ArrayList<Album> albums = new ArrayList<>();
+    @Getter @JsonProperty
+    public ArrayList<Song> songs = new ArrayList<>();
 
     public void addSong(Song song) {
         songs.add(song);
@@ -64,4 +65,11 @@ public class UserLibrary {
         return newPlaylist;
     }
 
+    public void clearPlaylists() {
+        playlists.clear();
+    }
+
+    public void addPlaylist(Playlist playlist) {
+        playlists.add(playlist);
+    }
 }

@@ -1,5 +1,6 @@
 package org.example.musikafspiller;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,15 +10,14 @@ import java.util.UUID;
 public class Playlist {
 
     @Getter @Setter
-    UUID uuid = UUID.randomUUID();
-
+    public UUID uuid = UUID.randomUUID();
 
     @Getter @Setter
     ArrayList<Song> songs = new ArrayList<>();
     @Getter @Setter
-    private String playlistName;
+    public String playlistName;
     @Getter @Setter
-    private int playlistDuration;
+    public int playlistDuration;
 
     public Playlist(String name, int duration) {
         this.playlistName = name;

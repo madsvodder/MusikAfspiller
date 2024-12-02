@@ -2,9 +2,8 @@ package org.example.musikafspiller;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -22,22 +21,27 @@ public class DataSaver {
     Logger logger = Logger.getLogger(DataSaver.class.getName());
 
     private ObjectMapper objectMapper = new ObjectMapper();
-    String saveDataPath;
 
-    public DataSaver(String saveDataPath) {
+    @Getter @Setter
+    String saveDataPath;
+    @Getter @Setter
+    String savePlaylistsPath;
+
+    public DataSaver(String saveDataPath, String savePlaylistsPath) {
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         this.saveDataPath = saveDataPath;
+        this.savePlaylistsPath = savePlaylistsPath;
     }
 
     public Playlist loadPlaylist(String playlistName) {
         try {
             // Check if the savedata folder exists
-            if (saveDataPath == null || saveDataPath.isEmpty()) {
-                throw new IllegalStateException("saveDataPath is null or empty");
+            if (savePlaylistsPath == null || savePlaylistsPath.isEmpty()) {
+                throw new IllegalStateException("savePlaylistsPath is null or empty");
             }
 
             // Construct the file path
-            Path filePath = Paths.get(saveDataPath, playlistName + ".json");
+            Path filePath = Paths.get(savePlaylistsPath, playlistName + ".json");
 
             // Check if the file exists
             if (!Files.exists(filePath)) {
@@ -64,22 +68,19 @@ public class DataSaver {
         try {
             logger.info("Saving playlist: " + playlistToSave.toString());
             // Check if the savedata folder exists
-            if (saveDataPath == null || saveDataPath.isEmpty()) {
+            if (savePlaylistsPath == null || savePlaylistsPath.isEmpty()) {
                 logger.warning("saveDataPath is null or empty");
                 throw new IllegalStateException("saveDataPath is null or empty");
             }
 
             // Construct the file path
-            Path filePath = Paths.get(saveDataPath, playlistToSave.getPlaylistName() + ".json");
+            Path filePath = Paths.get(savePlaylistsPath, playlistToSave.getPlaylistName() + ".json");
 
-            // If the parent directores dont exist, create them - The folder in documents
+            // If the parent directories doesn't exist, create them - The folder in documents
             Files.createDirectories(filePath.getParent());
 
             // Write the playlist object to a JSON file
             objectMapper.writeValue(filePath.toFile(), playlistToSave);
-
-            // Save it to our array of saved playlists, so we can always load it again
-            savedPlaylists.add(playlistToSave.getPlaylistName());
 
             logger.info("Playlist saved to: " + filePath.toAbsolutePath());
         } catch (IOException e) {
@@ -88,57 +89,26 @@ public class DataSaver {
             logger.warning("Invalid state: " + e.getMessage());}
     }
 
-    public void saveDataSaver() {
-        try {
-            // Check if the savedata folder exists
-            if (saveDataPath == null || saveDataPath.isEmpty()) {
-                throw new IllegalStateException("saveDataPath is null or empty");
-            }
-
-            // Construct the file path
-            Path filePath = Paths.get(saveDataPath, "dataSaver" + ".json");
-
-            // If the parent directores dont exist, create them - The folder in documents
-            Files.createDirectories(filePath.getParent());
-
-            // Write the playlist object to a JSON file
-            objectMapper.writeValue(filePath.toFile(), this);
-
-            logger.info("dataSaver saved to: " + filePath.toAbsolutePath());
-        } catch (IOException e) {
-            logger.warning("Error saving dataSaver: " + e.getMessage());
-        } catch (IllegalStateException e) {
-            logger.warning("Invalid state: " + e.getMessage());}
-    }
-
-    public DataSaver loadDataSaver() {
-        try {
-            // Check if the savedata folder exists
-            if (saveDataPath == null || saveDataPath.isEmpty()) {
-                throw new IllegalStateException("saveDataPath is null or empty");
-            }
-
-            // Construct the file path
-            Path filePath = Paths.get(saveDataPath, "dataSaver" + ".json");
-
-            // Check if the file exists
-            if (!Files.exists(filePath)) {
-                logger.warning("DataSaver file does not exist: " + filePath.toAbsolutePath());
-                return null;
-            }
-
-            // Read and deserialize the JSON file into a DataSaver object
-            DataSaver dataSaver = objectMapper.readValue(filePath.toFile(), DataSaver.class);
-
-            logger.info("DataSaver loaded from: " + filePath.toAbsolutePath());
-            return dataSaver;
-
-        } catch (IOException e) {
-            logger.warning("Error loading datasaver: " + e.getMessage());
-            return null; // Or handle it differently, e.g., rethrow a custom exception
-        } catch (IllegalStateException e) {
-            logger.warning("Invalid state: " + e.getMessage());
-            return null;
+    public ArrayList<Playlist> findPlaylists() {
+        ArrayList<Playlist> foundPlaylists = new ArrayList<>();
+        if (savePlaylistsPath == null || savePlaylistsPath.isEmpty()) {
+            logger.warning("savePlaylistsPath is null or empty");
+            throw new IllegalStateException("savePlaylistsPath is null or empty");
         }
-    }
+
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(savePlaylistsPath), "*.json")) {
+            for (Path path : stream) {
+                try {
+                    // Deserialize JSON file into a Playlist object
+                    Playlist playlist = objectMapper.readValue(path.toFile(), Playlist.class);
+                    foundPlaylists.add(playlist);
+                    logger.info("Found playlist: " + playlist.toString());
+                } catch (IOException e) {
+                    logger.warning("Error reading playlist: " + e.getMessage());
+                }
+            }
+        } catch (IOException e) {
+            logger.warning("Error accessing playlist directory: " + e.getMessage());
+        } return foundPlaylists;
+        }
 }

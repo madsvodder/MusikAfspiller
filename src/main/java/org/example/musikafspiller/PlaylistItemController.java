@@ -1,6 +1,7 @@
 package org.example.musikafspiller;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import lombok.Setter;
 
 import java.awt.event.ActionEvent;
@@ -14,6 +15,9 @@ public class PlaylistItemController {
     @Setter
     Playlist playlist;
 
+    @FXML
+    private Label label_PlaylistName;
+
     public PlaylistItemController() {
     }
 
@@ -22,5 +26,9 @@ public class PlaylistItemController {
         if (playlist != null && mainViewController != null) {
             mainViewController.onPlaylistSelected(playlist);
         }
+    }
+
+    public void updatePlaylistNameUI(String newPlaylistName) {
+        label_PlaylistName.setText(newPlaylistName);
     }
 }

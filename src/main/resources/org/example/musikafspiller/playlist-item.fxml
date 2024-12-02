@@ -16,6 +16,6 @@
             <Image url="@../../../images/MusicRecord.png" />
          </image>
       </ImageView>
-      <Label text="Playlist Navn" />
+      <Label fx:id="label_PlaylistName" text="Playlist Navn" />
    </children>
 </HBox>

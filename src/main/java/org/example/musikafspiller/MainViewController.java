@@ -60,6 +60,7 @@ public class MainViewController {
     // Directory of the users music
     private String libraryPath;
     private String saveDataPath;
+    private String savePlaylistPath;
 
     // The main classes. The user library, and the media player.
     UserLibrary userLibrary = new UserLibrary();
@@ -97,23 +98,26 @@ public class MainViewController {
         Path baseDir = documentsFolder.resolve("JavaMytunesPlayer");
         Path musicDir = baseDir.resolve("Music");
         Path saveDataDir = baseDir.resolve("SaveData");
+        Path savePlaylistDataDir = saveDataDir.resolve("PlaylistData");
 
         try {
             if (!Files.exists(baseDir)) {
                 Files.createDirectories(musicDir);
                 Files.createDirectories(saveDataDir);
+                Files.createDirectories(savePlaylistDataDir);
                 logger.info("Created directories: " + baseDir);
             }
 
             libraryPath = musicDir.toAbsolutePath().toString();
             saveDataPath = saveDataDir.toAbsolutePath().toString();
+            savePlaylistPath = savePlaylistDataDir.toAbsolutePath().toString();
 
             if (saveDataPath == null || saveDataPath.isEmpty()) {
                 logger.severe("saveDataPath is null or empty. Cannot initialize DataSaver.");
                 return;
             }
 
-            dataSaver = new DataSaver(saveDataPath); // Initialize here.
+            dataSaver = new DataSaver(saveDataPath, savePlaylistPath); // Initialize here.
             logger.info("DataSaver initialized with path: " + saveDataPath);
 
         } catch (IOException e) {
@@ -198,8 +202,11 @@ public class MainViewController {
             // Set reference to MenuController
             playlistItemController.setMainViewController(this);
 
+            // Create the new playlist object
+            Playlist newPlaylist = userLibrary.newPlaylist();
+
             // Create a new playlist, and assign it to the controller
-            playlistItemController.setPlaylist(userLibrary.newPlaylist());
+            playlistItemController.setPlaylist(newPlaylist);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -407,7 +414,6 @@ public class MainViewController {
         }
 
         try {
-            dataSaver.saveDataSaver();
             for (Playlist playlist : userLibrary.getPlaylists()) {
                 dataSaver.savePlaylist(playlist);
             }
@@ -418,7 +424,6 @@ public class MainViewController {
         }
     }
 
-
     @FXML
     private void load() {
         if (dataSaver == null) {
@@ -427,36 +432,17 @@ public class MainViewController {
         }
 
         try {
-            DataSaver loadedSaver = dataSaver.loadDataSaver();
-            if (loadedSaver != null) {
-                dataSaver = loadedSaver;
-            } else {
-                logger.warning("No existing DataSaver found. Skipping playlist load.");
-                return;
+
+            // Clear playlists and make space for the new ones
+            userLibrary.clearPlaylists();
+
+            for (Playlist playlists : dataSaver.findPlaylists()) {
+                loadPlaylistToSidebar(playlists);
             }
 
-            ArrayList<Playlist> loadedPlaylists = new ArrayList<>();
-            for (String playlistPath : dataSaver.getSavedPlaylists()) {
-                if (playlistPath == null || playlistPath.isEmpty()) {
-                    logger.warning("Invalid playlist path encountered during load.");
-                    continue;
-                }
-
-                Playlist playlist = dataSaver.loadPlaylist(playlistPath);
-                if (playlist != null) {
-                    loadedPlaylists.add(playlist);
-                    loadPlaylistToSidebar(playlist);
-                } else {
-                    logger.warning("Failed to load playlist: " + playlistPath);
-                }
-            }
-            userLibrary.setPlaylists(loadedPlaylists);
-            logger.info("Load operation completed successfully.");
         } catch (Exception e) {
             logger.severe("Error during load operation: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
-
 }

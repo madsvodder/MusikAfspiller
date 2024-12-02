@@ -14,8 +14,8 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 public class PlaylistViewController {
-    @Setter
-    @Getter
+
+    @Getter @Setter
     private Playlist playlist;
 
     @Setter
@@ -42,9 +42,20 @@ public class PlaylistViewController {
     @FXML
     private TableView<Song> tableview_playlist;
 
+    @FXML
+    private TextField TF_PlaylistName;
 
 
     private static final Logger logger = Logger.getLogger(PlaylistViewController.class.getName());
+
+    private void setupPlaylistNameListener() {
+        TF_PlaylistName.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (playlist != null) {
+                // Set the playlist name in the playlist class
+                playlist.setPlaylistName(newValue);
+            }
+        });
+    }
 
     private void logInitialize() {
         logger.info("Initializing PlaylistViewController");
@@ -66,6 +77,7 @@ public class PlaylistViewController {
         logInitialize();
         setupTableview();
         populateTableView();
+        setupPlaylistNameListener();
     }
 
     private void setupTableview() {
