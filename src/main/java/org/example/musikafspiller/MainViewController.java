@@ -1,6 +1,5 @@
 package org.example.musikafspiller;
 
-import com.jfoenix.controls.JFXSlider;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -372,7 +371,6 @@ public class MainViewController {
             }
         }
     }
-
 
     // Press play button for the ui
     @FXML

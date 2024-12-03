@@ -25,10 +25,13 @@ public class Song {
     @Getter
     @Setter
     public String songYear;
+
+    // Plz dont delete this, then it breaks.
     @Getter
     @Setter
     @JsonIgnore
     public transient Image albumCover;
+
     @Getter
     @Setter
     public String songDurationFormatted;
@@ -48,16 +51,12 @@ public class Song {
         this.songDuration = duration;
         this.songYear = songYear;
         this.albumCoverBytes = albumCoverBytes;
-        setAlbumCoverUsingBytes(albumCoverBytes);
         songDurationFormatted = getSongDurationFormatted();
     }
 
+
     public Image getAlbumCover() {
         return new Image(new ByteArrayInputStream(albumCoverBytes));
-    }
-
-    public void setAlbumCoverUsingBytes(byte[] albumCoverBytes) {
-        albumCover = new Image(new ByteArrayInputStream(albumCoverBytes));
     }
 
     public String getSongDurationFormatted() {

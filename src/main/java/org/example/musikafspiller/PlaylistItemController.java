@@ -5,8 +5,6 @@ import javafx.scene.control.Label;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.awt.event.ActionEvent;
-
 public class PlaylistItemController {
 
     @Setter

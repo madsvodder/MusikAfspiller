@@ -30,4 +30,8 @@ public class Playlist {
     public void addSong(Song song) {
         songs.add(song);
     }
+
+    public boolean containsSong(Song song) {
+        return songs.contains(song);
+    }
 }

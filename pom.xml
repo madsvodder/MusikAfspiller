@@ -65,6 +65,12 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.18.1</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.controlsfx/controlsfx -->
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>11.2.1</version>
+        </dependency>
 
     </dependencies>
 
