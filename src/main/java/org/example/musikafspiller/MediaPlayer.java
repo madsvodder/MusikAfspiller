@@ -1,15 +1,25 @@
 package org.example.musikafspiller;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.media.Media;
 import javafx.util.Duration;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.File;
 import java.util.logging.Logger;
 
 public class MediaPlayer {
+
+    MainViewController mainViewController;
+
+    public MediaPlayer(MainViewController mainViewController) {
+        this.mainViewController = mainViewController;
+    }
+
+    Playlist playingPlaylist;
 
     Logger logger = Logger.getLogger(MediaPlayer.class.getName());
 
@@ -21,29 +31,36 @@ public class MediaPlayer {
     @Getter
     private StringProperty currentTimeProperty = new SimpleStringProperty("0:00");
 
+    @Getter @Setter
+    @JsonIgnore
+    public int currentSongIndex = -1;
+
     // Play the song
-    public void playSong(Song songToPlay) {
+    public void getReadyToPlaySongInPlaylist(Song songToPlay, Playlist playlistToPlay) {
         // Check if the song file exists
         if (songToPlay.getSongFile() == null || !songToPlay.getSongFile().exists()) {
             logger.warning("Invalid song file.");
             return;
         }
 
+        if (playlistToPlay != null) {
+            playingPlaylist = playlistToPlay;
+        }
+
         if (!isSongPlaying) {
             System.out.println("Song is not playing");
-            getReadyToPlaySong(songToPlay);
+            doPlaySongInPlaylist(songToPlay);
         } else {
             System.out.println("Song is already playing.");
             mediaPlayer.stop();
             mediaPlayer.dispose();
             mediaPlayer = null;
             isSongPlaying = false;
-            getReadyToPlaySong(songToPlay);
+            doPlaySongInPlaylist(songToPlay);
         }
 
     }
-
-    private void getReadyToPlaySong(Song songToPlay) {
+    private void doPlaySongInPlaylist(Song songToPlay) {
         // Create a Media object from the song's file path
         File songFile = songToPlay.getSongFile();
         Media media = new Media(songFile.toURI().toString());
@@ -67,11 +84,32 @@ public class MediaPlayer {
             mediaPlayer.dispose();
             mediaPlayer = null;
             isSongPlaying = false;
+
+            if (getNextSong() != null) {
+                doPlaySongInPlaylist(getNextSong());
+            }
         });
 
         // Play the media
         mediaPlayer.play();
+        mainViewController.updateSongUI(songToPlay);
         isSongPlaying = true;
+    }
+
+    public Song getNextSong() {
+        if (playingPlaylist.getSongs().isEmpty()) {
+            return null;
+        }
+        // Move to the next song (circular playlist)
+        currentSongIndex = (currentSongIndex + 1) % playingPlaylist.getSongs().size();
+        return playingPlaylist.getSongs().get(currentSongIndex);
+    }
+
+    public Song getCurrentSong() {
+        if (playingPlaylist.getSongs().isEmpty()) {
+            return null;  // No songs in the playlist
+        }
+        return playingPlaylist.getSongs().get(currentSongIndex);
     }
 
     // Pause the song

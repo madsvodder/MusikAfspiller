@@ -1,17 +1,11 @@
 package org.example.musikafspiller;
 
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import lombok.Getter;
 import lombok.Setter;
@@ -147,7 +141,7 @@ public class PlaylistViewController {
                 Song selectedSong = tableview_playlist.getSelectionModel().getSelectedItem();
                 if (selectedSong != null) {
                     mainViewController.setSelectedSong(selectedSong);
-                    mainViewController.playSong(selectedSong);
+                    mainViewController.playSongFromPlaylist(selectedSong, playlist);
                     logger.info("Selected song: " + selectedSong);
                 }
             }

@@ -71,7 +71,7 @@ public class MainViewController {
 
     // The main classes. The user library, and the media player.
     UserLibrary userLibrary = new UserLibrary();
-    MediaPlayer mediaPlayer = new MediaPlayer();
+    MediaPlayer mediaPlayer = new MediaPlayer(this);
     DataSaver dataSaver;
 
     // Initialize
@@ -383,12 +383,12 @@ public class MainViewController {
     private void onPressedPlay() {togglePlayPause();}
 
     // Play a specific song. This is also used when double-clicking a song in a playlist.
-    public void playSong(Song song) {
-        mediaPlayer.playSong(song);
-        image_PlayPause.setImage(pauseImage);
-        setupSongProgressSlider();
-        label_songDurationFinal.setText(song.getSongDurationFormatted());
-        updateSongUI(song.getSongTitle(), song.getSongArtist(), song.getAlbumCover());
+    public void playSongFromPlaylist(Song song, Playlist playlist) {
+        mediaPlayer.getReadyToPlaySongInPlaylist(song, playlist);
+        //image_PlayPause.setImage(pauseImage);
+        //setupSongProgressSlider();
+        //label_songDurationFinal.setText(song.getSongDurationFormatted());
+        updateSongUI(song);
     }
 
     // Toggle between Play and Pause
@@ -442,10 +442,14 @@ public class MainViewController {
         mediaPlayer.getMediaPlayer().seek(Duration.seconds(targetTime));
     }
 
-    private void updateSongUI(String songName, String artistName, Image albumCover) {
-        label_currentArtistName.setText(artistName);
-        label_CurrentSongName.setText(songName);
-        image_currentAlbumPlaying.setImage(albumCover);
+    public void updateSongUI(Song songToPlay) {
+        label_currentArtistName.setText(songToPlay.getSongArtist());
+        label_CurrentSongName.setText(songToPlay.getSongTitle());
+        image_currentAlbumPlaying.setImage(songToPlay.getAlbumCover());
+        setupSongProgressSlider();
+        image_PlayPause.setImage(pauseImage);
+        label_songDurationFinal.setText(songToPlay.getSongDurationFormatted());
+
     }
 
     @FXML
