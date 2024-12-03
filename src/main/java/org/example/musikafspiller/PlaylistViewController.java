@@ -90,7 +90,7 @@ public class PlaylistViewController {
     private void setupTableview() {
         // Set up the selection mode to only select one song
         tableview_playlist.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        // Defferent setup methods
+        // Different setup methods
         setupCells();
         setupMouseClicks();
         setupContextMenu();

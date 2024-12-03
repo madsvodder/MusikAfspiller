@@ -46,6 +46,12 @@ public class MainViewController {
     private Slider slider_songProgress;
     @FXML
     private Label label_songDurationFinal;
+    @FXML
+    private ImageView image_currentAlbumPlaying;
+    @FXML
+    private Label label_CurrentSongName;
+    @FXML
+    private Label label_currentArtistName;
 
     // These images are the ones that we change during runtime.
     private Image playImage;
@@ -382,6 +388,7 @@ public class MainViewController {
         image_PlayPause.setImage(pauseImage);
         setupSongProgressSlider();
         label_songDurationFinal.setText(song.getSongDurationFormatted());
+        updateSongUI(song.getSongTitle(), song.getSongArtist(), song.getAlbumCover());
     }
 
     // Toggle between Play and Pause
@@ -433,6 +440,12 @@ public class MainViewController {
     private void seekToSliderPosition() {
         long targetTime = Math.round(slider_songProgress.getValue()); // Round to nearest second
         mediaPlayer.getMediaPlayer().seek(Duration.seconds(targetTime));
+    }
+
+    private void updateSongUI(String songName, String artistName, Image albumCover) {
+        label_currentArtistName.setText(artistName);
+        label_CurrentSongName.setText(songName);
+        image_currentAlbumPlaying.setImage(albumCover);
     }
 
     @FXML

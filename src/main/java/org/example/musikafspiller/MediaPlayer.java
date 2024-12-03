@@ -13,7 +13,7 @@ public class MediaPlayer {
 
     Logger logger = Logger.getLogger(MediaPlayer.class.getName());
 
-    private boolean isSongPlaying= false;
+    private boolean isSongPlaying = false;
 
     @Getter
     private javafx.scene.media.MediaPlayer mediaPlayer;
@@ -30,9 +30,10 @@ public class MediaPlayer {
         }
 
         if (!isSongPlaying) {
+            System.out.println("Song is not playing");
             getReadyToPlaySong(songToPlay);
-            isSongPlaying = true;
         } else {
+            System.out.println("Song is already playing.");
             mediaPlayer.stop();
             mediaPlayer.dispose();
             mediaPlayer = null;
@@ -63,10 +64,14 @@ public class MediaPlayer {
         mediaPlayer.setOnEndOfMedia(() -> {
             logger.info("Song finished playing");
             mediaPlayer.stop();
+            mediaPlayer.dispose();
+            mediaPlayer = null;
+            isSongPlaying = false;
         });
 
         // Play the media
         mediaPlayer.play();
+        isSongPlaying = true;
     }
 
     // Pause the song

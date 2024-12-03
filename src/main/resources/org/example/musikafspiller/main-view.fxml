@@ -53,22 +53,25 @@
    <bottom>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="1280.0" stylesheets="@../../../css/Playerbar.css">
          <children>
-            <ImageView fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="image_currentAlbumPlaying" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../images/MusicRecord.png" />
                </image>
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
             </ImageView>
             <VBox alignment="CENTER_LEFT" prefHeight="80.0">
                <children>
-                  <Label prefWidth="108.0" text="Song Name">
+                  <Label fx:id="label_CurrentSongName" maxWidth="200.0" minWidth="200.0" text="Dont look back in anger">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <Label layoutX="10.0" layoutY="10.0" text="Artist Name" />
+                  <Label fx:id="label_currentArtistName" layoutX="10.0" layoutY="10.0" text="Artist Name" />
                </children>
             </VBox>
-            <Region prefHeight="80.0" prefWidth="57.0" HBox.hgrow="ALWAYS" />
+            <Region prefHeight="50.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
             <VBox alignment="CENTER" maxWidth="450.0" minWidth="450.0" prefHeight="80.0" prefWidth="450.0">
                <children>
                   <HBox alignment="CENTER" maxWidth="800.0">
@@ -107,14 +110,11 @@
                         <Label fx:id="label_songDuration" maxWidth="42.0" minWidth="30.0" prefHeight="17.0" prefWidth="42.0" text="0:00" />
                         <StackPane maxWidth="365.0" minWidth="365.0" prefWidth="365.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <ProgressBar fx:id="progressBar_SongProgress" maxWidth="365.0" minWidth="365.0" prefWidth="365.0" progress="0.0" StackPane.alignment="CENTER" />
-                              <Slider fx:id="slider_songProgress" maxWidth="365.0" minWidth="365.0" prefWidth="365.0" StackPane.alignment="CENTER">
+                              <ProgressBar fx:id="progressBar_SongProgress" maxWidth="355.0" minWidth="355.0" prefHeight="20.0" prefWidth="355.0" progress="0.0" StackPane.alignment="CENTER" />
+                              <Slider fx:id="slider_songProgress" maxWidth="365.0" minWidth="365.0" prefHeight="20.0" prefWidth="365.0" StackPane.alignment="CENTER">
                                  <StackPane.margin>
                                     <Insets />
                                  </StackPane.margin>
-                                 <padding>
-                                    <Insets left="10.0" right="10.0" />
-                                 </padding>
                               </Slider>
                            </children>
                         </StackPane>
@@ -126,7 +126,7 @@
                   <Insets />
                </HBox.margin>
             </VBox>
-            <Region prefHeight="80.0" prefWidth="116.0" HBox.hgrow="ALWAYS" />
+            <Region prefHeight="80.0" prefWidth="240.0" HBox.hgrow="ALWAYS" />
             <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" layoutX="719.0" layoutY="38.0" mnemonicParsing="false" text="Button">
                <graphic>
                   <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">

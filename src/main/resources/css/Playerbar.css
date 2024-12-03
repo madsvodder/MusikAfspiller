@@ -9,11 +9,30 @@ VBox {
     -fx-background-color: whitesmoke;
 }
 
+/* Hide the track initially */
 .slider .track {
-    -fx-background-color: transparent;  /* Hide the track */
+    -fx-background-color: transparent; /* Make track invisible */
     -fx-background-insets: 1 0 -1 0, 0, 1;
     -fx-background-radius: 2.5, 2.5, 1.5;
-    -fx-padding: 0.208333em; /* 2.5 */
+    -fx-padding: 0.208333em; /* Adjust padding if needed */
+}
+
+/* Thumb is invisible by default */
+.slider .thumb {
+    -fx-background-color: transparent; /* Make the thumb invisible */
+    -fx-opacity: 0; /* Make the thumb invisible when not hovered */
+}
+
+/* Show the thumb and track when hovered */
+.slider:hover .thumb {
+    -fx-background-color: #2196F3;  /* Make the thumb visible when hovered */
+    -fx-opacity: 1; /* Make the thumb visible */
+}
+
+
+/* Change thumb color on hover */
+.slider .thumb:hover {
+    -fx-background-color: #2196F3; /* Thumb color on hover */
 }
 
 .button {
