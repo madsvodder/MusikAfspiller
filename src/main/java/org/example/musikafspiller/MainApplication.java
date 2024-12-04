@@ -19,7 +19,7 @@ public class MainApplication extends Application {
         stage.setScene(scene);
         stage.show();
         stage.setOnCloseRequest(event -> {
-            controller.save();
+            //controller.save();
         });
     }
 

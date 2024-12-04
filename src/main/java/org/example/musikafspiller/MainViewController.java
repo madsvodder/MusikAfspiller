@@ -108,22 +108,41 @@ public class MainViewController {
         Path cacheDataDir = baseDir.resolve("CacheData");
 
         try {
+            // Ensure that the base directory exists
             if (!Files.exists(baseDir)) {
-                Files.createDirectories(musicDir);
-                Files.createDirectories(saveDataDir);
-                logger.info("Created directories: " + baseDir);
+                Files.createDirectory(baseDir);
+                logger.info("Created base directory: " + baseDir);
             }
 
+            // Create the subdirectories
+            if (!Files.exists(musicDir)) {
+                Files.createDirectory(musicDir);
+                logger.info("Created music directory: " + musicDir);
+            }
+
+            if (!Files.exists(saveDataDir)) {
+                Files.createDirectory(saveDataDir);
+                logger.info("Created save data directory: " + saveDataDir);
+            }
+
+            if (!Files.exists(cacheDataDir)) {
+                Files.createDirectory(cacheDataDir);
+                logger.info("Created cache data directory: " + cacheDataDir);
+            }
+
+            // Set paths for the directories
             libraryPath = musicDir.toAbsolutePath().toString();
             saveDataPath = saveDataDir.toAbsolutePath().toString();
             cacheDataPath = cacheDataDir.toAbsolutePath().toString();
 
+            // Log the save data path
             if (saveDataPath == null || saveDataPath.isEmpty()) {
                 logger.severe("saveDataPath is null or empty. Cannot initialize DataSaver.");
                 return;
             }
 
-            dataSaver = new DataSaver(saveDataPath); // Initialize here.
+            // Initialize DataSaver with the saveDataPath
+            dataSaver = new DataSaver(saveDataPath);
             logger.info("DataSaver initialized with path: " + saveDataPath);
 
         } catch (IOException e) {
@@ -131,6 +150,7 @@ public class MainViewController {
             e.printStackTrace();
         }
     }
+
     private ArrayList<File> getAudioFilesFromDocuments () {
 
             ArrayList<File> audioFiles = new ArrayList<>();
@@ -183,9 +203,6 @@ public class MainViewController {
 
             // Create the new playlist object
             Playlist newPlaylist = userLibrary.newPlaylist();
-
-            // Add the playlist to userLibrary
-            userLibrary.addPlaylist(newPlaylist);
 
             // Create a new playlist, and assign it to the controller
             playlistItemController.setPlaylist(newPlaylist);
@@ -349,8 +366,6 @@ public class MainViewController {
         }
     }
 
-
-
     // Press play button for the ui
     @FXML
     private void onPressedPlay() {togglePlayPause();}
@@ -427,10 +442,29 @@ public class MainViewController {
 
     @FXML
     public void save() {
+        dataSaver.saveUserData(userLibrary);
     }
 
     @FXML
     public void load() {
+        // Load user data from the file
+        UserLibrary newuserLibrary = dataSaver.loadUserData();
+
+        // If the loaded library is not null, replace the existing userLibrary
+        if (newuserLibrary != null) {
+            userLibrary = newuserLibrary;
+
+            // Check if userLibrary has playlists
+            System.out.println("Loaded user library: " + userLibrary);
+
+            for (Playlist playlist : userLibrary.getPlaylists()) {
+                System.out.println("Loading playlist: " + playlist);
+                loadPlaylistToSidebar(playlist);
+            }
+        } else {
+            System.out.println("No user data found to load.");
+        }
     }
+
 
 }

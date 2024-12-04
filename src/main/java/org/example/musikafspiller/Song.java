@@ -1,12 +1,13 @@
 package org.example.musikafspiller;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javafx.scene.image.Image;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.util.UUID;
 
 public class Song {
 
@@ -24,8 +25,14 @@ public class Song {
     public String songDurationFormatted;
     @Setter @Getter
     public File songFile;
+    @Getter @Setter
+    private String albumArtPath;
+    @JsonIgnore // Don't serialize the Image object directly
+    private Image albumCover;
+
 
     @JsonIgnore // Prevent cyclic references if serialized
+    @Getter @Setter
     private Album album; // Association with an album
 
     public Song(){}
@@ -37,26 +44,23 @@ public class Song {
         this.songDuration = duration;
         this.songYear = songYear;
         this.songDurationFormatted = getSongDurationFormatted();
-    }
-
-
-    // Associate the song with an album
-    public void setAlbum(Album album) {
-        this.album = album;
+        albumArtPath = getAlbumArtPath();
     }
 
     // Getter for album art via the album
+    @JsonIgnore
     public Image getAlbumCover() {
         if (album != null) {
+            // Ensure that the album art path is valid and the image can be loaded
             Image albumImage = album.getAlbumArt();
             if (albumImage != null) {
                 System.out.println("Album art retrieved successfully.");
+                return albumImage;
             } else {
-                System.out.println("Album art is null.");
+                System.out.println("Album art is null in getAlbumCover.");
             }
-            return albumImage;
         } else {
-            System.out.println("Album is null in getAlbumArt.");
+            System.out.println("Album is null in getAlbumCover.");
         }
         return null;
     }

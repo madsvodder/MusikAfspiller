@@ -55,7 +55,7 @@ public class UserLibrary {
                 return album;
             }
         }
-        return null;
+        return null; // Return null if no album is found
     }
 
     public Playlist newPlaylist() {

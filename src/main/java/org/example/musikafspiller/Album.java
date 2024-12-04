@@ -1,5 +1,6 @@
 package org.example.musikafspiller;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javafx.scene.image.Image;
@@ -22,7 +23,6 @@ public class Album {
     public String albumYear;
     @Getter @Setter
     private String albumArtPath;
-
     public ArrayList<Song> songs = new ArrayList<>();
 
 
@@ -34,6 +34,7 @@ public class Album {
         this.albumYear = year;
     }
 
+    @JsonIgnore
     public Image getAlbumArt() {
         if (albumArtPath == null) return null;
         return new Image(new File(albumArtPath).toURI().toString());

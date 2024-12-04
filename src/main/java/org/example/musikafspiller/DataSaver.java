@@ -26,4 +26,57 @@ public class DataSaver {
     public DataSaver(String saveDataPath) {
         this.saveDataPath = saveDataPath;
     }
+
+    public void saveUserData(UserLibrary userLibrary) {
+        try {
+            // Create the JSON file
+            File file = new File(saveDataPath + "user_data.json");
+
+            // Ensure the parent directory exists
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs(); // Create directories if not present
+            }
+
+            /*
+            // Clear the file by creating a new empty one (it will overwrite existing content)
+            if (file.exists()) {
+                file.delete(); // Delete the existing file to prevent appending
+            }*/
+
+            for (Playlist playlist : userLibrary.getPlaylists()) {
+                System.out.println("Playlist " + playlist.getPlaylistName());
+            }
+
+            // Write the userLibrary object to the file as JSON
+            objectMapper.writeValue(file, userLibrary);
+            logger.info("User data saved to: " + file.getAbsolutePath());
+
+        } catch (IOException e) {
+            logger.severe("Error saving user data: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public UserLibrary loadUserData() {
+        UserLibrary userLibrary = null;
+        try {
+            // Create the JSON file
+            File file = new File(saveDataPath + "user_data.json");
+
+            // Ensure the file exists
+            if (file.exists()) {
+                // Read the userLibrary object from the file
+                userLibrary = objectMapper.readValue(file, UserLibrary.class);
+                logger.info("User data loaded from: " + file.getAbsolutePath());
+            } else {
+                logger.warning("User data file not found. Returning empty UserLibrary.");
+                userLibrary = new UserLibrary(); // Return an empty UserLibrary if no file is found
+            }
+
+        } catch (IOException e) {
+            logger.severe("Error loading user data: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return userLibrary;
+    }
 }

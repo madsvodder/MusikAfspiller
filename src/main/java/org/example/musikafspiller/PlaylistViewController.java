@@ -125,11 +125,6 @@ public class PlaylistViewController {
         });
     }
 
-
-
-
-
-
     private void setupMouseClicks(){
         tableview_playlist.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
@@ -185,9 +180,6 @@ public class PlaylistViewController {
 
         // Populate the table view with all the songs from the playlist
         for (Song song : playlist.getSongs()) {
-            if (song.getAlbumCover() == null) {
-            } else {
-            }
             tableview_playlist.getItems().add(song);
         }
 
