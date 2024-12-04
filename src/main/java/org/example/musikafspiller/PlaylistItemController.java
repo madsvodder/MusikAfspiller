@@ -20,6 +20,10 @@ public class PlaylistItemController {
     public PlaylistItemController() {
     }
 
+    public void customInitialize() {
+        label_PlaylistName.setText(playlist.getPlaylistName());
+    }
+
     @FXML
     private void onPlaylistPressed() {
         if (playlist != null && mainViewController != null) {

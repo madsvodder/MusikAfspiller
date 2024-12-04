@@ -76,6 +76,9 @@ public class PlaylistViewController {
     }
 
     public void customInit() {
+        // Set playlist name in textfield
+        TF_PlaylistName.setText(playlist.getPlaylistName());
+
         logInitialize();
         setupTableview();
         populateTableView();

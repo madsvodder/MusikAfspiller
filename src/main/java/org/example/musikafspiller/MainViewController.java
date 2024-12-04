@@ -211,6 +211,9 @@ public class MainViewController {
             // Set the userData of the HBox to the controller
             playlistItem.setUserData(playlistItemController);
 
+            // Initialize playlistItem
+            playlistItemController.customInitialize();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -233,6 +236,9 @@ public class MainViewController {
 
             // Create a new playlist, and assign it to the controller
             playlistItemController.setPlaylist(playlist);
+
+            // Initialize playlistItem
+            playlistItemController.customInitialize();
 
         } catch (IOException e) {
             e.printStackTrace();
