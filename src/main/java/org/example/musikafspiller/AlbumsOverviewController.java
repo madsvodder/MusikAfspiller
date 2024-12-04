@@ -53,7 +53,7 @@ public class AlbumsOverviewController {
             VBox albumBox = fxmlLoader.load();
 
             AlbumCoverController controller = fxmlLoader.getController();
-            controller.setImage_cover(album.getAlbumCover());
+            controller.setImage_cover(album.getAlbumArt());
             controller.setLabel_title(album.getAlbumName());
 
             return albumBox;

@@ -1,5 +1,6 @@
 package org.example.musikafspiller;
 
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -93,38 +94,29 @@ public class PlaylistViewController {
     private void setupCells() {
         kolonne_album.setCellValueFactory(new PropertyValueFactory<>("albumTitle"));
 
-        kolonne_cover.setCellValueFactory(new PropertyValueFactory<>("albumCover"));
+        // Create a new column for album cover
+        kolonne_cover.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getAlbumCover()));
 
+        // Use a custom cell factory to display the album cover image
         kolonne_cover.setCellFactory(param -> new TableCell<Song, Image>() {
             @Override
-            protected void updateItem(Image image, boolean empty) {
-                super.updateItem(image, empty);
+            protected void updateItem(Image item, boolean empty) {
+                super.updateItem(item, empty);
 
-                if (empty || image == null) {
-                    // If no image or empty, don't display anything
-                    setGraphic(null);
+                if (empty || item == null) {
+                    setGraphic(null);  // Clear the graphic if the item is empty
                 } else {
-                    // Log the image to ensure it's not null and is being processed
-                    System.out.println("Displaying image: " + image);
-
-                    // Create an ImageView and set the image
-                    ImageView imageView = new ImageView(image);
-                    // Resize the image to fit within the cell
-                    imageView.setFitHeight(50);
-                    // Maintain aspect ratio
-                    imageView.setPreserveRatio(true);
-                    // Display the image in the cell
-                    setGraphic(imageView);
+                    // If the item is an image, display it in the cell
+                    ImageView imageView = new ImageView(item);
+                    imageView.setFitHeight(50);  // Resize image to fit the cell
+                    imageView.setPreserveRatio(true);  // Maintain aspect ratio
+                    setGraphic(imageView);  // Set the ImageView as the graphic of the cell
                 }
             }
         });
 
-
-
-
-
+        // Set up other columns as needed
         kolonne_duration.setCellValueFactory(new PropertyValueFactory<>("songDurationFormatted"));
-
         kolonne_title.setCellValueFactory(new PropertyValueFactory<>("songTitle"));
 
         kolonne_number.setCellValueFactory(param -> {
@@ -132,6 +124,9 @@ public class PlaylistViewController {
             return new javafx.beans.property.SimpleIntegerProperty(rowIndex + 1).asObject();
         });
     }
+
+
+
 
 
 
@@ -191,9 +186,7 @@ public class PlaylistViewController {
         // Populate the table view with all the songs from the playlist
         for (Song song : playlist.getSongs()) {
             if (song.getAlbumCover() == null) {
-                System.out.println("Song without cover: " + song);
             } else {
-                System.out.println("Song with cover: " + song.getAlbumCover());
             }
             tableview_playlist.getItems().add(song);
         }

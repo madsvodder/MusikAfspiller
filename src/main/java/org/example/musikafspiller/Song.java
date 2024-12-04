@@ -10,54 +10,65 @@ import java.io.File;
 
 public class Song {
 
-    @Getter
-    @Setter
+    @Getter @Setter
     public String songTitle;
-    @Getter
-    @Setter
+    @Getter @Setter
     public String songArtist;
-    @Getter
-    @Setter
+    @Getter @Setter
     public String albumTitle;
-    @Getter
-    @Setter
+    @Getter @Setter
     public int songDuration;
-    @Getter
-    @Setter
+    @Getter @Setter
     public String songYear;
-
-    // Plz dont delete this, then it breaks.
-    @Getter
-    @Setter
-    @JsonIgnore
-    public transient Image albumCover;
-
-    @Getter
-    @Setter
+    @Setter @Getter
     public String songDurationFormatted;
-    @Getter
-    @Setter
+    @Setter @Getter
     public File songFile;
 
-    @Getter @Setter
-    public byte[] albumCoverBytes; // Store album cover as bytes, to make serialization easy
+    @JsonIgnore // Prevent cyclic references if serialized
+    private Album album; // Association with an album
 
     public Song(){}
 
-    public Song(String title, String artist, String album, String songYear, int duration, byte[] albumCoverBytes) {
+    public Song(String title, String artist, String album, String songYear, int duration) {
         this.songTitle = title;
         this.songArtist = artist;
         this.albumTitle = album;
         this.songDuration = duration;
         this.songYear = songYear;
-        this.albumCoverBytes = albumCoverBytes;
-        songDurationFormatted = getSongDurationFormatted();
+        this.songDurationFormatted = getSongDurationFormatted();
     }
 
 
+    // Associate the song with an album
+    public void setAlbum(Album album) {
+        this.album = album;
+    }
+
+    // Getter for album art via the album
     public Image getAlbumCover() {
-        return new Image(new ByteArrayInputStream(albumCoverBytes));
+        if (album != null) {
+            Image albumImage = album.getAlbumArt();
+            if (albumImage != null) {
+                System.out.println("Album art retrieved successfully.");
+            } else {
+                System.out.println("Album art is null.");
+            }
+            return albumImage;
+        } else {
+            System.out.println("Album is null in getAlbumArt.");
+        }
+        return null;
     }
+
+
+    public String getAlbumArtPath() {
+        if (album != null) {
+            return album.getAlbumArtPath();
+        }
+        return null;
+    }
+
 
     public String getSongDurationFormatted() {
         int minutes = songDuration / 60; // Get full minutes

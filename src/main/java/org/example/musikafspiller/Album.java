@@ -1,10 +1,14 @@
 package org.example.musikafspiller;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javafx.scene.image.Image;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -15,18 +19,24 @@ public class Album {
     @Getter
     public String albumName;
     public String albumArtist;
-    public String albumGenre;
     public String albumYear;
-    @Getter
-    public Image albumCover;
+    @Getter @Setter
+    private String albumArtPath;
 
     public ArrayList<Song> songs = new ArrayList<>();
 
-    public Album(String name, String artist, String year, Image albumCover) {
+
+    public Album(){}
+
+    public Album(String name, String artist, String year) {
         this.albumName = name;
         this.albumArtist = artist;
         this.albumYear = year;
-        this.albumCover = albumCover;
+    }
+
+    public Image getAlbumArt() {
+        if (albumArtPath == null) return null;
+        return new Image(new File(albumArtPath).toURI().toString());
     }
 
     public void addSongToAlbum(Song song) {

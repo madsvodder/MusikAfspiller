@@ -12,7 +12,7 @@ public class UserLibrary {
 
     Logger logger = Logger.getLogger(UserLibrary.class.getName());
 
-    @Getter @Setter
+    @Getter @Setter @JsonProperty
     public ArrayList<Playlist> playlists = new ArrayList<>();
     @Getter @JsonProperty
     public ArrayList<Album> albums = new ArrayList<>();
@@ -29,7 +29,7 @@ public class UserLibrary {
         String albumYear = song.getSongYear();
         Image albumCover = song.getAlbumCover();
 
-        Album newAlbum = new Album(albumName, albumArtist, albumYear, albumCover);
+        Album newAlbum = new Album(albumName, albumArtist, albumYear);
 
         newAlbum.addSongToAlbum(song);
 

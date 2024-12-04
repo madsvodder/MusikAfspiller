@@ -67,7 +67,7 @@ public class MainViewController {
     // Directory of the users music
     private String libraryPath;
     private String saveDataPath;
-    private String savePlaylistPath;
+    private String cacheDataPath;
 
     // The main classes. The user library, and the media player.
     UserLibrary userLibrary = new UserLibrary();
@@ -80,7 +80,8 @@ public class MainViewController {
         setupUserDocuments();
 
         // Read all the songs in the documents folder
-        parseSongs();
+        SongParser songParser = new SongParser();
+        songParser.parseSongs(userLibrary, getAudioFilesFromDocuments(), cacheDataPath);
 
         // Bind the label in the corner for the song duration
         label_songDuration.textProperty().bind(mediaPlayer.getCurrentTimeProperty());
@@ -94,7 +95,7 @@ public class MainViewController {
         pauseImage = new Image(getClass().getResourceAsStream("/images/PauseButton.png"));
 
         // Load everything
-        load();
+        //load();
     }
 
 
@@ -104,26 +105,25 @@ public class MainViewController {
         Path baseDir = documentsFolder.resolve("JavaMytunesPlayer");
         Path musicDir = baseDir.resolve("Music");
         Path saveDataDir = baseDir.resolve("SaveData");
-        Path savePlaylistDataDir = saveDataDir.resolve("PlaylistData");
+        Path cacheDataDir = baseDir.resolve("CacheData");
 
         try {
             if (!Files.exists(baseDir)) {
                 Files.createDirectories(musicDir);
                 Files.createDirectories(saveDataDir);
-                Files.createDirectories(savePlaylistDataDir);
                 logger.info("Created directories: " + baseDir);
             }
 
             libraryPath = musicDir.toAbsolutePath().toString();
             saveDataPath = saveDataDir.toAbsolutePath().toString();
-            savePlaylistPath = savePlaylistDataDir.toAbsolutePath().toString();
+            cacheDataPath = cacheDataDir.toAbsolutePath().toString();
 
             if (saveDataPath == null || saveDataPath.isEmpty()) {
                 logger.severe("saveDataPath is null or empty. Cannot initialize DataSaver.");
                 return;
             }
 
-            dataSaver = new DataSaver(saveDataPath, savePlaylistPath); // Initialize here.
+            dataSaver = new DataSaver(saveDataPath); // Initialize here.
             logger.info("DataSaver initialized with path: " + saveDataPath);
 
         } catch (IOException e) {
@@ -161,33 +161,8 @@ public class MainViewController {
             }
             return audioFiles;
         }
-    public void parseSongs() {
 
-        ArrayList<File> songsToParse = new ArrayList<>();
 
-        SongParser songParser = new SongParser();
-
-        songsToParse = getAudioFilesFromDocuments();
-
-        for (File file : songsToParse) {
-
-            Song newSong = songParser.parseSong(file);
-
-            // Add the songs to the user library as "standalone"
-            userLibrary.addSong(newSong);
-
-            // If this album doesn't exist in the users library, create it here
-            if (!userLibrary.doesAlbumExist(newSong.getAlbumTitle())) {
-                // If the album doesn't exist, create a new one
-                userLibrary.createNewAlbumFromSong(newSong);
-
-            } else if (userLibrary.doesAlbumExist(newSong.getAlbumTitle())) {
-                // If the imported song comes from the same album, then add it to the album
-                Album album = userLibrary.findAlbum(newSong.getAlbumTitle());
-                album.addSongToAlbum(newSong);
-            }
-        }
-    }
 
     // Adds a new playlist to the ui, and creates a new one in the user library.
     @FXML
@@ -203,11 +178,14 @@ public class MainViewController {
             // Get the controller from the FXML playlistitem
             PlaylistItemController playlistItemController = loader.getController();
 
-            // Set reference to MenuController
+            // Set reference to MainViewController
             playlistItemController.setMainViewController(this);
 
             // Create the new playlist object
             Playlist newPlaylist = userLibrary.newPlaylist();
+
+            // Add the playlist to userLibrary
+            userLibrary.addPlaylist(newPlaylist);
 
             // Create a new playlist, and assign it to the controller
             playlistItemController.setPlaylist(newPlaylist);
@@ -219,6 +197,7 @@ public class MainViewController {
             e.printStackTrace();
         }
     }
+
     private void loadPlaylistToSidebar(Playlist playlist) {
         try {
             // Load FXML file and add it to the side
@@ -341,42 +320,36 @@ public class MainViewController {
 
     @FXML
     private void importSong() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Audio Files", "*.FLAC", "*.MP3", "*.WAV"));
 
-        // create a File chooser
-        FileChooser fil_chooser = new FileChooser();
+        File selectedFile = fileChooser.showOpenDialog(anchorCenter.getScene().getWindow());
 
-        // Make a filter of which file types the user can import
-        fil_chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Audio Files", "*.FLAC", "*.MP3", "*.WAV"));
-
-        // Show to file chooser dialog window
-        File selectedFile = fil_chooser.showOpenDialog(anchorCenter.getScene().getWindow());
-
-        // Did the user select a file?
         if (selectedFile != null) {
-            // Create a new songParser object
             SongParser songParser = new SongParser();
+            Song newSong = songParser.parseSong(selectedFile, cacheDataPath, userLibrary);
 
-            // Grab all the metadata from the song file
-            Song newSong = songParser.parseSong(selectedFile);
+            if (newSong != null) {
+                // Add song to the library
+                userLibrary.addSong(newSong);
 
-            // Add the song to the users library
-            userLibrary.addSong(newSong);
-
-            // Log
-            logger.info("Added song: " + userLibrary.getSongs().getLast());
-
-            // If this album doesn't exist in the users library, create it here
-            if (!userLibrary.doesAlbumExist(newSong.getAlbumTitle())) {
-                // If the album doesn't exist, create a new one
-                userLibrary.createNewAlbumFromSong(newSong);
-
-            } else if (userLibrary.doesAlbumExist(newSong.getAlbumTitle())) {
-                // If the imported song comes from the same album, then add it to the album
-                Album album = userLibrary.findAlbum(newSong.getAlbumTitle());
-                album.addSongToAlbum(newSong);
+                // Check if album exists
+                Album existingAlbum = userLibrary.findAlbum(newSong.getAlbumTitle());
+                if (existingAlbum == null) {
+                    // Create new album
+                    Album newAlbum = new Album(newSong.getAlbumTitle(), newSong.getSongArtist(), newSong.getSongYear());
+                    newAlbum.setAlbumArtPath(newSong.getAlbumArtPath());
+                    newAlbum.addSongToAlbum(newSong);
+                    userLibrary.addAlbum(newAlbum);
+                } else {
+                    // Add song to existing album
+                    existingAlbum.addSongToAlbum(newSong);
+                }
             }
         }
     }
+
+
 
     // Press play button for the ui
     @FXML
@@ -454,42 +427,10 @@ public class MainViewController {
 
     @FXML
     public void save() {
-        if (dataSaver == null) {
-            logger.severe("DataSaver is not initialized. Skipping save operation.");
-            return;
-        }
-
-        try {
-            for (Playlist playlist : userLibrary.getPlaylists()) {
-                dataSaver.savePlaylist(playlist);
-            }
-            logger.info("Save operation completed successfully.");
-        } catch (Exception e) {
-            logger.severe("Error during save operation: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 
     @FXML
-    private void load() {
-        if (dataSaver == null) {
-            logger.severe("DataSaver is not initialized. Skipping load operation.");
-            return;
-        }
-
-        try {
-
-            // Clear playlists and make space for the new ones
-            userLibrary.clearPlaylists();
-
-            for (Playlist playlists : dataSaver.findPlaylists()) {
-                userLibrary.addPlaylist(playlists);
-                loadPlaylistToSidebar(playlists);
-            }
-
-        } catch (Exception e) {
-            logger.severe("Error during load operation: " + e.getMessage());
-            e.printStackTrace();
-        }
+    public void load() {
     }
+
 }
