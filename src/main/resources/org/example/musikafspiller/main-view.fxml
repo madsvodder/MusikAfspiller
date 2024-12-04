@@ -42,7 +42,7 @@
                   </VBox>
                </content>
             </ScrollPane>
-            <Button mnemonicParsing="false" onAction="#addPlaylistToSidebar" text="Create Playlist" />
+            <Button mnemonicParsing="false" onAction="#addNewPlaylistToSidebar" text="Create Playlist" />
             <Button mnemonicParsing="false" onAction="#switchToAlbumsView" text="View Albums" />
          </children>
          <padding>

@@ -185,9 +185,14 @@ public class MainViewController {
             return audioFiles;
         }
 
-    // Adds a new playlist to the ui, and creates a new one in the user library.
+    // Method for adding a new playlist (called by Scene Builder)
     @FXML
-    private void addPlaylistToSidebar() {
+    private void addNewPlaylistToSidebar() {
+        // null indicates a new playlist
+        addOrLoadPlaylistToSidebar(null);
+    }
+
+    private void addOrLoadPlaylistToSidebar(Playlist playlist) {
         try {
             // Load FXML file and add it to the side
             FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist-item.fxml"));
@@ -202,46 +207,21 @@ public class MainViewController {
             // Set reference to MainViewController
             playlistItemController.setMainViewController(this);
 
-            // Create the new playlist object
-            Playlist newPlaylist = userLibrary.newPlaylist();
+            // If the playlist is null, it's a new playlist; create a new one
+            if (playlist == null) {
+                playlist = userLibrary.newPlaylist();  // Create the new playlist
+            }
 
-            // Create a new playlist, and assign it to the controller
-            playlistItemController.setPlaylist(newPlaylist);
+            // Assign the playlist to the controller
+            playlistItemController.setPlaylist(playlist);
 
             // Set the userData of the HBox to the controller
             playlistItem.setUserData(playlistItemController);
 
             // Initialize playlistItem
             playlistItemController.customInitialize();
-
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loadPlaylistToSidebar(Playlist playlist) {
-        try {
-            // Load FXML file and add it to the side
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist-item.fxml"));
-            HBox playlistItem = loader.load();
-            vbox_playlists.getChildren().add(playlistItem);
-
-            logger.info("Added playlist item");
-
-            // Get the controller from the FXML playlistitem
-            PlaylistItemController playlistItemController = loader.getController();
-
-            // Set reference to MenuController
-            playlistItemController.setMainViewController(this);
-
-            // Create a new playlist, and assign it to the controller
-            playlistItemController.setPlaylist(playlist);
-
-            // Initialize playlistItem
-            playlistItemController.customInitialize();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            logger.warning("Failed to add or load playlist: " + e.getMessage());
         }
     }
 
@@ -483,7 +463,8 @@ public class MainViewController {
 
             for (Playlist playlist : userLibrary.getPlaylists()) {
                 System.out.println("Loading playlist: " + playlist);
-                loadPlaylistToSidebar(playlist);
+                addOrLoadPlaylistToSidebar(playlist);
+                //loadPlaylistToSidebar(playlist);
             }
 
         } else {
