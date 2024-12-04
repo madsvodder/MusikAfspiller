@@ -180,12 +180,21 @@ public class PlaylistViewController {
 
         // Populate the table view with all the songs from the playlist
         for (Song song : playlist.getSongs()) {
+            // Reload the album for each song
+            //song.reloadAlbum();
+
+            // Debug: Check if the album is set properly before adding to the table
+            System.out.println("Album for song '" + song.getSongTitle() + "': " + song.getAlbumCover());
+
+            // Add song to the table
             tableview_playlist.getItems().add(song);
         }
 
         // Refresh the table to ensure it renders all the updated content
         tableview_playlist.refresh();
     }
+
+
 
     @FXML
     private void addSongToPlaylist() {

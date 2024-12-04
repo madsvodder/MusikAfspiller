@@ -355,7 +355,7 @@ public class MainViewController {
                 if (existingAlbum == null) {
                     // Create new album
                     Album newAlbum = new Album(newSong.getAlbumTitle(), newSong.getSongArtist(), newSong.getSongYear());
-                    newAlbum.setAlbumArtPath(newSong.getAlbumArtPath());
+                    newAlbum.setAlbumArtPath(newSong.getAlbumCoverPath());
                     newAlbum.addSongToAlbum(newSong);
                     userLibrary.addAlbum(newAlbum);
                 } else {
@@ -461,6 +461,7 @@ public class MainViewController {
                 System.out.println("Loading playlist: " + playlist);
                 loadPlaylistToSidebar(playlist);
             }
+
         } else {
             System.out.println("No user data found to load.");
         }

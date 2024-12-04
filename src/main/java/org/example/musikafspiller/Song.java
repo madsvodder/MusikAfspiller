@@ -1,13 +1,11 @@
 package org.example.musikafspiller;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javafx.scene.image.Image;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
-import java.util.UUID;
 
 public class Song {
 
@@ -26,50 +24,28 @@ public class Song {
     @Setter @Getter
     public File songFile;
     @Getter @Setter
-    private String albumArtPath;
-    @JsonIgnore // Don't serialize the Image object directly
-    private Image albumCover;
-
-
-    @JsonIgnore // Prevent cyclic references if serialized
-    @Getter @Setter
-    private Album album; // Association with an album
+    private String albumCoverPath;
 
     public Song(){}
 
-    public Song(String title, String artist, String album, String songYear, int duration) {
+    public Song(String title, String artist, String album, String songYear, int duration, String albumCoverPath) {
         this.songTitle = title;
         this.songArtist = artist;
         this.albumTitle = album;
         this.songDuration = duration;
         this.songYear = songYear;
         this.songDurationFormatted = getSongDurationFormatted();
-        albumArtPath = getAlbumArtPath();
+        this.albumCoverPath = albumCoverPath;
+        System.out.println("Album cover path is: " + albumCoverPath);
     }
 
-    // Getter for album art via the album
     @JsonIgnore
     public Image getAlbumCover() {
-        if (album != null) {
-            // Ensure that the album art path is valid and the image can be loaded
-            Image albumImage = album.getAlbumArt();
-            if (albumImage != null) {
-                System.out.println("Album art retrieved successfully.");
-                return albumImage;
-            } else {
-                System.out.println("Album art is null in getAlbumCover.");
-            }
-        } else {
-            System.out.println("Album is null in getAlbumCover.");
+        if (albumCoverPath != null && !albumCoverPath.isEmpty()) {
+            System.out.println("Returned image: " + albumCoverPath);
+            return new Image("file:" + albumCoverPath);  // Ensure it's a valid file URL
         }
-        return null;
-    }
-
-
-    public String getAlbumArtPath() {
-        if (album != null) {
-            return album.getAlbumArtPath();
-        }
+        System.out.println("No image to return");
         return null;
     }
 

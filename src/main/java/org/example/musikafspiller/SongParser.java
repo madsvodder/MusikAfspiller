@@ -44,9 +44,7 @@ public class SongParser {
             String songYear = tag != null ? tag.getFirst(FieldKey.YEAR) : "Unknown Year";
             String songGenre = tag != null ? tag.getFirst(FieldKey.GENRE) : "Unknown Genre";
 
-            // Create song object
-            Song newSong = new Song(songTitle, songArtist, songAlbum, songYear, trackLengthInSeconds);
-            newSong.setSongFile(audioFile);
+            String imagePath = null;
 
             // Extract album artwork and set it in the Album object
             if (tag != null && tag.getFirstArtwork() != null) {
@@ -55,7 +53,7 @@ public class SongParser {
 
                 if (imageData != null) {
                     // Save the artwork to the cache and get the file path
-                    String imagePath = saveArtworkToCache(imageData, songAlbum, cacheDataPath);
+                    imagePath = saveArtworkToCache(imageData, songAlbum, cacheDataPath);
 
                     // Find the existing album in the UserLibrary or create a new one
                     Album album = userLibrary.findAlbum(songAlbum);
@@ -68,10 +66,14 @@ public class SongParser {
                     // Set the album's artwork
                     album.setAlbumArtPath(imagePath);
 
-                    // Associate the song with the album
-                    newSong.setAlbum(album);
                 }
             }
+
+            // Create song object
+            Song newSong = new Song(songTitle, songArtist, songAlbum, songYear, trackLengthInSeconds, imagePath);
+            newSong.setSongFile(audioFile);
+
+
 
             return newSong;
 
@@ -92,6 +94,7 @@ public class SongParser {
             // Write image data to file
             try (FileOutputStream fos = new FileOutputStream(imagePath)) {
                 fos.write(imageData);
+                System.out.println(imagePath);
             }
 
             return imagePath;

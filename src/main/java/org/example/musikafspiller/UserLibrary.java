@@ -49,14 +49,22 @@ public class UserLibrary {
         return false;
     }
 
+
     public Album findAlbum(String albumName) {
+        if (albumName == null || albumName.isEmpty()) {
+            //System.out.println("Provided album name is null or empty.");
+            return null;
+        }
         for (Album album : albums) {
             if (album.getAlbumName().equals(albumName)) {
+                //System.out.println("Found album: " + album.getAlbumName());
                 return album;
             }
         }
-        return null; // Return null if no album is found
+        return null;
     }
+
+
 
     public Playlist newPlaylist() {
         Playlist newPlaylist = new Playlist("New Playlist " + playlists.size(), 0);
