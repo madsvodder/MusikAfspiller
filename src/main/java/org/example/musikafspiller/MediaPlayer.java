@@ -149,13 +149,10 @@ public class MediaPlayer {
     }
 
     // Get the current play time of the song
-    public String getCurrentTime() {
+    public Duration getCurrentTime() {
         if (mediaPlayer != null) {
-            Duration currentTime = mediaPlayer.getCurrentTime();
-            int minutes = (int) currentTime.toMinutes();
-            int seconds = (int) currentTime.toSeconds() % 60;
-            return String.format("%d:%02d", minutes, seconds);
+            return mediaPlayer.getCurrentTime();
         }
-        return "0:00";
+        return Duration.ZERO;
     }
 }

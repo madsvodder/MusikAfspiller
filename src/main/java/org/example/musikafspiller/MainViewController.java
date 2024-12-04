@@ -102,7 +102,6 @@ public class MainViewController {
         }
     }
 
-
     private void setupUserDocuments() {
         String userHome = System.getProperty("user.home");
         Path documentsFolder = Paths.get(userHome, "Documents");
@@ -185,8 +184,6 @@ public class MainViewController {
             }
             return audioFiles;
         }
-
-
 
     // Adds a new playlist to the ui, and creates a new one in the user library.
     @FXML
@@ -396,43 +393,60 @@ public class MainViewController {
 
     private void setupSongProgressSlider() {
         if (mediaPlayer != null) {
-
             // Set the max value for the slider when the media is ready
-            mediaPlayer.getMediaPlayer().setOnReady(() ->
-                    slider_songProgress.setMax(mediaPlayer.getMediaPlayer().getTotalDuration().toSeconds())
-            );
+            mediaPlayer.getMediaPlayer().setOnReady(() -> {
+                slider_songProgress.setMax(mediaPlayer.getMediaPlayer().getTotalDuration().toSeconds());
+            });
 
-            // Update the slider position based on the current time (but only if the user isn't dragging the slider)
-            mediaPlayer.getCurrentTimeProperty().addListener((observable, oldValue, newValue) -> {
+            // Update the slider position based on the current time (only when not dragging the slider)
+            mediaPlayer.getMediaPlayer().currentTimeProperty().addListener((observable, oldValue, newValue) -> {
                 if (!slider_songProgress.isValueChanging()) {
-                    // Parse the time from newValue and convert to total seconds
-                    String[] timeParts = newValue.split(":");
-                    int minutes = Integer.parseInt(timeParts[0]);
-                    int seconds = Integer.parseInt(timeParts[1]);
-                    double totalSeconds = minutes * 60 + seconds; // Calculate total seconds
+                    // Get the current time from your custom MediaPlayer method
+                    Duration currentTime = mediaPlayer.getCurrentTime();
+                    double currentTimeInSeconds = currentTime.toSeconds();
+                    // Update the slider
+                    slider_songProgress.setValue(currentTimeInSeconds);
 
-                    // Set the slider value rounded to two decimal places
-                    slider_songProgress.setValue(Math.round(totalSeconds * 100.0) / 100.0);
+                    // If label is bound, unbind it before setting new value
+                    if (label_songDuration.textProperty().isBound()) {
+                        label_songDuration.textProperty().unbind();
+                    }
+
+                    // Update the label with the formatted time
+                    label_songDuration.setText(formatTime(currentTime));
                 }
             });
 
-            // Handle seeking when the user drags the slider or releases it
-            slider_songProgress.setOnMouseReleased(event ->
-                    seekToSliderPosition()
-            );
-
-            slider_songProgress.valueChangingProperty().addListener((observable, oldValue, newValue) -> {
-                if (!slider_songProgress.isValueChanging()) {
-                    seekToSliderPosition();
+            // Drag event for the slider (when the user drags the slider to seek)
+            slider_songProgress.setOnMouseDragged(event -> {
+                double targetSeconds = slider_songProgress.getValue();
+                // If label is bound, unbind it before setting new value
+                if (label_songDuration.textProperty().isBound()) {
+                    label_songDuration.textProperty().unbind();
                 }
+                label_songDuration.setText(formatTime(Duration.seconds(targetSeconds))); // Update label while dragging
+            });
+
+            // Handle seeking when the user releases the slider
+            slider_songProgress.setOnMouseReleased(event -> {
+                seekToSliderPosition();
             });
         }
     }
 
-    private void seekToSliderPosition() {
-        long targetTime = Math.round(slider_songProgress.getValue()); // Round to nearest second
-        mediaPlayer.getMediaPlayer().seek(Duration.seconds(targetTime));
+    // Helper method to format Duration into a string (MM:SS)
+    private String formatTime(Duration duration) {
+        int minutes = (int) duration.toMinutes();
+        int seconds = (int) (duration.toSeconds() % 60);
+        return String.format("%02d:%02d", minutes, seconds);
     }
+
+    // Method to seek to the position when the user releases the slider
+    private void seekToSliderPosition() {
+        double targetTimeInSeconds = slider_songProgress.getValue();
+        mediaPlayer.getMediaPlayer().seek(Duration.seconds(targetTimeInSeconds));
+    }
+
 
     public void updateSongUI(Song songToPlay) {
         label_currentArtistName.setText(songToPlay.getSongArtist());

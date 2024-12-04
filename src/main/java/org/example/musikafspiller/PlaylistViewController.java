@@ -104,18 +104,22 @@ public class PlaylistViewController {
                 super.updateItem(item, empty);
 
                 if (empty || item == null) {
-                    setGraphic(null);  // Clear the graphic if the item is empty
+                    // Clear the graphic if the "image" is empty
+                    setGraphic(null);
                 } else {
                     // If the item is an image, display it in the cell
                     ImageView imageView = new ImageView(item);
-                    imageView.setFitHeight(50);  // Resize image to fit the cell
-                    imageView.setPreserveRatio(true);  // Maintain aspect ratio
-                    setGraphic(imageView);  // Set the ImageView as the graphic of the cell
+                    // Resize image to fit the cell
+                    imageView.setFitHeight(50);
+                    // Force maintain aspect ratio
+                    imageView.setPreserveRatio(true);
+                    // Set the ImageView as the graphic of the cell
+                    setGraphic(imageView);
                 }
             }
         });
 
-        // Set up other columns as needed
+        // Set up other columns
         kolonne_duration.setCellValueFactory(new PropertyValueFactory<>("songDurationFormatted"));
         kolonne_title.setCellValueFactory(new PropertyValueFactory<>("songTitle"));
 
