@@ -95,7 +95,11 @@ public class MainViewController {
         pauseImage = new Image(getClass().getResourceAsStream("/images/PauseButton.png"));
 
         // Load everything
-        //load();
+        if (dataSaver.doesSaveFileExist()) {
+            load();
+        } else {
+            save();
+        }
     }
 
 

@@ -7,23 +7,15 @@ import lombok.Setter;
 
 import java.io.File;
 
+@Getter @Setter
 public class Song {
 
-    @Getter @Setter
-    public String songTitle;
-    @Getter @Setter
-    public String songArtist;
-    @Getter @Setter
-    public String albumTitle;
-    @Getter @Setter
-    public int songDuration;
-    @Getter @Setter
-    public String songYear;
-    @Setter @Getter
-    public String songDurationFormatted;
-    @Setter @Getter
-    public File songFile;
-    @Getter @Setter
+    private String songTitle;
+    private String songArtist;
+    private String albumTitle;
+    private int songDuration;
+    private String songYear;
+    private File songFile;
     private String albumCoverPath;
 
     public Song(){}
@@ -34,7 +26,6 @@ public class Song {
         this.albumTitle = album;
         this.songDuration = duration;
         this.songYear = songYear;
-        this.songDurationFormatted = getSongDurationFormatted();
         this.albumCoverPath = albumCoverPath;
         System.out.println("Album cover path is: " + albumCoverPath);
     }
@@ -49,7 +40,7 @@ public class Song {
         return null;
     }
 
-
+    @JsonIgnore
     public String getSongDurationFormatted() {
         int minutes = songDuration / 60; // Get full minutes
         int seconds = songDuration % 60; // Get remaining seconds

@@ -21,7 +21,7 @@ public class DataSaver {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Getter @Setter
-    String saveDataPath;
+    private String saveDataPath;
 
     public DataSaver(String saveDataPath) {
         this.saveDataPath = saveDataPath;
@@ -78,5 +78,10 @@ public class DataSaver {
             e.printStackTrace();
         }
         return userLibrary;
+    }
+
+    public boolean doesSaveFileExist() {
+        File file = new File(saveDataPath + "user_data.json");
+        return file.exists();
     }
 }

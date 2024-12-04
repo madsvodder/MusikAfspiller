@@ -15,16 +15,18 @@ import java.util.UUID;
 
 public class Album {
 
-    @Getter @JsonProperty
-    public UUID uuid = UUID.randomUUID();
-    @Getter
-    public String albumName;
-    public String albumArtist;
-    public String albumYear;
+    @Getter @Setter @JsonProperty
+    private UUID uuid = UUID.randomUUID();
+    @Getter @Setter
+    private String albumName;
+    @Getter @Setter
+    private String albumArtist;
+    @Getter @Setter
+    private String albumYear;
     @Getter @Setter
     private String albumArtPath;
-    public ArrayList<Song> songs = new ArrayList<>();
-
+    @Getter @Setter
+    private ArrayList<Song> songs = new ArrayList<>();
 
     public Album(){}
 
