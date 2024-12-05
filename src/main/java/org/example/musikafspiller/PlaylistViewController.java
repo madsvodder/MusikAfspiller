@@ -1,6 +1,9 @@
 package org.example.musikafspiller;
 
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -33,7 +36,7 @@ public class PlaylistViewController {
     private TableColumn<Song, Image> kolonne_cover;
 
     @FXML
-    private TableColumn<Song, Integer> kolonne_duration;
+    private TableColumn<Song, String> kolonne_duration;
 
     @FXML
     private TableColumn<Song, Integer> kolonne_number;
@@ -48,6 +51,9 @@ public class PlaylistViewController {
     private TextField TF_PlaylistName;
 
     private static final Logger logger = Logger.getLogger(PlaylistViewController.class.getName());
+
+    private ObservableList<Song> songObservableList = FXCollections.observableArrayList();
+
 
     private void setupPlaylistNameListener() {
         TF_PlaylistName.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -81,8 +87,14 @@ public class PlaylistViewController {
 
         logInitialize();
         setupTableview();
-        populateTableView();
+        //populateTableView();
         setupPlaylistNameListener();
+
+        // Synchronize songObservableList with the Playlist
+        syncObservableListWithPlaylist();
+
+        // Bind TableView to songObservableList
+        tableview_playlist.setItems(songObservableList);
     }
 
     private void setupTableview() {
@@ -95,10 +107,21 @@ public class PlaylistViewController {
     }
 
     private void setupCells() {
-        kolonne_album.setCellValueFactory(new PropertyValueFactory<>("albumTitle"));
+        //kolonne_album.setCellValueFactory(new PropertyValueFactory<>("albumTitle"));
+        //kolonne_duration.setCellValueFactory(new PropertyValueFactory<>("songDurationFormatted"));
+        //kolonne_title.setCellValueFactory(new PropertyValueFactory<>("songTitle"));
 
-        // Create a new column for album cover
+
+        kolonne_album.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getAlbumTitle()));
+        kolonne_duration.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getSongDurationFormatted()));
         kolonne_cover.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getAlbumCover()));
+        kolonne_title.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getSongTitle()));
+
+        // Set up other columns
+        kolonne_number.setCellValueFactory(param -> {
+            int rowIndex = tableview_playlist.getItems().indexOf(param.getValue());
+            return new javafx.beans.property.SimpleIntegerProperty(rowIndex + 1).asObject();
+        });
 
         // Use a custom cell factory to display the album cover image
         kolonne_cover.setCellFactory(param -> new TableCell<Song, Image>() {
@@ -122,14 +145,8 @@ public class PlaylistViewController {
             }
         });
 
-        // Set up other columns
-        kolonne_duration.setCellValueFactory(new PropertyValueFactory<>("songDurationFormatted"));
-        kolonne_title.setCellValueFactory(new PropertyValueFactory<>("songTitle"));
 
-        kolonne_number.setCellValueFactory(param -> {
-            int rowIndex = tableview_playlist.getItems().indexOf(param.getValue());
-            return new javafx.beans.property.SimpleIntegerProperty(rowIndex + 1).asObject();
-        });
+
     }
 
     private void setupMouseClicks(){
@@ -157,8 +174,8 @@ public class PlaylistViewController {
         removeItem.setOnAction(event -> {
             Song selectedSong = tableview_playlist.getSelectionModel().getSelectedItem();
             if (selectedSong != null) {
-                tableview_playlist.getItems().remove(selectedSong); // Remove from TableView
                 playlist.getSongs().remove(selectedSong); // Remove from Playlist
+                songObservableList.remove(selectedSong); // Remove from ObservableList (UI refreshes automatically)//                playlist.getSongs().remove(selectedSong); // Remove from Playlist
                 logger.info("Removed song: " + selectedSong);
             }
         });
@@ -181,6 +198,51 @@ public class PlaylistViewController {
         });
     }
 
+
+
+    private void syncObservableListWithPlaylist() {
+        songObservableList.setAll(playlist.getSongs());
+    }
+
+    public void replacePlaylist(Playlist newPlaylist) {
+        this.playlist = newPlaylist;
+        syncObservableListWithPlaylist(); // Refresh the UI
+    }
+
+
+    @FXML
+    private void addSongToPlaylist() {
+        // Create a ChoiceBox to let the user select a song to add to the playlist
+        SearchableComboBox<Song> searchableComboBox = new SearchableComboBox<>();
+        // Get a list of all the songs from the users library
+        searchableComboBox.getItems().addAll(userLibrary.getSongs());
+        searchableComboBox.setEditable(true);
+
+        // Create and show the dialog
+        VBox content = new VBox(searchableComboBox);
+        Optional<ButtonType> result = showDialogWithContent("Add Song To Playlist", "Add Song", content);
+
+        // if the user presses ok and a song is selected, add it to the playlist
+        result.ifPresent(buttonType -> {
+            if (buttonType.equals(ButtonType.OK) && searchableComboBox.getSelectionModel().getSelectedItem() != null) {
+                Song newSong = searchableComboBox.getValue();
+                playlist.addSong(newSong); // Add to Playlist
+                songObservableList.add(newSong); // Add to ObservableList (UI refreshes automatically)
+            }
+        });
+    }
+
+    // Helper method to set up and show a dialog with custom content
+    private Optional<ButtonType> showDialogWithContent(String title, String headerText, Node content) {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle(title);
+        dialog.setHeaderText(headerText);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        dialog.getDialogPane().setContent(content);
+        return dialog.showAndWait();
+    }
+
+    /*
     private void populateTableView() {
         // Clear the table view for all old songs
         tableview_playlist.getItems().clear();
@@ -200,41 +262,5 @@ public class PlaylistViewController {
         // Refresh the table to ensure it renders all the updated content
         tableview_playlist.refresh();
     }
-
-
-
-    @FXML
-    private void addSongToPlaylist() {
-        // Create a ChoiceBox to let the user select a song to add to the playlist
-        SearchableComboBox<Song> searchableComboBox = new SearchableComboBox<>();
-        // Get a list of all the songs from the users library
-        searchableComboBox.getItems().addAll(userLibrary.getSongs());
-        searchableComboBox.setEditable(true);
-
-        // Create and show the dialog
-        VBox content = new VBox(searchableComboBox);
-        Optional<ButtonType> result = showDialogWithContent("Add Song To Playlist", "Add Song", content);
-
-        // if the user presses ok and a song is selected, add it to the playlist
-        result.ifPresent(buttonType -> {
-            if (buttonType.equals(ButtonType.OK)) {
-                playlist.addSong(searchableComboBox.getValue()); // Add the song to the playlist
-                refreshUI(); // Refresh the UI
-            }
-        });
-    }
-
-    private void refreshUI() {
-        populateTableView();
-    }
-
-    // Helper method to set up and show a dialog with custom content
-    private Optional<ButtonType> showDialogWithContent(String title, String headerText, Node content) {
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle(title);
-        dialog.setHeaderText(headerText);
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-        dialog.getDialogPane().setContent(content);
-        return dialog.showAndWait();
-    }
+    */
 }
