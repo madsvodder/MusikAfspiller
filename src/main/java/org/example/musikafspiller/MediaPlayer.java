@@ -31,9 +31,7 @@ public class MediaPlayer {
     @Getter
     private StringProperty currentTimeProperty = new SimpleStringProperty("0:00");
 
-    @Getter @Setter
-    @JsonIgnore
-    public int currentSongIndex = -1;
+
 
     // Play the song
     public void getReadyToPlaySongInPlaylist(Song songToPlay, Playlist playlistToPlay) {
@@ -76,6 +74,7 @@ public class MediaPlayer {
         // Set up media player events
         mediaPlayer.setOnReady(() -> {
             logger.info("Song: " + songToPlay.getSongTitle() + " - " + songToPlay.getSongArtist());
+            currentSongIndex = playingPlaylist.getSongs().indexOf(songToPlay);
         });
 
         mediaPlayer.setOnEndOfMedia(() -> {
@@ -85,7 +84,7 @@ public class MediaPlayer {
             mediaPlayer = null;
             isSongPlaying = false;
 
-            if (getNextSong() != null) {
+            if (isNextSongAvailable()) {
                 doPlaySongInPlaylist(getNextSong());
             }
         });
@@ -96,18 +95,35 @@ public class MediaPlayer {
         isSongPlaying = true;
     }
 
+    @Getter @Setter @JsonIgnore
+    public int currentSongIndex = 0;
+
+    public boolean isNextSongAvailable() {
+        if (playingPlaylist.getSongs().isEmpty()) {
+            return false; // Playlist is empty
+        }
+        return currentSongIndex < playingPlaylist.getSongs().size() - 1; // Check if next song exists
+    }
+
+
     public Song getNextSong() {
         if (playingPlaylist.getSongs().isEmpty()) {
-            return null;
+            return null; // Return null if the playlist is null or empty
         }
-        // Move to the next song (circular playlist)
-        currentSongIndex = (currentSongIndex + 1) % playingPlaylist.getSongs().size();
-        return playingPlaylist.getSongs().get(currentSongIndex);
+
+        if (currentSongIndex >= playingPlaylist.getSongs().size()) {
+            currentSongIndex = 0;
+            return playingPlaylist.getSongs().get(currentSongIndex);
+        } else {
+            return playingPlaylist.getSongs().get(++currentSongIndex);
+        }
+
     }
+
 
     public Song getCurrentSong() {
         if (playingPlaylist.getSongs().isEmpty()) {
-            return null;  // No songs in the playlist
+            return null; // No song in the playlist
         }
         return playingPlaylist.getSongs().get(currentSongIndex);
     }
