@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -10,6 +11,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.musikafspiller.PlaylistViewController">
@@ -24,10 +26,37 @@
                   <DropShadow />
                </effect>
             </ImageView>
-            <TextField fx:id="TF_PlaylistName" promptText="This is the playlist name">
-               <font>
-                  <Font name="System Bold" size="24.0" />
-               </font></TextField>
+            <VBox alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="290.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <TextField fx:id="TF_PlaylistName" prefWidth="153.0" promptText="This is the playlist name">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </TextField>
+                  <HBox alignment="CENTER_LEFT" prefHeight="22.0" prefWidth="463.0" spacing="5.0" style="-fx-background-color: transparent;">
+                     <children>
+                        <Label fx:id="label_Artist" text="Oasis" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="10.0" text="⬤" textFill="WHITE">
+                           <font>
+                              <Font size="4.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="label_amountOfSongs" text="1423 songs" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </HBox>
+               </children>
+            </VBox>
             <Button mnemonicParsing="false" onAction="#addSongToPlaylist" text="add song" />
          </children>
          <BorderPane.margin>

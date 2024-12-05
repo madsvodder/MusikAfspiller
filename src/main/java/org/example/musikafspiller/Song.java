@@ -13,6 +13,7 @@ public class Song {
     private String songTitle;
     private String songArtist;
     private String albumTitle;
+    @Getter
     private int songDuration;
     private String songYear;
     private File songFile;

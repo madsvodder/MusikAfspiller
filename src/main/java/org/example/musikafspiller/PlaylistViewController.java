@@ -50,10 +50,18 @@ public class PlaylistViewController {
     @FXML
     private TextField TF_PlaylistName;
 
+    @FXML
+    private Label label_Artist;
+
+    @FXML
+    private Label label_amountOfSongs;
+
+    @Setter @Getter
+    private boolean userMadePlaylist = true;
+
     private static final Logger logger = Logger.getLogger(PlaylistViewController.class.getName());
 
     private ObservableList<Song> songObservableList = FXCollections.observableArrayList();
-
 
     private void setupPlaylistNameListener() {
         TF_PlaylistName.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -82,11 +90,15 @@ public class PlaylistViewController {
     }
 
     public void customInit() {
-        // Set playlist name in textfield
-        TF_PlaylistName.setText(playlist.getPlaylistName());
-
+        // Initialize labels and setup listeners
+        setupLabels();
         logInitialize();
         setupTableview();
+
+
+        // Initial update of playlist duration property
+        updatePlaylistDuration();
+
         //populateTableView();
         setupPlaylistNameListener();
 
@@ -95,6 +107,7 @@ public class PlaylistViewController {
 
         // Bind TableView to songObservableList
         tableview_playlist.setItems(songObservableList);
+
     }
 
     private void setupTableview() {
@@ -174,8 +187,14 @@ public class PlaylistViewController {
         removeItem.setOnAction(event -> {
             Song selectedSong = tableview_playlist.getSelectionModel().getSelectedItem();
             if (selectedSong != null) {
-                playlist.getSongs().remove(selectedSong); // Remove from Playlist
+                playlist.removeSong(selectedSong); // Remove from Playlist
                 songObservableList.remove(selectedSong); // Remove from ObservableList (UI refreshes automatically)//                playlist.getSongs().remove(selectedSong); // Remove from Playlist
+
+                // Update the playlist duration after the change
+                updatePlaylistDuration();
+
+                System.out.println(playlist.getPlaylistDurationAsString());
+
                 logger.info("Removed song: " + selectedSong);
             }
         });
@@ -207,6 +226,25 @@ public class PlaylistViewController {
         syncObservableListWithPlaylist(); // Refresh the UI
     }
 
+    private void setupLabels() {
+        TF_PlaylistName.setText(playlist.getPlaylistName());
+
+        // Set the initial playlist duration
+        updatePlaylistDuration();
+
+        if (userMadePlaylist) {
+            label_Artist.setText("User Playlist");
+        }
+    }
+
+    // Helper method to update the playlist duration label
+    private void updatePlaylistDuration() {
+        if (playlist != null) {
+            label_amountOfSongs.setText(String.valueOf(playlist.getSongs().size()) + " songs, " + playlist.getPlaylistDurationAsString());
+        }
+    }
+
+
     @FXML
     private void addSongToPlaylist() {
         // Create a ChoiceBox to let the user select a song to add to the playlist
@@ -225,6 +263,9 @@ public class PlaylistViewController {
                 Song newSong = searchableComboBox.getValue();
                 playlist.addSong(newSong); // Add to Playlist
                 songObservableList.add(newSong); // Add to ObservableList (UI refreshes automatically)
+
+                // Update the playlist duration after the change
+                updatePlaylistDuration();
             }
         });
     }

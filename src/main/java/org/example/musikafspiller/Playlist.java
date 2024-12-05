@@ -30,9 +30,38 @@ public class Playlist {
 
     public void addSong(Song song) {
         songs.add(song);
+        setPlaylistDuration();
+    }
+
+    public void removeSong(Song song) {
+        songs.remove(song);
+        setPlaylistDuration();
     }
 
     public boolean containsSong(Song song) {
         return songs.contains(song);
     }
+
+    private void setPlaylistDuration() {
+        // Clear the current duration to be safe
+        playlistDuration = 0;
+        for (Song song : songs) {
+            playlistDuration += song.getSongDuration();
+        }
+    }
+
+    @JsonIgnore
+    public String getPlaylistDurationAsString() {
+
+        int hours = playlistDuration / 3600;
+        int minutes = (playlistDuration % 3600) / 60;
+        int seconds = playlistDuration % 60;
+
+        if (hours > 0) {
+            return String.format("%d:%02d:%02d", hours, minutes, seconds); // Hours displayed without leading 0
+        } else {
+            return String.format("%02d:%02d", minutes, seconds); // No hours
+        }
+    }
+
 }
