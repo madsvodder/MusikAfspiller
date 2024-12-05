@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -103,9 +104,9 @@ public class MainViewController {
         });
 
         // Load images
-        playImage = new Image(getClass().getResourceAsStream("/images/CircledPlay.png"));
-        pauseImage = new Image(getClass().getResourceAsStream("/images/PauseButton.png"));
-        musicRecordImage = new Image(getClass().getResourceAsStream("/images/MusicRecord.png"));
+        playImage = new Image(getClass().getResourceAsStream("images/LightImages/CircledPlay.png"));
+        pauseImage = new Image(getClass().getResourceAsStream("images/LightImages/PauseButton.png"));
+        musicRecordImage = new Image(getClass().getResourceAsStream("images/LightImages/MusicRecord.png"));
 
         // Load everything
         if (dataSaver.doesSaveFileExist()) {
@@ -233,6 +234,10 @@ public class MainViewController {
             }
             return audioFiles;
         }
+
+    private void darkMode() {
+
+    }
 
     // Method for adding a new playlist (called by Scene Builder)
     @FXML
