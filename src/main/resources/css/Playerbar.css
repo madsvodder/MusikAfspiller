@@ -38,3 +38,11 @@ VBox {
 .button {
     -fx-background-color: transparent;
 }
+
+HBox {
+    -fx-background-color: #1A191B;
+}
+
+VBox {
+    -fx-background-color: transparent;
+}

@@ -1,72 +1,85 @@
-* {
-    -fx-primary-color: #007acc;
-    -fx-secondary-color: #4B6EAF;
-    -fx-accent-color: #B6FF00;
-    -fx-grey-color: #b9b9b9;
-    -fx-light-grey-color: #d1d1d1;
-    -fx-lightest-grey-color: #F9F9FB;
-
-    -fx-focus-color: -fx-secondary-color;
+/* TableView */
+.table-view{
+    -fx-border-width: 1;
+    border-width: 1;
+    -fx-border-radius: 0;
+    border-radius: 0;
+    -fx-border-color: #222222;
+    border-color: #222222;
+    -fx-background-radius: 0;
+    -fx-background-color: #1A1A1A;
+    background-color: #1A1A1A;
+    -fx-table-cell-border-color: #222222;
 }
-
-.table-button {
-    -fx-background-color: -fx-primary-color;
-    -fx-cursor: hand;
+.table-view:focused{
+    -fx-border-width: 1;
+    border-width: 1;
+    -fx-border-radius: 0;
+    border-radius: 0;
+    -fx-border-color: #4e4e4e;
+    border-color: #4e4e4e;
+    -fx-background-insets: 1;
+    -fx-background-radius: 0;
+    -fx-background-color: #1A1A1A;
+    background-color: #1A1A1A;
 }
-.table-button:hover{
-    -fx-background-color: transparent;
-}
-.table-view {
-    -fx-border-color: transparent;
-    -fx-background-color: transparent; /* OR  -fx-background-insets: 0.0; */
-}
-.table-view .column-header-background,
-.table-view .column-header-background .filler,
-.table-view .corner {
-    -fx-background-color: transparent;
+.table-view .column-header-background{
+    -fx-border-width: 0 0 1 0;
+    border-width: 0 0 1 0;
+    -fx-border-color: #222222;
+    border-color: #222222;
+    -fx-background-radius: 0;
+    -fx-background-color: #1A1A1A;
+    background-color: #1A1A1A;
+    -fx-text-fill: #AFB1B3;
 }
 .table-view .column-header {
-    -fx-background-color: -fx-light-grey-color;
-    -fx-border-color: -fx-grey-color;
-}
-.table-view .column-header .label{
-    -fx-font-weight: bold;
-    -fx-alignment: center-left;
-}
-/* This is just magic */
-.table-row-cell:filled {
     -fx-background-color: transparent;
-    -fx-border-color: transparent -fx-lightest-grey-color -fx-lightest-grey-color -fx-lightest-grey-color, transparent;
-    -fx-border-insets: 0, 1;
+    background-color: transparent;
+    -fx-border-color: #222222;
+    border-color: #222222;
 }
-.table-row-cell:empty {
-    -fx-background-color: transparent;
+.table-view .column-resize-line {
+    -fx-background-color: #4e4e4e;
+    background-color: #4e4e4e;
+    -fx-pref-width: 1;
 }
-.table-row-cell:filled:hover {
-    -fx-background-color: -fx-light-grey-color;
+.table-row-cell{
+    -fx-background-color: #1A1A1A;
+    background-color: #1A1A1A;
+    -fx-text-background-color: #AFB1B3;
+    -fx-margin: 1;
+    margin: 1;
 }
-.table-row-cell:filled:selected:hover {
-    -fx-background-color: -fx-light-grey-color;
+.table-row-cell:hover {
+    -fx-background-color: #3E3E40;
+    background-color: #3E3E40;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
 }
-.table-row-cell:filled:selected {
-    -fx-background-color: #eaeaea;
-    -fx-background-insets: 0.0;
-    -fx-background-radius: 0.0;
+.table-row-cell:selected {
+    -fx-table-cell-border-color: #222222;
+    -fx-background-color: #3E3E40;
+    background-color: #3E3E40;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
 }
-.table-row-cell:filled:selected .table-cell {
-    -fx-text-fill: black;
+.table-row-cell:pressed {
+    -fx-background-color: #4e4e4e;
+    background-color: #4e4e4e;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
 }
-.table-view .cell:filled{
-    -fx-cell-size: 30;
+.table-view .column-header .label {
     -fx-alignment: center-left;
+    -fx-cursor: HAND;
+    cursor: HAND;
 }
-.check-box-table-cell > .check-box:selected .box .mark {
-    -fx-background-color: white;
+.table-view .filler {
+    -fx-background-color: transparent;
+    background-color: transparent;
 }
-.check-box-table-cell > .check-box:selected .box{
-    -fx-background-color: -fx-accent-color;
-}
-.table-view .placeholder .label {
-    -fx-text-fill: red;
-    -fx-padding:20px;
+.table-view .column-drag-header{
+    -fx-background-color: #4e4e4e;
+    background-color: #4e4e4e;
 }

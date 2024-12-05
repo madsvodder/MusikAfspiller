@@ -21,9 +21,9 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.musikafspiller.MainViewController">
    <left>
-      <VBox prefHeight="720.0" prefWidth="243.0" spacing="10.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="720.0" prefWidth="243.0" spacing="10.0" stylesheets="@../../../css/Sidebar.css" BorderPane.alignment="CENTER">
          <children>
-            <Label text="mp3 afspil">
+            <Label text="mp3 afspil" textFill="WHITE">
                <font>
                   <Font size="36.0" />
                </font>
@@ -32,12 +32,12 @@
                <content>
                   <VBox prefWidth="207.0">
                      <children>
-                        <Label text="Your Library">
+                        <Label text="Your Library" textFill="WHITE">
                            <font>
                               <Font size="23.0" />
                            </font>
                         </Label>
-                        <VBox fx:id="vbox_playlists" prefHeight="200.0" prefWidth="221.0" />
+                        <VBox fx:id="vbox_playlists" prefHeight="200.0" prefWidth="221.0" spacing="15.0" />
                      </children>
                   </VBox>
                </content>
@@ -55,7 +55,7 @@
          <children>
             <ImageView fx:id="image_currentAlbumPlaying" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../images/MusicRecord.png" />
+                  <Image url="@../../../images/LightImages/MusicRecord.png" />
                </image>
                <HBox.margin>
                   <Insets right="10.0" />
@@ -80,7 +80,7 @@
                            <graphic>
                               <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../images/Rewind.png" />
+                                    <Image url="@../../../images/LightImages/Rewind.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -89,7 +89,7 @@
                            <graphic>
                               <ImageView fx:id="image_PlayPause" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../images/CircledPlay.png" />
+                                    <Image url="@../../../images/LightImages/CircledPlay.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -98,7 +98,7 @@
                            <graphic>
                               <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../images/FastForward.png" />
+                                    <Image url="@../../../images/LightImages/FastForward.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -107,7 +107,7 @@
                   </HBox>
                   <HBox alignment="CENTER" maxWidth="450.0" minWidth="450.0">
                      <children>
-                        <Label fx:id="label_songDuration" maxWidth="42.0" minWidth="30.0" prefHeight="17.0" prefWidth="42.0" text="0:00" />
+                        <Label fx:id="label_songDuration" maxWidth="42.0" minWidth="30.0" prefHeight="17.0" prefWidth="42.0" text="0:00" textFill="WHITE" />
                         <StackPane maxWidth="365.0" minWidth="365.0" prefWidth="365.0" HBox.hgrow="ALWAYS">
                            <children>
                               <ProgressBar fx:id="progressBar_SongProgress" maxWidth="355.0" minWidth="355.0" prefHeight="20.0" prefWidth="355.0" progress="0.0" StackPane.alignment="CENTER" />
@@ -118,7 +118,7 @@
                               </Slider>
                            </children>
                         </StackPane>
-                        <Label fx:id="label_songDurationFinal" alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" maxWidth="42.0" minWidth="30.0" prefHeight="17.0" prefWidth="42.0" text="0:00" />
+                        <Label fx:id="label_songDurationFinal" alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" maxWidth="42.0" minWidth="30.0" prefHeight="17.0" prefWidth="42.0" text="0:00" textFill="WHITE" />
                      </children>
                   </HBox>
                </children>
@@ -131,7 +131,7 @@
                <graphic>
                   <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../images/Shuffle.png" />
+                        <Image url="@../../../images/LightImages/Shuffle.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -140,7 +140,7 @@
                <graphic>
                   <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../images/MusicLibrary.png" />
+                        <Image url="@../../../images/LightImages/MusicLibrary.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -155,7 +155,7 @@
       </HBox>
    </bottom>
    <center>
-      <AnchorPane fx:id="anchorCenter" prefWidth="1037.0">
+      <AnchorPane fx:id="anchorCenter" prefWidth="1037.0" style="-fx-background-color: black;">
          <BorderPane.margin>
             <Insets bottom="10.0" />
          </BorderPane.margin></AnchorPane>

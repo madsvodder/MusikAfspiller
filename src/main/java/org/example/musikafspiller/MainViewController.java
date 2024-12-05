@@ -104,9 +104,10 @@ public class MainViewController {
         });
 
         // Load images
-        playImage = new Image(getClass().getResourceAsStream("images/LightImages/CircledPlay.png"));
-        pauseImage = new Image(getClass().getResourceAsStream("images/LightImages/PauseButton.png"));
-        musicRecordImage = new Image(getClass().getResourceAsStream("images/LightImages/MusicRecord.png"));
+        playImage = new Image(getClass().getResourceAsStream("/images/LightImages/CircledPlay.png"));
+        pauseImage = new Image(getClass().getResourceAsStream("/images/LightImages/PauseButton.png"));
+        musicRecordImage = new Image(getClass().getResourceAsStream("/images/LightImages/MusicRecord.png"));
+
 
         // Load everything
         if (dataSaver.doesSaveFileExist()) {

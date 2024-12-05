@@ -1,3 +1,4 @@
-.HBox {
-    -fx-background-color: black;
+HBox {
+    -fx-background-color: #282929;
+    -fx-background-radius: 5;
 }

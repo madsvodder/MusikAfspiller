@@ -8,6 +8,7 @@ module org.example.musikafspiller {
     requires java.logging;
     requires javafx.media;
     requires org.slf4j;
+    requires atlantafx.base;
 
     opens org.example.musikafspiller to javafx.fxml;
     exports org.example.musikafspiller;

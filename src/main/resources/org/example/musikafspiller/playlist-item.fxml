@@ -13,9 +13,9 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </HBox.margin>
          <image>
-            <Image url="@../../../images/MusicRecord.png" />
+            <Image url="@../../../images/LightImages/MusicRecord.png" />
          </image>
       </ImageView>
-      <Label fx:id="label_PlaylistName" text="Playlist Navn" />
+      <Label fx:id="label_PlaylistName" text="Playlist Navn" textFill="WHITE" />
    </children>
 </HBox>
