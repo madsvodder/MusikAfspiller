@@ -151,8 +151,6 @@ public class MainViewController {
         };
     }
 
-
-
     private void setupUserDocuments() {
         String userHome = System.getProperty("user.home");
         Path documentsFolder = Paths.get(userHome, "Documents");
@@ -272,6 +270,23 @@ public class MainViewController {
             playlistItemController.customInitialize();
         } catch (IOException e) {
             logger.warning("Failed to add or load playlist: " + e.getMessage());
+        }
+    }
+
+    // Removes playlist from sidebar and in the user library
+    public void removePlaylistFromSidebar(PlaylistItemController playlistItemController) {
+        // Get the HBox (playlist item) from the controller
+        HBox playlistItemBox = playlistItemController.getPlaylistItemBox();
+
+        if (playlistItemBox != null) {
+
+            vbox_playlists.getChildren().remove(playlistItemBox);
+            userLibrary.removePlaylist(playlistItemController.playlist);
+
+            if (selectedPlaylist == playlistItemController.getPlaylist()) {
+                selectedPlaylist = null;
+                switchToPlaylistView(userLibrary.getPlaylists().getFirst());
+            }
         }
     }
 
@@ -429,6 +444,13 @@ public class MainViewController {
     private void nextSong() {
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.skipSong();
+        }
+    }
+
+    @FXML
+    private void previousSong() {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.previousSong();
         }
     }
 

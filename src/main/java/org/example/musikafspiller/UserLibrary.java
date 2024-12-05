@@ -73,6 +73,11 @@ public class UserLibrary {
         return newPlaylist;
     }
 
+    public void removePlaylist(Playlist playlist) {
+        playlists.remove(playlist);
+        logger.info("Removed playlist from User Library");
+    }
+
     public void clearPlaylists() {
         playlists.clear();
     }

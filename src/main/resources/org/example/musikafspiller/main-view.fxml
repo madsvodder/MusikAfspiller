@@ -76,7 +76,7 @@
                <children>
                   <HBox alignment="CENTER" maxWidth="800.0">
                      <children>
-                        <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Button">
+                        <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#previousSong" text="Button">
                            <graphic>
                               <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

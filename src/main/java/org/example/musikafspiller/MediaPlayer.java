@@ -106,6 +106,25 @@ public class MediaPlayer {
         return currentSongIndex < playingPlaylist.getSongs().size() - 1; // Check if next song exists
     }
 
+    public boolean isPreviousSongAvailable() {
+        if (playingPlaylist.getSongs().isEmpty()) {
+            return false;
+        }
+        return currentSongIndex > 0; // Check previous song
+    }
+
+    public Song getPreviousSong() {
+        if (playingPlaylist.getSongs().isEmpty()) {
+            return null; // Return null if the playlist is null or empty
+        }
+
+        if (currentSongIndex > 0) {
+            return playingPlaylist.getSongs().get(--currentSongIndex);
+        } else {
+            return null;
+        }
+    }
+
     public Song getNextSong() {
         if (playingPlaylist.getSongs().isEmpty()) {
             return null; // Return null if the playlist is null or empty
@@ -156,6 +175,24 @@ public class MediaPlayer {
                 mediaPlayer = null;
                 isSongPlaying = false;
                 doPlaySongInPlaylist(getNextSong());
+            } else {
+                mainViewController.updateSongUI(null);
+                mediaPlayer.stop();
+                mediaPlayer.dispose();
+                mediaPlayer = null;
+                isSongPlaying = false;
+            }
+        }
+    }
+
+    public void previousSong() {
+        if (mediaPlayer != null) {
+            if (isPreviousSongAvailable()) {
+                mediaPlayer.stop();
+                mediaPlayer.dispose();
+                mediaPlayer = null;
+                isSongPlaying = false;
+                doPlaySongInPlaylist(getPreviousSong());
             } else {
                 mainViewController.updateSongUI(null);
                 mediaPlayer.stop();
