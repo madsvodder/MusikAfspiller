@@ -11,6 +11,7 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.images.Artwork;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -22,6 +23,11 @@ public class SongParser {
 
 
     private static final Logger logger = Logger.getLogger(SongParser.class.getName());
+
+    public SongParser() {
+        Logger logger = (Logger) LoggerFactory.getLogger("org.jaudiotagger");
+        logger.setLevel(Level.OFF);
+    }
 
     public Song parseSong(File audioFile, String cacheDataPath, UserLibrary userLibrary) {
 
@@ -94,7 +100,6 @@ public class SongParser {
             // Write image data to file
             try (FileOutputStream fos = new FileOutputStream(imagePath)) {
                 fos.write(imageData);
-                System.out.println(imagePath);
             }
 
             return imagePath;

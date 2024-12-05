@@ -1,8 +1,10 @@
 package org.example.musikafspiller;
 
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
@@ -13,9 +15,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import lombok.Getter;
 import lombok.Setter;
+import org.controlsfx.control.TaskProgressView;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 public class MainViewController {
@@ -80,8 +86,13 @@ public class MainViewController {
         setupUserDocuments();
 
         // Read all the songs in the documents folder
-        SongParser songParser = new SongParser();
-        songParser.parseSongs(userLibrary, getAudioFilesFromDocuments(), cacheDataPath);
+        //SongParser songParser = new SongParser();
+        //songParser.parseSongs(userLibrary, getAudioFilesFromDocuments(), cacheDataPath);
+
+        // Parse songs using a Task and show progress in TaskProgressView
+        Task<Void> parseSongsTask = createSongParsingTask();
+        Loader loader = new Loader();
+        loader.show(parseSongsTask);
 
         // Bind the label in the corner for the song duration
         label_songDuration.textProperty().bind(mediaPlayer.getCurrentTimeProperty());
@@ -101,6 +112,44 @@ public class MainViewController {
             save();
         }
     }
+
+    private Task<Void> createSongParsingTask() {
+        return new Task<>() {
+            @Override
+            protected Void call() {
+                updateTitle("Parsing Songs");
+                SongParser songParser = new SongParser();
+
+                // Retrieve audio files
+                List<File> audioFiles = getAudioFilesFromDocuments();
+                int totalFiles = audioFiles.size();
+                int progress = 0;
+
+                for (File file : audioFiles) {
+                    try {
+                        // Update message for current file
+                        updateMessage("Parsing " + file.getName());
+
+                        // Parse the file (assumes parseSong is a time-consuming operation)
+                        songParser.parseSong(file, cacheDataPath, userLibrary);
+
+                        // Update progress
+                        progress++;
+                        updateProgress(progress, totalFiles);
+                    } catch (Exception ex) {
+                        updateMessage("Error parsing " + file.getName() + ": " + ex.getMessage());
+                        ex.printStackTrace();
+                    }
+                }
+
+                // Mark as complete
+                updateMessage("Parsing Complete");
+                return null;
+            }
+        };
+    }
+
+
 
     private void setupUserDocuments() {
         String userHome = System.getProperty("user.home");
@@ -191,7 +240,6 @@ public class MainViewController {
         // null indicates a new playlist
         addOrLoadPlaylistToSidebar(null);
     }
-
     private void addOrLoadPlaylistToSidebar(Playlist playlist) {
         try {
             // Load FXML file and add it to the side

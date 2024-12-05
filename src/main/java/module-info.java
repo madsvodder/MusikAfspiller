@@ -7,6 +7,7 @@ module org.example.musikafspiller {
     requires org.controlsfx.controls;
     requires java.logging;
     requires javafx.media;
+    requires org.slf4j;
 
     opens org.example.musikafspiller to javafx.fxml;
     exports org.example.musikafspiller;

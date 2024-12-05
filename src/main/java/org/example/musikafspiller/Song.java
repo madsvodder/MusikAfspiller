@@ -27,7 +27,6 @@ public class Song {
         this.songDuration = duration;
         this.songYear = songYear;
         this.albumCoverPath = albumCoverPath;
-        System.out.println("Album cover path is: " + albumCoverPath);
     }
 
     @JsonIgnore
