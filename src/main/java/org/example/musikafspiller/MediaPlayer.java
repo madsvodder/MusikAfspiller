@@ -59,6 +59,7 @@ public class MediaPlayer {
 
     }
     private void doPlaySongInPlaylist(Song songToPlay) {
+
         // Create a Media object from the song's file path
         File songFile = songToPlay.getSongFile();
         Media media = new Media(songFile.toURI().toString());
@@ -105,7 +106,6 @@ public class MediaPlayer {
         return currentSongIndex < playingPlaylist.getSongs().size() - 1; // Check if next song exists
     }
 
-
     public Song getNextSong() {
         if (playingPlaylist.getSongs().isEmpty()) {
             return null; // Return null if the playlist is null or empty
@@ -119,7 +119,6 @@ public class MediaPlayer {
         }
 
     }
-
 
     public Song getCurrentSong() {
         if (playingPlaylist.getSongs().isEmpty()) {
@@ -146,6 +145,24 @@ public class MediaPlayer {
     public void stopSong() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
+        }
+    }
+
+    public void skipSong() {
+        if (mediaPlayer != null) {
+            if (isNextSongAvailable()) {
+                mediaPlayer.stop();
+                mediaPlayer.dispose();
+                mediaPlayer = null;
+                isSongPlaying = false;
+                doPlaySongInPlaylist(getNextSong());
+            } else {
+                mainViewController.updateSongUI(null);
+                mediaPlayer.stop();
+                mediaPlayer.dispose();
+                mediaPlayer = null;
+                isSongPlaying = false;
+            }
         }
     }
 

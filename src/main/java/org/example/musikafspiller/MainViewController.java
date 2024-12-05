@@ -62,6 +62,7 @@ public class MainViewController {
     // These images are the ones that we change during runtime.
     private Image playImage;
     private Image pauseImage;
+    private Image musicRecordImage;
 
     // A reference to the selected song that is playing or paused
     @Setter @Getter
@@ -101,9 +102,10 @@ public class MainViewController {
             progressBar_SongProgress.setProgress(newValue.doubleValue() / slider_songProgress.getMax());
         });
 
-        // Load play and pause images
+        // Load images
         playImage = new Image(getClass().getResourceAsStream("/images/CircledPlay.png"));
         pauseImage = new Image(getClass().getResourceAsStream("/images/PauseButton.png"));
+        musicRecordImage = new Image(getClass().getResourceAsStream("/images/MusicRecord.png"));
 
         // Load everything
         if (dataSaver.doesSaveFileExist()) {
@@ -408,9 +410,7 @@ public class MainViewController {
     // Play a specific song. This is also used when double-clicking a song in a playlist.
     public void playSongFromPlaylist(Song song, Playlist playlist) {
         mediaPlayer.getReadyToPlaySongInPlaylist(song, playlist);
-        //image_PlayPause.setImage(pauseImage);
-        //setupSongProgressSlider();
-        //label_songDurationFinal.setText(song.getSongDurationFormatted());
+        mediaPlayer.setCurrentSongIndex(playlist.getSongs().indexOf(song));
         updateSongUI(song);
     }
 
@@ -422,6 +422,13 @@ public class MainViewController {
         } else {
             mediaPlayer.resumeSong();
             image_PlayPause.setImage(pauseImage);
+        }
+    }
+
+    @FXML
+    private void nextSong() {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.skipSong();
         }
     }
 
@@ -483,12 +490,23 @@ public class MainViewController {
 
 
     public void updateSongUI(Song songToPlay) {
-        label_currentArtistName.setText(songToPlay.getSongArtist());
-        label_CurrentSongName.setText(songToPlay.getSongTitle());
-        image_currentAlbumPlaying.setImage(songToPlay.getAlbumCover());
-        setupSongProgressSlider();
-        image_PlayPause.setImage(pauseImage);
-        label_songDurationFinal.setText(songToPlay.getSongDurationFormatted());
+        if (songToPlay != null) {
+            label_currentArtistName.setText(songToPlay.getSongArtist());
+            label_CurrentSongName.setText(songToPlay.getSongTitle());
+            image_currentAlbumPlaying.setImage(songToPlay.getAlbumCover());
+            setupSongProgressSlider();
+            image_PlayPause.setImage(pauseImage);
+            label_songDurationFinal.setText(songToPlay.getSongDurationFormatted());
+        } else {
+            System.out.println("No song");
+            label_currentArtistName.setText("");
+            label_CurrentSongName.setText("");
+            image_currentAlbumPlaying.setImage(musicRecordImage);
+            image_PlayPause.setImage(playImage);
+            setupSongProgressSlider();
+            image_PlayPause.setImage(playImage);
+            label_songDurationFinal.setText("0:00");
+        }
 
     }
 
@@ -519,6 +537,4 @@ public class MainViewController {
             System.out.println("No user data found to load.");
         }
     }
-
-
 }

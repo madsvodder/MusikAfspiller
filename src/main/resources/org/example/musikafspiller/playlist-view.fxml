@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.musikafspiller.PlaylistViewController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../../../css/playlistview.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.musikafspiller.PlaylistViewController">
    <top>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
@@ -24,7 +24,7 @@
       </HBox>
    </top>
    <center>
-      <TableView fx:id="tableview_playlist" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <TableView fx:id="tableview_playlist" BorderPane.alignment="CENTER">
         <columns>
           <TableColumn fx:id="kolonne_number" prefWidth="75.0" text="#" />
             <TableColumn fx:id="kolonne_cover" prefWidth="75.0" text="Billede" />
@@ -32,6 +32,9 @@
             <TableColumn fx:id="kolonne_album" minWidth="0.0" prefWidth="222.0" text="Album" />
             <TableColumn fx:id="kolonne_duration" prefWidth="188.0" text="Tid" />
         </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
       </TableView>
    </center>
 </BorderPane>

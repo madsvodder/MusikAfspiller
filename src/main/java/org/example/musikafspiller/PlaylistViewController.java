@@ -198,8 +198,6 @@ public class PlaylistViewController {
         });
     }
 
-
-
     private void syncObservableListWithPlaylist() {
         songObservableList.setAll(playlist.getSongs());
     }
@@ -208,7 +206,6 @@ public class PlaylistViewController {
         this.playlist = newPlaylist;
         syncObservableListWithPlaylist(); // Refresh the UI
     }
-
 
     @FXML
     private void addSongToPlaylist() {
