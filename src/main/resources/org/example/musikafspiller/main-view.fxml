@@ -157,7 +157,7 @@
    <center>
       <AnchorPane fx:id="anchorCenter" prefWidth="1037.0" style="-fx-background-color: black;">
          <BorderPane.margin>
-            <Insets bottom="10.0" />
+            <Insets />
          </BorderPane.margin></AnchorPane>
    </center>
    <top>

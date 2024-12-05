@@ -9,13 +9,13 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../../../css/playlistview.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.musikafspiller.PlaylistViewController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.musikafspiller.PlaylistViewController">
    <top>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
             <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../images/MusicRecord.png" />
+                  <Image url="@../../../images/LightImages/MusicRecord.png" />
                </image>
             </ImageView>
             <TextField fx:id="TF_PlaylistName" />
@@ -24,9 +24,9 @@
       </HBox>
    </top>
    <center>
-      <TableView fx:id="tableview_playlist" BorderPane.alignment="CENTER">
+      <TableView fx:id="tableview_playlist" stylesheets="@../../../css/playlistview.css" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn fx:id="kolonne_number" prefWidth="75.0" text="#" />
+          <TableColumn fx:id="kolonne_number" prefWidth="50.0" resizable="false" text="#" />
             <TableColumn fx:id="kolonne_cover" prefWidth="75.0" text="Billede" />
           <TableColumn fx:id="kolonne_title" prefWidth="224.0" text="Title" />
             <TableColumn fx:id="kolonne_album" minWidth="0.0" prefWidth="222.0" text="Album" />

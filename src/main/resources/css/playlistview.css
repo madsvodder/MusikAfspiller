@@ -1,85 +1,63 @@
-/* TableView */
-.table-view{
-    -fx-border-width: 1;
-    border-width: 1;
-    -fx-border-radius: 0;
-    border-radius: 0;
-    -fx-border-color: #222222;
-    border-color: #222222;
-    -fx-background-radius: 0;
-    -fx-background-color: #1A1A1A;
-    background-color: #1A1A1A;
-    -fx-table-cell-border-color: #222222;
+* {
+
 }
-.table-view:focused{
-    -fx-border-width: 1;
-    border-width: 1;
-    -fx-border-radius: 0;
-    border-radius: 0;
-    -fx-border-color: #4e4e4e;
-    border-color: #4e4e4e;
-    -fx-background-insets: 1;
-    -fx-background-radius: 0;
-    -fx-background-color: #1A1A1A;
-    background-color: #1A1A1A;
+
+
+/* background color of the whole table view */
+.table-view {
+    -fx-background-color: linear-gradient(#2B292D 0%, #1A191B 100%);
+
+    /* Make the annoying borders transparent */
+    -fx-table-cell-border-color: transparent;
 }
-.table-view .column-header-background{
-    -fx-border-width: 0 0 1 0;
-    border-width: 0 0 1 0;
-    -fx-border-color: #222222;
-    border-color: #222222;
-    -fx-background-radius: 0;
-    -fx-background-color: #1A1A1A;
-    background-color: #1A1A1A;
-    -fx-text-fill: #AFB1B3;
+
+
+
+/* Background color of the top column names */
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+    /* Gives the border to the top under the column names */
+    -fx-border-width: 5;
+    -fx-border-color: transparent transparent #5ad9bb transparent;
 }
+
+/* Top text column names */
+.table-view .column-header-background .label {
+    -fx-font-weight: bold;
+    -fx-alignment: center-left;
+    -fx-text-fill: white;
+}
+
 .table-view .column-header {
     -fx-background-color: transparent;
-    background-color: transparent;
-    -fx-border-color: #222222;
-    border-color: #222222;
 }
-.table-view .column-resize-line {
-    -fx-background-color: #4e4e4e;
-    background-color: #4e4e4e;
-    -fx-pref-width: 1;
-}
-.table-row-cell{
-    -fx-background-color: #1A1A1A;
-    background-color: #1A1A1A;
-    -fx-text-background-color: #AFB1B3;
-    -fx-margin: 1;
-    margin: 1;
-}
-.table-row-cell:hover {
-    -fx-background-color: #3E3E40;
-    background-color: #3E3E40;
-    -fx-background-insets: 0;
-    -fx-background-radius: 0;
-}
-.table-row-cell:selected {
-    -fx-table-cell-border-color: #222222;
-    -fx-background-color: #3E3E40;
-    background-color: #3E3E40;
-    -fx-background-insets: 0;
-    -fx-background-radius: 0;
-}
-.table-row-cell:pressed {
-    -fx-background-color: #4e4e4e;
-    background-color: #4e4e4e;
-    -fx-background-insets: 0;
-    -fx-background-radius: 0;
-}
-.table-view .column-header .label {
-    -fx-alignment: center-left;
-    -fx-cursor: HAND;
-    cursor: HAND;
-}
-.table-view .filler {
+
+/* make the rows transparent */
+.table-row-cell {
     -fx-background-color: transparent;
-    background-color: transparent;
 }
-.table-view .column-drag-header{
-    -fx-background-color: #4e4e4e;
-    background-color: #4e4e4e;
+
+.table-row-cell:odd {
+    -fx-background-color: transparent;
 }
+
+/* Color of a selected song */
+.table-row-cell:selected {
+    -fx-background-color: #2B292D;
+}
+
+#kolonne_number {
+    -fx-alignment: center; /* Centers the text in the column */
+}
+
+/* Centers the column header for number */
+.table-view .column-header#kolonne_number .label {
+    -fx-alignment: CENTER;
+}
+
+/* Make sure the text in the table view is always white*/
+.table-view .table-cell {
+    -fx-text-fill: white;
+}
+
+
