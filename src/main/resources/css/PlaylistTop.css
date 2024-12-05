@@ -1,0 +1,8 @@
+HBox {
+    -fx-background-color: linear-gradient(#2B292D, #3E3B41);
+}
+
+.text-field {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+}

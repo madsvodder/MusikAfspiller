@@ -41,9 +41,23 @@
     -fx-background-color: transparent;
 }
 
+.table-row-cell:filled {
+
+}
+
 /* Color of a selected song */
 .table-row-cell:selected {
-    -fx-background-color: #2B292D;
+    -fx-background-color: #2B292D; /* Background color for the rows */
+    -fx-background-radius: 10; /* Rounded corners */
+    -fx-border-color: transparent; /* Prevent row separators from breaking the look */
+    -fx-border-radius: 10; /* Ensure borders match the background rounding */
+}
+
+.table-row-cell:hover:filled {
+    -fx-background-color: #2B292D; /* Background color for the rows */
+    -fx-background-radius: 10; /* Rounded corners */
+    -fx-border-color: transparent; /* Prevent row separators from breaking the look */
+    -fx-border-radius: 10; /* Ensure borders match the background rounding */
 }
 
 #kolonne_number {
@@ -59,5 +73,39 @@
 .table-view .table-cell {
     -fx-text-fill: white;
 }
+
+.table-view .button {
+    -fx-background-color: transparent;
+}
+
+/* Scrollbar */
+
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical {
+    -fx-background-color: #1A191B;
+}
+
+.scroll-bar:horizontal {
+    -fx-background-color: #1A191B;
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #2B292D;
+    -fx-background-radius: 5em;
+}
+
+.scroll-pane > .corner {
+    -fx-background-color: #1A191B;
+}
+
+/* Removes the weird box above the scroll bar */
+.table-view .filler {
+    -fx-background-color: transparent; /* Match this to your theme */
+}
+
 
 
