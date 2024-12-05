@@ -24,11 +24,6 @@ public class SongParser {
 
     private static final Logger logger = Logger.getLogger(SongParser.class.getName());
 
-    public SongParser() {
-        Logger logger = (Logger) LoggerFactory.getLogger("org.jaudiotagger");
-        logger.setLevel(Level.OFF);
-    }
-
     public Song parseSong(File audioFile, String cacheDataPath, UserLibrary userLibrary) {
 
         String audioFilePath = audioFile.getAbsolutePath();
@@ -59,7 +54,7 @@ public class SongParser {
 
                 if (imageData != null) {
                     // Save the artwork to the cache and get the file path
-                    imagePath = saveArtworkToCache(imageData, songAlbum, cacheDataPath);
+                    imagePath = saveArtworkToCache(imageData, songAlbum, songArtist, cacheDataPath);
 
                     // Find the existing album in the UserLibrary or create a new one
                     Album album = userLibrary.findAlbum(songAlbum);
@@ -91,11 +86,12 @@ public class SongParser {
         return null;
     }
 
-    private String saveArtworkToCache(byte[] imageData, String albumTitle, String cacheDirectory) {
+    private String saveArtworkToCache(byte[] imageData, String albumTitle, String songArtist, String cacheDirectory) {
         try {
             // Create a safe file name for the album artwork
             String sanitizedAlbumTitle = albumTitle.replaceAll("[^a-zA-Z0-9._-]", "_");
-            String imagePath = cacheDirectory + File.separator + sanitizedAlbumTitle + ".png";
+            String sanitizedArtistName = songArtist.replaceAll("[^a-zA-Z0-9._-]", "_");
+            String imagePath = cacheDirectory + File.separator + sanitizedArtistName + "_" + sanitizedAlbumTitle + ".png";
 
             // Write image data to file
             try (FileOutputStream fos = new FileOutputStream(imagePath)) {

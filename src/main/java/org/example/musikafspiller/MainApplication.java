@@ -13,7 +13,7 @@ public class MainApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+        //Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("main-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         MainViewController controller = fxmlLoader.getController();

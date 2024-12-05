@@ -88,13 +88,9 @@ public class MainViewController {
         setupUserDocuments();
 
         // Read all the songs in the documents folder
-        //SongParser songParser = new SongParser();
-        //songParser.parseSongs(userLibrary, getAudioFilesFromDocuments(), cacheDataPath);
+        SongParser songParser = new SongParser();
+        songParser.parseSongs(userLibrary, getAudioFilesFromDocuments(), cacheDataPath);
 
-        // Parse songs using a Task and show progress in TaskProgressView
-        Task<Void> parseSongsTask = createSongParsingTask();
-        Loader loader = new Loader();
-        loader.show(parseSongsTask);
 
         // Bind the label in the corner for the song duration
         label_songDuration.textProperty().bind(mediaPlayer.getCurrentTimeProperty());
@@ -124,20 +120,23 @@ public class MainViewController {
                 updateTitle("Parsing Songs");
                 SongParser songParser = new SongParser();
 
-                // Retrieve audio files
                 List<File> audioFiles = getAudioFilesFromDocuments();
+                System.out.println("Found " + audioFiles.size() + " audio files.");
+
                 int totalFiles = audioFiles.size();
                 int progress = 0;
 
+                if (totalFiles == 0) {
+                    updateMessage("No files found to parse.");
+                    return null;
+                }
+
                 for (File file : audioFiles) {
                     try {
-                        // Update message for current file
                         updateMessage("Parsing " + file.getName());
-
-                        // Parse the file (assumes parseSong is a time-consuming operation)
                         songParser.parseSong(file, cacheDataPath, userLibrary);
+                        System.out.println("Parsing " + file.getName());
 
-                        // Update progress
                         progress++;
                         updateProgress(progress, totalFiles);
                     } catch (Exception ex) {
@@ -146,10 +145,10 @@ public class MainViewController {
                     }
                 }
 
-                // Mark as complete
                 updateMessage("Parsing Complete");
                 return null;
             }
+
         };
     }
 
