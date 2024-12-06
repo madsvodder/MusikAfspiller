@@ -71,6 +71,7 @@ public class PlaylistViewController {
             if (playlist != null) {
                 // Set the playlist name in the playlist class
                 playlist.setPlaylistName(newValue);
+                System.out.println("HELLOOO");
                 mainViewController.updatePlaylistNameInSidebar(playlist);
             }
         });

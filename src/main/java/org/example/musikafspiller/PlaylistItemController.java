@@ -30,6 +30,8 @@ public class PlaylistItemController {
     @FXML
     private Label label_Type;
 
+    private boolean isAlbum;
+
     public PlaylistItemController() {
     }
 
@@ -46,12 +48,15 @@ public class PlaylistItemController {
         label_PlaylistName.setText(playlist.getPlaylistName());
         label_Type.setText("Playlist");
         setupContextMenu();
+        isAlbum = false;
     }
 
     public void initializeAsAlbum() {
         label_PlaylistName.setText(album.getAlbumName());
         label_Type.setText("Album");
         imageCover.setImage(album.getAlbumArt());
+        setupContextMenu();
+        isAlbum = true;
     }
 
     @FXML
@@ -77,7 +82,16 @@ public class PlaylistItemController {
         MenuItem deleteItem = new MenuItem("Delete");
         deleteItem.setOnAction(event -> {
             // Handle delete playlist from sidebar here
-            mainViewController.removePlaylistFromSidebar(this);
+            if (isAlbum) {
+                if (mainViewController != null && album != null) {
+                    mainViewController.removeItemFromSidebar(album, this);
+
+                }
+            } else {
+                if (mainViewController != null && playlist != null) {
+                    mainViewController.removeItemFromSidebar(playlist, this);
+                }
+            }
         });
 
         MenuItem renameItem = new MenuItem("Rename");

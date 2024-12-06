@@ -300,22 +300,37 @@ public class MainViewController {
 
 
 
-    // Removes playlist from sidebar and in the user library
-    public void removePlaylistFromSidebar(PlaylistItemController playlistItemController) {
+    // Removes playlist or album from sidebar and in the user library
+    public void removeItemFromSidebar(Object item, PlaylistItemController playlistItemController) {
         // Get the HBox (playlist item) from the controller
         HBox playlistItemBox = playlistItemController.getPlaylistItemBox();
 
-        if (playlistItemBox != null) {
-
+        if (item instanceof Playlist) {
+            // Remove the playlist item from the sidebar
             vbox_playlists.getChildren().remove(playlistItemBox);
-            userLibrary.removePlaylist(playlistItemController.playlist);
 
-            if (selectedPlaylist == playlistItemController.getPlaylist()) {
+            // Remove the playlist from the user library
+            userLibrary.removePlaylist((Playlist) item);
+            System.out.println("Removed playlist item: " + item);
+
+            // If the selected playlist is the one being removed, reset the selectedPlaylist
+            if (selectedPlaylist == item) {
                 selectedPlaylist = null;
-                switchToPlaylistView(userLibrary.getPlaylists().getFirst());
+                // Switch to the first playlist if available
+                if (!userLibrary.getPlaylists().isEmpty()) {
+                    switchToPlaylistView(userLibrary.getPlaylists().getFirst());
+                }
             }
+        } else if (item instanceof Album) {
+            // Remove the album item from the sidebar
+            vbox_playlists.getChildren().remove(playlistItemBox);
+
+            // Unlike the album in the user library
+            userLibrary.unlikeAlbum((Album) item);
+            System.out.println("Removed album item: " + item);
         }
     }
+
 
     public void updatePlaylistNameInSidebar(Playlist playlist) {
         // Print the UUID of the playlist being passed in
@@ -582,14 +597,14 @@ public class MainViewController {
             List<Playlist> playlists = new ArrayList<>(userLibrary.getPlaylists());
             for (Playlist playlist : playlists) {
                 System.out.println("Loading playlist: " + playlist);
-                addItemToSidebar(playlist, true);
+                addItemToSidebar(playlist, false);
             }
 
             // Ensure no modifications to the original collection
             List<Album> likedAlbumsCopy = new ArrayList<>(userLibrary.getLikedAlbums());
             for (Album album : likedAlbumsCopy) {
                 System.out.println("Loading album: " + album);
-                addAlbumToSidebar(album);
+                addItemToSidebar(album, true);
             }
 
 

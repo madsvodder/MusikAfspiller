@@ -4,7 +4,7 @@ HBox {
 }
 
 HBox:hover {
-    -fx-background-color: #282929;
+    -fx-background-color: #393b3b;
     -fx-background-radius: 5;
     -fx-border-color: #23D8DD;
     -fx-border-width: 0px 0px 0px 3px;

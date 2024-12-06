@@ -51,6 +51,9 @@ public class UserLibrary {
         return false;
     }
 
+    public void unlikeAlbum(Album album) {
+        likedAlbums.remove(album);
+    }
 
     public Album findAlbum(String albumName) {
         if (albumName == null || albumName.isEmpty()) {
