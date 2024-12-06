@@ -9,3 +9,15 @@ HBox {
 VBox {
     -fx-background-color: #111111;
 }
+
+.button:hover {
+    -fx-text-fill: white;
+    -fx-border-color: #FF8360;
+    -fx-border-width: 0px 0px 0px 3px;
+    -fx-background-color: transparent;
+}
+
+.button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}

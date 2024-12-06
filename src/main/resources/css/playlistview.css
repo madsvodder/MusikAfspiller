@@ -2,6 +2,14 @@
 
 }
 
+.border-pane {
+    -fx-background-color: #2B292D;
+}
+
+.custom-view {
+    -fx-fit-width: 100%;  /* Set fit width to 100% of parent */
+    -fx-fit-height: 100%; /* Set fit height to 100% of parent */
+}
 
 /* background color of the whole table view */
 .table-view {

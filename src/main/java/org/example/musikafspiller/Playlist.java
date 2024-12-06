@@ -58,9 +58,9 @@ public class Playlist {
         int seconds = playlistDuration % 60;
 
         if (hours > 0) {
-            return String.format("%d:%02d:%02d", hours, minutes, seconds); // Hours displayed without leading 0
+            return String.format("%dh, %02dm, %02ds", hours, minutes, seconds); // Hours displayed without leading 0
         } else {
-            return String.format("%02d:%02d", minutes, seconds); // No hours
+            return String.format("%02dm, %02ds", minutes, seconds); // No hours
         }
     }
 

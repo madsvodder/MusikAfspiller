@@ -10,6 +10,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import lombok.Getter;
 import lombok.Setter;
@@ -55,6 +57,7 @@ public class PlaylistViewController {
 
     @FXML
     private Label label_amountOfSongs;
+
 
     @Setter @Getter
     private boolean userMadePlaylist = true;
