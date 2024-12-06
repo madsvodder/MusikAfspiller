@@ -243,49 +243,21 @@ public class MainViewController {
     @FXML
     private void addNewPlaylistToSidebar() {
         // null indicates a new playlist
-        addOrLoadPlaylistToSidebar(null);
-    }
-    private void addOrLoadPlaylistToSidebar(Playlist playlist) {
-        try {
-            // Load FXML file and add it to the side
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist-item.fxml"));
-            HBox playlistItem = loader.load();
-            vbox_playlists.getChildren().add(playlistItem);
-
-            logger.info("Added playlist item");
-
-            // Get the controller from the FXML playlistitem
-            PlaylistItemController playlistItemController = loader.getController();
-
-            // Set reference to MainViewController
-            playlistItemController.setMainViewController(this);
-
-            // If the playlist is null, it's a new playlist; create a new one
-            if (playlist == null) {
-                playlist = userLibrary.newPlaylist();  // Create the new playlist
-            }
-
-            // Assign the playlist to the controller
-            playlistItemController.setPlaylist(playlist);
-
-            // Set the userData of the HBox to the controller
-            playlistItem.setUserData(playlistItemController);
-
-            // Initialize playlistItem
-            playlistItemController.customInitialize();
-        } catch (IOException e) {
-            logger.warning("Failed to add or load playlist: " + e.getMessage());
-        }
+        addItemToSidebar(userLibrary.newPlaylist(), false);
     }
 
     public void addAlbumToSidebar(Album album) {
+        addItemToSidebar(album, true);
+    }
+
+    private void addItemToSidebar(Object item, boolean isAlbum) {
         try {
             // Load FXML file and add it to the side
             FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist-item.fxml"));
             HBox playlistItem = loader.load();
             vbox_playlists.getChildren().add(playlistItem);
 
-            logger.info("Added playlist item");
+            logger.info("Added item to sidebar");
 
             // Get the controller from the FXML playlistitem
             PlaylistItemController playlistItemController = loader.getController();
@@ -293,21 +265,40 @@ public class MainViewController {
             // Set reference to MainViewController
             playlistItemController.setMainViewController(this);
 
-            // Assign the playlist to the controller
-            playlistItemController.setAlbum(album);
+            // Set the item (either playlist or album) with proper type checking
+            if (isAlbum) {
+                // Check if it's an Album
+                if (item instanceof Album) {
+                    // Casting as Album
+                    playlistItemController.setAlbum((Album) item);
+                    // Save as liked album
+                    userLibrary.likedAlbums.add((Album) item);
+                } else {
+                    throw new IllegalArgumentException("Expected an Album, but got: " + item.getClass());
+                }
+            } else {
+                // Check if it's a Playlist
+                if (item instanceof Playlist) {
+                    // Casting as Playlist
+                    playlistItemController.setPlaylist((Playlist) item);
+                } else {
+                    throw new IllegalArgumentException("Expected a Playlist, but got: " + item.getClass());
+                }
+            }
 
             // Set the userData of the HBox to the controller
             playlistItem.setUserData(playlistItemController);
 
-            // Initialize playlistItem
-            playlistItemController.initializeAsAlbum();
-
-            // Save as liked album in user library
-            userLibrary.likedAlbums.add(album);
+            // Initialize playlistItem with appropriate flag
+            playlistItemController.customInitialize(isAlbum);
         } catch (IOException e) {
-            logger.warning("Failed to add or load playlist: " + e.getMessage());
+            logger.warning("Failed to add or load item: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            logger.warning(e.getMessage()); // Log the specific type error
         }
     }
+
+
 
     // Removes playlist from sidebar and in the user library
     public void removePlaylistFromSidebar(PlaylistItemController playlistItemController) {
@@ -591,7 +582,7 @@ public class MainViewController {
             List<Playlist> playlists = new ArrayList<>(userLibrary.getPlaylists());
             for (Playlist playlist : playlists) {
                 System.out.println("Loading playlist: " + playlist);
-                addOrLoadPlaylistToSidebar(playlist);
+                addItemToSidebar(playlist, true);
             }
 
             // Ensure no modifications to the original collection

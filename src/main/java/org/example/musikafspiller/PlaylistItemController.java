@@ -33,7 +33,16 @@ public class PlaylistItemController {
     public PlaylistItemController() {
     }
 
-    public void customInitialize() {
+    public void customInitialize(Boolean isAlbum) {
+        if (isAlbum) {
+            initializeAsAlbum();
+        } else {
+            initializeAsPlaylist();
+        }
+    }
+
+
+    public void initializeAsPlaylist() {
         label_PlaylistName.setText(playlist.getPlaylistName());
         label_Type.setText("Playlist");
         setupContextMenu();
