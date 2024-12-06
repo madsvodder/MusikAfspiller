@@ -18,6 +18,8 @@ public class UserLibrary {
     public ArrayList<Album> albums = new ArrayList<>();
     @Getter @JsonProperty
     public ArrayList<Song> songs = new ArrayList<>();
+    @Getter @ Setter @JsonProperty
+    public ArrayList<Album> likedAlbums = new ArrayList<>();
 
     public void addSong(Song song) {
         songs.add(song);
@@ -63,8 +65,6 @@ public class UserLibrary {
         }
         return null;
     }
-
-
 
     public Playlist newPlaylist() {
         Playlist newPlaylist = new Playlist("New Playlist " + playlists.size(), 0);

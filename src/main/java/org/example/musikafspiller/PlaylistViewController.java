@@ -160,9 +160,6 @@ public class PlaylistViewController {
                 }
             }
         });
-
-
-
     }
 
     private void setupMouseClicks(){
@@ -246,7 +243,6 @@ public class PlaylistViewController {
             label_amountOfSongs.setText(String.valueOf(playlist.getSongs().size()) + " songs, " + playlist.getPlaylistDurationAsString());
         }
     }
-
 
     @FXML
     private void addSongToPlaylist() {

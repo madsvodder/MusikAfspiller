@@ -1,0 +1,16 @@
+.scroll-pane {
+    -fx-background-color: transparent; /* Makes the outer ScrollPane transparent */
+    -fx-border-color: transparent;    /* Removes any borders */
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent; /* Makes the content area transparent */
+}
+
+.grid-pane {
+    -fx-background-color: transparent; /* Makes the background transparent */
+}
+
+.border-pane {
+    -fx-background-color: #282929;
+}

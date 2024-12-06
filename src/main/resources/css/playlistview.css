@@ -26,7 +26,7 @@
     -fx-background-color: transparent;
     /* Gives the border to the top under the column names */
     -fx-border-width: 5;
-    -fx-border-color: transparent transparent #5ad9bb transparent;
+    -fx-border-color: transparent transparent #23D8DD transparent;
 }
 
 /* Top text column names */
@@ -57,15 +57,15 @@
 .table-row-cell:selected {
     -fx-background-color: #2B292D; /* Background color for the rows */
     -fx-background-radius: 10; /* Rounded corners */
-    -fx-border-color: transparent; /* Prevent row separators from breaking the look */
-    -fx-border-radius: 10; /* Ensure borders match the background rounding */
+    /*-fx-border-color: transparent;  Prevent row separators from breaking the look */
+    /*-fx-border-radius: 10;  Ensure borders match the background rounding */
 }
 
 .table-row-cell:hover:filled {
-    -fx-background-color: #2B292D; /* Background color for the rows */
-    -fx-background-radius: 10; /* Rounded corners */
-    -fx-border-color: transparent; /* Prevent row separators from breaking the look */
-    -fx-border-radius: 10; /* Ensure borders match the background rounding */
+    -fx-background-color: #2B292D;  /*Background color for the rows */
+     -fx-background-radius: 10;  /*Rounded corners */
+    /*-fx-border-color: transparent;  Prevent row separators from breaking the look */
+    /*-fx-border-radius: 10;  Ensure borders match the background rounding */
 }
 
 #kolonne_number {

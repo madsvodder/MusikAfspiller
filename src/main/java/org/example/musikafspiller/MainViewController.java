@@ -278,6 +278,37 @@ public class MainViewController {
         }
     }
 
+    public void addAlbumToSidebar(Album album) {
+        try {
+            // Load FXML file and add it to the side
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist-item.fxml"));
+            HBox playlistItem = loader.load();
+            vbox_playlists.getChildren().add(playlistItem);
+
+            logger.info("Added playlist item");
+
+            // Get the controller from the FXML playlistitem
+            PlaylistItemController playlistItemController = loader.getController();
+
+            // Set reference to MainViewController
+            playlistItemController.setMainViewController(this);
+
+            // Assign the playlist to the controller
+            playlistItemController.setAlbum(album);
+
+            // Set the userData of the HBox to the controller
+            playlistItem.setUserData(playlistItemController);
+
+            // Initialize playlistItem
+            playlistItemController.initializeAsAlbum();
+
+            // Save as liked album in user library
+            userLibrary.likedAlbums.add(album);
+        } catch (IOException e) {
+            logger.warning("Failed to add or load playlist: " + e.getMessage());
+        }
+    }
+
     // Removes playlist from sidebar and in the user library
     public void removePlaylistFromSidebar(PlaylistItemController playlistItemController) {
         // Get the HBox (playlist item) from the controller
@@ -331,8 +362,10 @@ public class MainViewController {
 
         // Get the controller of the new FXML view
         AlbumsOverviewController albumsOverviewController = loader.getController();
+        albumsOverviewController.setMainViewController(this);
         albumsOverviewController.setUserLibrary(userLibrary);
         albumsOverviewController.populateAlbumGrid();
+
 
         // Add the loaded view to the center of anchorCenter
         anchorCenter.getChildren().clear();
@@ -554,11 +587,20 @@ public class MainViewController {
             // Check if userLibrary has playlists
             System.out.println("Loaded user library: " + userLibrary);
 
-            for (Playlist playlist : userLibrary.getPlaylists()) {
+            // Ensure no modifications to the original collection
+            List<Playlist> playlists = new ArrayList<>(userLibrary.getPlaylists());
+            for (Playlist playlist : playlists) {
                 System.out.println("Loading playlist: " + playlist);
                 addOrLoadPlaylistToSidebar(playlist);
-                //loadPlaylistToSidebar(playlist);
             }
+
+            // Ensure no modifications to the original collection
+            List<Album> likedAlbumsCopy = new ArrayList<>(userLibrary.getLikedAlbums());
+            for (Album album : likedAlbumsCopy) {
+                System.out.println("Loading album: " + album);
+                addAlbumToSidebar(album);
+            }
+
 
         } else {
             System.out.println("No user data found to load.");

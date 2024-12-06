@@ -12,7 +12,7 @@ VBox {
 
 .button:hover {
     -fx-text-fill: white;
-    -fx-border-color: #FF8360;
+    -fx-border-color: #23D8DD;
     -fx-border-width: 0px 0px 0px 3px;
     -fx-background-color: transparent;
 }
@@ -20,4 +20,10 @@ VBox {
 .button {
     -fx-background-color: transparent;
     -fx-text-fill: white;
+}
+
+.separator .line {
+    -fx-background-color: #23D8DD;
+    -fx-pref-height: 2;
+    -fx-border-color: null ;
 }

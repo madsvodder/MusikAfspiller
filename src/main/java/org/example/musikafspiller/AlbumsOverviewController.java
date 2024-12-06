@@ -19,6 +19,9 @@ public class AlbumsOverviewController {
     @Setter
     private UserLibrary userLibrary;
 
+    @Setter
+    private MainViewController mainViewController;
+
     public void populateAlbumGrid() {
         grid_Albums.getChildren().clear();  // Clear any previous content
 
@@ -55,6 +58,8 @@ public class AlbumsOverviewController {
             AlbumCoverController controller = fxmlLoader.getController();
             controller.setImage_cover(album.getAlbumArt());
             controller.setLabel_title(album.getAlbumName());
+            controller.setAlbum(album);
+            controller.setMainViewController(mainViewController);
 
             return albumBox;
 

@@ -2,3 +2,15 @@ HBox {
     -fx-background-color: #282929;
     -fx-background-radius: 5;
 }
+
+HBox:hover {
+    -fx-background-color: #282929;
+    -fx-background-radius: 5;
+    -fx-border-color: #23D8DD;
+    -fx-border-width: 0px 0px 0px 3px;
+}
+
+VBox {
+    -fx-background-color: transparent;
+}
+

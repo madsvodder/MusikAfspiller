@@ -28,6 +28,9 @@ public class Album {
     @Getter @Setter
     private ArrayList<Song> songs = new ArrayList<>();
 
+    @Getter @Setter
+    private boolean isLiked = false;
+
     public Album(){}
 
     public Album(String name, String artist, String year) {

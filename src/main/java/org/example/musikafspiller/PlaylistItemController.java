@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,23 +13,36 @@ public class PlaylistItemController {
 
     @Setter
     MainViewController mainViewController;
-    @Setter
-    UserLibrary userLibrary;
     @Setter @Getter
     Playlist playlist;
+    @Setter @Getter
+    Album album;
 
     @FXML @ Getter
     private HBox hbox_playlist;
 
     @FXML
+    private ImageView imageCover;
+
+    @FXML
     private Label label_PlaylistName;
+
+    @FXML
+    private Label label_Type;
 
     public PlaylistItemController() {
     }
 
     public void customInitialize() {
         label_PlaylistName.setText(playlist.getPlaylistName());
+        label_Type.setText("Playlist");
         setupContextMenu();
+    }
+
+    public void initializeAsAlbum() {
+        label_PlaylistName.setText(album.getAlbumName());
+        label_Type.setText("Album");
+        imageCover.setImage(album.getAlbumArt());
     }
 
     @FXML

@@ -8,6 +8,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -32,11 +33,12 @@
                <content>
                   <VBox prefWidth="207.0">
                      <children>
-                        <Label text="Your Library" textFill="WHITE">
+                        <Label text="YOUR MUSIC" textFill="WHITE">
                            <font>
-                              <Font size="23.0" />
+                              <Font size="14.0" />
                            </font>
                         </Label>
+                        <Separator prefWidth="200.0" />
                         <HBox prefWidth="200.0">
                            <children>
                               <Button mnemonicParsing="false" onAction="#switchToAlbumsView" prefHeight="47.0" text="Albums" textFill="WHITE">
@@ -50,7 +52,16 @@
                               </Button>
                            </children>
                         </HBox>
-                        <VBox fx:id="vbox_playlists" prefHeight="200.0" prefWidth="221.0" spacing="15.0" />
+                        <Label layoutX="10.0" layoutY="10.0" text="PLAYLISTS" textFill="WHITE">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Separator layoutX="10.0" layoutY="28.0" prefWidth="200.0" />
+                        <VBox fx:id="vbox_playlists" prefHeight="200.0" prefWidth="221.0" spacing="15.0">
+                           <padding>
+                              <Insets top="15.0" />
+                           </padding></VBox>
                      </children>
                   </VBox>
                </content>
@@ -83,7 +94,7 @@
                   <Label fx:id="label_currentArtistName" layoutX="10.0" layoutY="10.0" />
                </children>
             </VBox>
-            <Region prefHeight="50.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
+            <Region prefHeight="80.0" prefWidth="55.0" HBox.hgrow="ALWAYS" />
             <VBox alignment="CENTER" maxWidth="450.0" minWidth="450.0" prefHeight="80.0" prefWidth="450.0">
                <children>
                   <HBox alignment="CENTER" maxWidth="800.0">

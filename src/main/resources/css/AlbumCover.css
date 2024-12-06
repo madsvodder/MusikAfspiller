@@ -1,0 +1,7 @@
+.VBox:hover {
+    -fx-opacity: 100;
+}
+
+.VBox {
+    -fx-opacity: 0;
+}

@@ -4,6 +4,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import lombok.Getter;
+import lombok.Setter;
 
 
 public class AlbumCoverController {
@@ -14,6 +17,9 @@ public class AlbumCoverController {
     @FXML
     private Label label_title;
 
+    @Getter @Setter private Album album;
+    @Setter private MainViewController mainViewController;
+
     public AlbumCoverController() {
     }
 
@@ -23,5 +29,16 @@ public class AlbumCoverController {
 
     public void setLabel_title(String title) {
         label_title.setText(title);
+    }
+
+    @FXML
+    private void likeAlbum() {
+        if (mainViewController != null) {
+            album.setLiked(!album.isLiked());
+            System.out.println("Liked Album: " + album.isLiked());
+            mainViewController.addAlbumToSidebar(album);
+        } else {
+            System.out.println("Main view controller is null");
+        }
     }
 }
