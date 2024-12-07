@@ -235,10 +235,6 @@ public class MainViewController {
             return audioFiles;
         }
 
-    private void darkMode() {
-
-    }
-
     // Method for adding a new playlist (called by Scene Builder)
     @FXML
     private void addNewPlaylistToSidebar() {
@@ -375,12 +371,6 @@ public class MainViewController {
         AnchorPane.setBottomAnchor(newView, 0.0);
         AnchorPane.setLeftAnchor(newView, 0.0);
         AnchorPane.setRightAnchor(newView, 0.0);
-    }
-
-    private void onAlbumSelected(Album album) {
-        if (album != null) {
-
-        }
     }
 
     // This method runs when you select a playlist in the sidebar
