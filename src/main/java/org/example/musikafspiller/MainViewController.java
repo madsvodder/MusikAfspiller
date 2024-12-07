@@ -271,8 +271,6 @@ public class MainViewController {
                 if (item instanceof Album) {
                     // Casting as Album
                     playlistItemController.setAlbum((Album) item);
-                    // Save as liked album
-                    userLibrary.likedAlbums.add((Album) item);
                 } else {
                     throw new IllegalArgumentException("Expected an Album, but got: " + item.getClass());
                 }
@@ -385,15 +383,21 @@ public class MainViewController {
         AnchorPane.setRightAnchor(newView, 0.0);
     }
 
+    private void onAlbumSelected(Album album) {
+        if (album != null) {
+
+        }
+    }
+
     // This method runs when you select a playlist in the sidebar
-    public void onPlaylistSelected(Playlist playlist) {
-        if (playlist != null) {
-            switchToPlaylistView(playlist); // Switch to the playlist view
+    public void onPlaylistSelected(Object item) {
+        if (item != null) {
+            switchToPlaylistView(item); // Switch to the playlist view
         }
     }
 
     // Method to switch to the selected playlist view
-    private void switchToPlaylistView(Playlist playlist) {
+    private void switchToPlaylistView(Object item) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist-view.fxml"));
             BorderPane newView = loader.load();
@@ -401,17 +405,25 @@ public class MainViewController {
             // Retrieve the controller instance created by FXMLLoader
             PlaylistViewController controller = loader.getController();
 
-            // Pass the required data to the controller
-            controller.setPlaylist(playlist);
-            controller.setUserLibrary(userLibrary);
-            controller.setMainViewController(this);
-            controller.customInit();
+            if (item instanceof Playlist) {
+                // Pass the required data to the controller
+                controller.setPlaylist((Playlist) item);
+                controller.setUserLibrary(userLibrary);
+                controller.setMainViewController(this);
+                controller.customInit(false);
 
-            // Set reference to selected playlist
-            selectedPlaylist = playlist;
+                // Set reference to selected playlist
+                selectedPlaylist = (Playlist) item;
 
-            // Log for debugging
-            logger.info("Switching to playlist view with playlist: " + playlist + " and userLibrary: " + userLibrary);
+                // Log for debugging
+                logger.info("Switching to playlist view with playlist: " + (Playlist) item + " and userLibrary: " + userLibrary);
+            } else if (item instanceof Album) {
+                controller.setAlbum((Album) item);
+                controller.setUserLibrary(userLibrary);
+                controller.setMainViewController(this);
+                controller.customInit(true);
+                logger.info("Switching to album view with album: " + (Album) item + " and userLibrary: " + userLibrary);
+            }
 
             // Update the UI with the new view
             anchorCenter.getChildren().clear();
@@ -576,6 +588,16 @@ public class MainViewController {
 
     }
 
+    public void handleLikeAlbum(Album albumToLike) {
+        // If the album isnt liked, then like it
+        if (!albumToLike.isLiked()) {
+            userLibrary.likeAlbum(albumToLike);
+            addAlbumToSidebar(albumToLike);
+        } else {
+            userLibrary.unlikeAlbum(albumToLike);
+        }
+    }
+
     @FXML
     public void save() {
         dataSaver.saveUserData(userLibrary);
@@ -590,23 +612,22 @@ public class MainViewController {
         if (newuserLibrary != null) {
             userLibrary = newuserLibrary;
 
+            //Clear sidebar
+            vbox_playlists.getChildren().clear();
+
             // Check if userLibrary has playlists
             System.out.println("Loaded user library: " + userLibrary);
 
-            // Ensure no modifications to the original collection
-            List<Playlist> playlists = new ArrayList<>(userLibrary.getPlaylists());
-            for (Playlist playlist : playlists) {
+            for (Playlist playlist : userLibrary.getPlaylists()) {
                 System.out.println("Loading playlist: " + playlist);
                 addItemToSidebar(playlist, false);
             }
 
-            // Ensure no modifications to the original collection
-            List<Album> likedAlbumsCopy = new ArrayList<>(userLibrary.getLikedAlbums());
-            for (Album album : likedAlbumsCopy) {
-                System.out.println("Loading album: " + album);
-                addItemToSidebar(album, true);
+            for (Album album : userLibrary.getAlbums()) {
+                if (album.isLiked()) {
+                    addItemToSidebar(album, true);
+                }
             }
-
 
         } else {
             System.out.println("No user data found to load.");

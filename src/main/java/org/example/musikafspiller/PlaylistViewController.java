@@ -25,6 +25,9 @@ public class PlaylistViewController {
     @Getter @Setter
     private Playlist playlist;
 
+    @Getter @Setter
+    private Album album;
+
     @Setter
     private UserLibrary userLibrary;
 
@@ -58,9 +61,17 @@ public class PlaylistViewController {
     @FXML
     private Label label_amountOfSongs;
 
+    @FXML
+    private Button button_addSong;
+
+    @FXML
+    private ImageView image_cover;
 
     @Setter @Getter
     private boolean userMadePlaylist = true;
+
+    @Getter @Setter
+    private boolean isAlbum;
 
     private static final Logger logger = Logger.getLogger(PlaylistViewController.class.getName());
 
@@ -93,12 +104,22 @@ public class PlaylistViewController {
         }
     }
 
-    public void customInit() {
+    public void customInit(boolean album) {
+
+        isAlbum = album;
+
+        if (album) {
+            initializeAsAlbum();
+        } else {
+            initializePlaylist();
+        }
+    }
+
+    private void initializePlaylist() {
         // Initialize labels and setup listeners
         setupLabels();
         logInitialize();
         setupTableview();
-
 
         // Initial update of playlist duration property
         updatePlaylistDuration();
@@ -106,12 +127,36 @@ public class PlaylistViewController {
         //populateTableView();
         setupPlaylistNameListener();
 
-        // Synchronize songObservableList with the Playlist
-        syncObservableListWithPlaylist();
+        syncObservableList();
 
         // Bind TableView to songObservableList
         tableview_playlist.setItems(songObservableList);
 
+        button_addSong.setVisible(true);
+        button_addSong.setDisable(false);
+    }
+
+    private void initializeAsAlbum() {
+        // Initialize labels and setup listeners
+        setupLabels();
+        logInitialize();
+        setupTableview();
+
+        // Initial update of playlist duration property
+        updatePlaylistDuration();
+
+        //populateTableView();
+        setupPlaylistNameListener();
+
+        syncObservableList();
+
+        // Bind TableView to songObservableList
+        tableview_playlist.setItems(songObservableList);
+
+        button_addSong.setVisible(false);
+        button_addSong.setDisable(true);
+
+        image_cover.setImage(album.getAlbumArt());
     }
 
     private void setupTableview() {
@@ -218,17 +263,22 @@ public class PlaylistViewController {
         });
     }
 
-    private void syncObservableListWithPlaylist() {
-        songObservableList.setAll(playlist.getSongs());
-    }
-
-    public void replacePlaylist(Playlist newPlaylist) {
-        this.playlist = newPlaylist;
-        syncObservableListWithPlaylist(); // Refresh the UI
+    private void syncObservableList() {
+        if (isAlbum) {
+            songObservableList.setAll(album.getSongs());
+        } else {
+            songObservableList.setAll(playlist.getSongs());
+        }
     }
 
     private void setupLabels() {
-        TF_PlaylistName.setText(playlist.getPlaylistName());
+
+        if (isAlbum) {
+            TF_PlaylistName.setText(album.getAlbumName());
+            TF_PlaylistName.setEditable(false);
+        } else {
+            TF_PlaylistName.setText(playlist.getPlaylistName());
+        }
 
         // Set the initial playlist duration
         updatePlaylistDuration();
@@ -240,8 +290,12 @@ public class PlaylistViewController {
 
     // Helper method to update the playlist duration label
     private void updatePlaylistDuration() {
-        if (playlist != null) {
+        if (isAlbum) {
+            label_amountOfSongs.setText(String.valueOf(album.getSongs().size()) + " songs, " + album.getAlbumDurationAsString());
+
+        } else {
             label_amountOfSongs.setText(String.valueOf(playlist.getSongs().size()) + " songs, " + playlist.getPlaylistDurationAsString());
+
         }
     }
 

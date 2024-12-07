@@ -18,7 +18,7 @@
    <top>
       <HBox alignment="BOTTOM_LEFT" maxHeight="100.0" opacity="0.85" prefHeight="100.0" spacing="25.0" stylesheets="@../../../css/PlaylistTop.css">
          <children>
-            <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="image_cover" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../images/OasisDefinitelyMaybealbumcover.jpg" />
                </image>
@@ -57,7 +57,7 @@
                   </HBox>
                </children>
             </VBox>
-            <Button mnemonicParsing="false" onAction="#addSongToPlaylist" text="add song" />
+            <Button fx:id="button_addSong" mnemonicParsing="false" onAction="#addSongToPlaylist" text="add song" />
          </children>
          <padding>
             <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />

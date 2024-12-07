@@ -61,8 +61,10 @@ public class PlaylistItemController {
 
     @FXML
     private void onPlaylistPressed() {
-        if (playlist != null && mainViewController != null) {
+        if (!isAlbum) {
             mainViewController.onPlaylistSelected(playlist);
+        } else {
+            mainViewController.onPlaylistSelected(album);
         }
     }
 

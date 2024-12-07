@@ -18,8 +18,6 @@ public class UserLibrary {
     public ArrayList<Album> albums = new ArrayList<>();
     @Getter @JsonProperty
     public ArrayList<Song> songs = new ArrayList<>();
-    @Getter @ Setter @JsonProperty
-    public ArrayList<Album> likedAlbums = new ArrayList<>();
 
     public void addSong(Song song) {
         songs.add(song);
@@ -52,7 +50,11 @@ public class UserLibrary {
     }
 
     public void unlikeAlbum(Album album) {
-        likedAlbums.remove(album);
+        album.setLiked(false);
+    }
+
+    public void likeAlbum(Album album) {
+        album.setLiked(true);
     }
 
     public Album findAlbum(String albumName) {

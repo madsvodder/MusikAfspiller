@@ -1,14 +1,11 @@
 package org.example.musikafspiller;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javafx.scene.image.Image;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -27,9 +24,11 @@ public class Album {
     private String albumArtPath;
     @Getter @Setter
     private ArrayList<Song> songs = new ArrayList<>();
-
     @Getter @Setter
-    private boolean isLiked = false;
+    public int albumDuration;
+
+    @Getter @Setter @JsonProperty
+    public boolean isLiked;
 
     public Album(){}
 
@@ -47,6 +46,20 @@ public class Album {
 
     public void addSongToAlbum(Song song) {
         this.songs.add(song);
+    }
+
+    @JsonIgnore
+    public String getAlbumDurationAsString() {
+
+        int hours = albumDuration / 3600;
+        int minutes = (albumDuration % 3600) / 60;
+        int seconds = albumDuration % 60;
+
+        if (hours > 0) {
+            return String.format("%dh, %02dm, %02ds", hours, minutes, seconds); // Hours displayed without leading 0
+        } else {
+            return String.format("%02dm, %02ds", minutes, seconds); // No hours
+        }
     }
 
     @Override

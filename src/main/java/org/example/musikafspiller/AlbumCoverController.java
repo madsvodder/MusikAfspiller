@@ -34,11 +34,7 @@ public class AlbumCoverController {
     @FXML
     private void likeAlbum() {
         if (mainViewController != null) {
-            album.setLiked(!album.isLiked());
-            System.out.println("Liked Album: " + album.isLiked());
-            mainViewController.addAlbumToSidebar(album);
-        } else {
-            System.out.println("Main view controller is null");
+            mainViewController.handleLikeAlbum(album);
         }
     }
 }
