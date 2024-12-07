@@ -29,6 +29,9 @@ public class MediaPlayer {
     @Getter @Setter
     private boolean shuffle = false;
 
+    @Getter @Setter
+    private boolean isPlayingAlbum;
+
     @Getter
     private javafx.scene.media.MediaPlayer mediaPlayer;
 
@@ -38,31 +41,35 @@ public class MediaPlayer {
     private Song lastPlayedSong;
 
     // Play the song
-    public void getReadyToPlaySongInPlaylist(Song songToPlay, Playlist playlistToPlay) {
+    public void getReadyToPlaySongInPlaylist(Song songToPlay, Object playlistOrAlbumToPlay) {
         // Check if the song file exists
         if (songToPlay.getSongFile() == null || !songToPlay.getSongFile().exists()) {
             logger.warning("Invalid song file.");
             return;
         }
 
-        if (playlistToPlay != null) {
-            playingPlaylist = playlistToPlay;
+        if (playlistOrAlbumToPlay != null) {
+            if (playlistOrAlbumToPlay instanceof Playlist) {
+                playingPlaylist = (Playlist) playlistOrAlbumToPlay;
+            } else if (playlistOrAlbumToPlay instanceof Album) {
+                album = (Album) playlistOrAlbumToPlay;
+            }
         }
 
         if (!isSongPlaying) {
             System.out.println("Song is not playing");
-            doPlaySongInPlaylist(songToPlay);
+            doPlaySong(songToPlay);
         } else {
             System.out.println("Song is already playing.");
             mediaPlayer.stop();
             mediaPlayer.dispose();
             mediaPlayer = null;
             isSongPlaying = false;
-            doPlaySongInPlaylist(songToPlay);
+            doPlaySong(songToPlay);
         }
 
     }
-    private void doPlaySongInPlaylist(Song songToPlay) {
+    private void doPlaySong(Song songToPlay) {
 
         // Create a Media object from the song's file path
         File songFile = songToPlay.getSongFile();
@@ -91,9 +98,9 @@ public class MediaPlayer {
             isSongPlaying = false;
 
             if (isNextSongAvailable() && !shuffle) {
-                doPlaySongInPlaylist(getNextSong());
+                doPlaySong(getNextSong());
             } else if (shuffle) {
-                doPlaySongInPlaylist(playingPlaylist.getRandomSong(lastPlayedSong));
+                doPlaySong(playingPlaylist.getRandomSong(lastPlayedSong));
             }
         });
 
@@ -180,14 +187,18 @@ public class MediaPlayer {
             mediaPlayer.dispose();
             mediaPlayer = null;
             isSongPlaying = false;
-            doPlaySongInPlaylist(playingPlaylist.getRandomSong(lastPlayedSong));
+            if (isPlayingAlbum) {
+                doPlaySong(album.getRandomSong(lastPlayedSong));
+            } else {
+                doPlaySong(playingPlaylist.getRandomSong(lastPlayedSong));
+            }
         } else {
             if (isNextSongAvailable()) {
                 mediaPlayer.stop();
                 mediaPlayer.dispose();
                 mediaPlayer = null;
                 isSongPlaying = false;
-                doPlaySongInPlaylist(getNextSong());
+                doPlaySong(getNextSong());
             } else {
                 mainViewController.updateSongUI(null);
                 mediaPlayer.stop();
@@ -209,7 +220,7 @@ public class MediaPlayer {
                 mediaPlayer.dispose();
                 mediaPlayer = null;
                 isSongPlaying = false;
-                doPlaySongInPlaylist(getPreviousSong());
+                doPlaySong(getPreviousSong());
             } else {
                 mainViewController.updateSongUI(null);
                 mediaPlayer.stop();

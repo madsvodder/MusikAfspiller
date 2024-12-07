@@ -470,9 +470,18 @@ public class MainViewController {
     private void onPressedPlay() {togglePlayPause();}
 
     // Play a specific song. This is also used when double-clicking a song in a playlist.
-    public void playSongFromPlaylist(Song song, Playlist playlist) {
-        mediaPlayer.getReadyToPlaySongInPlaylist(song, playlist);
-        mediaPlayer.setCurrentSongIndex(playlist.getSongs().indexOf(song));
+    public void playSongFromPlaylist(Song song, Object playlistOrAlbum) {
+        if (song != null) {
+            if (playlistOrAlbum instanceof Playlist) {
+                mediaPlayer.setPlayingAlbum(false);
+                mediaPlayer.getReadyToPlaySongInPlaylist(song, playlistOrAlbum);
+                mediaPlayer.setCurrentSongIndex(((Playlist) playlistOrAlbum).getSongs().indexOf(song));
+            } else if (playlistOrAlbum instanceof Album) {
+                mediaPlayer.setPlayingAlbum(true);
+                mediaPlayer.getReadyToPlaySongInPlaylist(song, playlistOrAlbum);
+                mediaPlayer.setCurrentSongIndex(((Album) playlistOrAlbum).getSongs().indexOf(song));
+            }
+        }
         updateSongUI(song);
     }
 

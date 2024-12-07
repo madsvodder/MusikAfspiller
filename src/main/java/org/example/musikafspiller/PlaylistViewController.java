@@ -214,7 +214,11 @@ public class PlaylistViewController {
                 Song selectedSong = tableview_playlist.getSelectionModel().getSelectedItem();
                 if (selectedSong != null) {
                     mainViewController.setSelectedSong(selectedSong);
-                    mainViewController.playSongFromPlaylist(selectedSong, playlist);
+                    if (isAlbum) {
+                        mainViewController.playSongFromPlaylist(selectedSong, album);
+                    } else {
+                        mainViewController.playSongFromPlaylist(selectedSong, playlist);
+                    }
                     logger.info("Selected song: " + selectedSong);
                 }
             }

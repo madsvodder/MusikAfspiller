@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.UUID;
 
 public class Album {
@@ -46,6 +47,19 @@ public class Album {
 
     public void addSongToAlbum(Song song) {
         this.songs.add(song);
+    }
+
+    @JsonIgnore
+    public Song getRandomSong(Song songPlaying) {
+        Random r = new Random();
+        Song randomSong;
+
+        // Keep selecting a new random song until it is different from the current one
+        do {
+            randomSong = songs.get(r.nextInt(songs.size()));
+        } while (randomSong.equals(songPlaying));
+
+        return randomSong;
     }
 
     @JsonIgnore
