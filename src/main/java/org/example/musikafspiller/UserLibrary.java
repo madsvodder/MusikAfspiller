@@ -31,7 +31,7 @@ public class UserLibrary {
 
         Album newAlbum = new Album(albumName, albumArtist, albumYear);
 
-        newAlbum.addSongToAlbum(song);
+        newAlbum.addSong(song);
 
         addAlbum(newAlbum);
     }
@@ -42,7 +42,7 @@ public class UserLibrary {
 
     public boolean doesAlbumExist(String title) {
         for (Album album : albums) {
-            if (album.getAlbumName().equals(title)) {
+            if (album.getCollectionName().equals(title)) {
                 return true;
             }
         }
@@ -51,12 +51,12 @@ public class UserLibrary {
 
     public void unlikeAlbum(Album album) {
         album.setLiked(false);
-        System.out.println("Unliked album: " + album.getAlbumName());
+        System.out.println("Unliked album: " + album.getCollectionName());
     }
 
     public void likeAlbum(Album album) {
         album.setLiked(true);
-        System.out.println("Liked album: " + album.getAlbumName());
+        System.out.println("Liked album: " + album.getCollectionName());
     }
 
     public Album findAlbum(String albumName) {
@@ -65,7 +65,7 @@ public class UserLibrary {
             return null;
         }
         for (Album album : albums) {
-            if (album.getAlbumName().equals(albumName)) {
+            if (album.getCollectionName().equals(albumName)) {
                 //System.out.println("Found album: " + album.getAlbumName());
                 return album;
             }
@@ -74,7 +74,7 @@ public class UserLibrary {
     }
 
     public Playlist newPlaylist() {
-        Playlist newPlaylist = new Playlist("New Playlist " + playlists.size(), 0);
+        Playlist newPlaylist = new Playlist("New Playlist " + playlists.size());
         playlists.add(newPlaylist);
         logger.info("Created new playlist in User Library");
         return newPlaylist;

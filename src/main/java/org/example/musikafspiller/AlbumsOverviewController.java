@@ -57,7 +57,7 @@ public class AlbumsOverviewController {
 
             AlbumCoverController controller = fxmlLoader.getController();
             controller.setImage_cover(album.getAlbumArt());
-            controller.setLabel_title(album.getAlbumName());
+            controller.setLabel_title(album.getCollectionName());
             controller.setAlbum(album);
             controller.setMainViewController(mainViewController);
 

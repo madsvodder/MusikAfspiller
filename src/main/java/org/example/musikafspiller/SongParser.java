@@ -108,33 +108,49 @@ public class SongParser {
     }
 
     public void parseSongs(UserLibrary userLibrary, ArrayList<File> songsFilesToParse, String cacheDataPath) {
-
-        if (songsFilesToParse.isEmpty()) {
+        // Validate input
+        if (songsFilesToParse == null || songsFilesToParse.isEmpty()) {
             logger.warning("No songs found to parse.");
             return;
         }
 
+        if (userLibrary == null) {
+            logger.severe("UserLibrary is null. Cannot parse songs.");
+            return;
+        }
+
+        // Loop through each song file to parse
         for (File file : songsFilesToParse) {
-            // Parse the song and handle album association
-            Song newSong = parseSong(file, cacheDataPath, userLibrary);
-
-            if (newSong != null) {
-                // Add the song to the user's library
-                userLibrary.addSong(newSong);
-
-                // Check if the album exists in the library
-                Album album = userLibrary.findAlbum(newSong.getAlbumTitle());
-                if (album == null) {
-                    // If the album doesn't exist, create a new one
-                    album = new Album(newSong.getAlbumTitle(), newSong.getSongArtist(), newSong.getSongYear());
-                    userLibrary.addAlbum(album);  // Add the new album to the library
-                }
-
-                // Add the song to the album
-                album.addSongToAlbum(newSong);
-            } else {
-                logger.warning("Failed to parse song: " + file.getName());
+            if (file == null || !file.exists()) {
+                logger.warning("Invalid file encountered: " + file);
+                continue;
             }
+
+            // Parse the song
+            Song newSong = parseSong(file, cacheDataPath, userLibrary);
+            if (newSong == null) {
+                logger.warning("Failed to parse song: " + file.getName());
+                continue;
+            }
+
+            // Add song to the library
+            userLibrary.addSong(newSong);
+
+            // Handle album association
+            associateSongWithAlbum(userLibrary, newSong);
         }
     }
+
+    private void associateSongWithAlbum(UserLibrary userLibrary, Song song) {
+        // Find or create album for the song
+        Album album = userLibrary.findAlbum(song.getAlbumTitle());
+        if (album == null) {
+            album = new Album(song.getAlbumTitle(), song.getSongArtist(), song.getSongYear());
+            userLibrary.addAlbum(album);
+        }
+
+        // Add the song to the album
+        album.addSong(song);
+    }
+
 }

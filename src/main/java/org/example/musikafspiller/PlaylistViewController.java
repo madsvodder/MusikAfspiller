@@ -23,10 +23,7 @@ import java.util.logging.Logger;
 public class PlaylistViewController {
 
     @Getter @Setter
-    private Playlist playlist;
-
-    @Getter @Setter
-    private Album album;
+    private MusicCollection musicCollection;
 
     @Setter
     private UserLibrary userLibrary;
@@ -79,11 +76,11 @@ public class PlaylistViewController {
 
     private void setupPlaylistNameListener() {
         TF_PlaylistName.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (playlist != null) {
+            if (musicCollection != null) {
                 // Set the playlist name in the playlist class
-                playlist.setPlaylistName(newValue);
+                musicCollection.setCollectionName(newValue);
                 System.out.println("HELLOOO");
-                mainViewController.updatePlaylistNameInSidebar(playlist);
+                mainViewController.updatePlaylistNameInSidebar((Playlist) musicCollection);
             }
         });
     }
@@ -91,10 +88,10 @@ public class PlaylistViewController {
     private void logInitialize() {
         logger.info("Initializing PlaylistViewController");
 
-        if (playlist == null) {
+        if (musicCollection == null) {
             logger.warning("Playlist is null");
         } else {
-            logger.info("Playlist initialized: " + playlist);
+            logger.info("Playlist initialized: " + musicCollection);
         }
 
         if (userLibrary == null) {
@@ -156,7 +153,7 @@ public class PlaylistViewController {
         button_addSong.setVisible(false);
         button_addSong.setDisable(true);
 
-        image_cover.setImage(album.getAlbumArt());
+        image_cover.setImage(musicCollection.getAlbumArt());
     }
 
     private void setupTableview() {
@@ -214,11 +211,7 @@ public class PlaylistViewController {
                 Song selectedSong = tableview_playlist.getSelectionModel().getSelectedItem();
                 if (selectedSong != null) {
                     mainViewController.setSelectedSong(selectedSong);
-                    if (isAlbum) {
-                        mainViewController.playSongFromPlaylist(selectedSong, album);
-                    } else {
-                        mainViewController.playSongFromPlaylist(selectedSong, playlist);
-                    }
+                    mainViewController.playSongFromPlaylist(selectedSong, musicCollection);
                     logger.info("Selected song: " + selectedSong);
                 }
             }
@@ -237,13 +230,13 @@ public class PlaylistViewController {
         removeItem.setOnAction(event -> {
             Song selectedSong = tableview_playlist.getSelectionModel().getSelectedItem();
             if (selectedSong != null) {
-                playlist.removeSong(selectedSong); // Remove from Playlist
+                musicCollection.removeSong(selectedSong); // Remove from Playlist
                 songObservableList.remove(selectedSong); // Remove from ObservableList (UI refreshes automatically)//                playlist.getSongs().remove(selectedSong); // Remove from Playlist
 
                 // Update the playlist duration after the change
                 updatePlaylistDuration();
 
-                System.out.println(playlist.getPlaylistDurationAsString());
+                System.out.println(musicCollection.getDurationAsString());
 
                 logger.info("Removed song: " + selectedSong);
             }
@@ -268,20 +261,16 @@ public class PlaylistViewController {
     }
 
     private void syncObservableList() {
-        if (isAlbum) {
-            songObservableList.setAll(album.getSongs());
-        } else {
-            songObservableList.setAll(playlist.getSongs());
-        }
+        songObservableList.setAll(musicCollection.getSongs());
     }
 
     private void setupLabels() {
 
         if (isAlbum) {
-            TF_PlaylistName.setText(album.getAlbumName());
+            TF_PlaylistName.setText(musicCollection.getCollectionName());
             TF_PlaylistName.setEditable(false);
         } else {
-            TF_PlaylistName.setText(playlist.getPlaylistName());
+            TF_PlaylistName.setText(musicCollection.getCollectionName());
         }
 
         // Set the initial playlist duration
@@ -294,13 +283,7 @@ public class PlaylistViewController {
 
     // Helper method to update the playlist duration label
     private void updatePlaylistDuration() {
-        if (isAlbum) {
-            label_amountOfSongs.setText(String.valueOf(album.getSongs().size()) + " songs, " + album.getAlbumDurationAsString());
-
-        } else {
-            label_amountOfSongs.setText(String.valueOf(playlist.getSongs().size()) + " songs, " + playlist.getPlaylistDurationAsString());
-
-        }
+        label_amountOfSongs.setText(String.valueOf(musicCollection.getSongs().size()) + " songs, " + musicCollection.getDurationAsString());
     }
 
     @FXML
@@ -319,7 +302,7 @@ public class PlaylistViewController {
         result.ifPresent(buttonType -> {
             if (buttonType.equals(ButtonType.OK) && searchableComboBox.getSelectionModel().getSelectedItem() != null) {
                 Song newSong = searchableComboBox.getValue();
-                playlist.addSong(newSong); // Add to Playlist
+                musicCollection.addSong(newSong); // Add to Playlist
                 songObservableList.add(newSong); // Add to ObservableList (UI refreshes automatically)
 
                 // Update the playlist duration after the change

@@ -45,14 +45,14 @@ public class PlaylistItemController {
 
 
     public void initializeAsPlaylist() {
-        label_PlaylistName.setText(playlist.getPlaylistName());
+        label_PlaylistName.setText(playlist.getCollectionName());
         label_Type.setText("Playlist");
         setupContextMenu();
         isAlbum = false;
     }
 
     public void initializeAsAlbum() {
-        label_PlaylistName.setText(album.getAlbumName());
+        label_PlaylistName.setText(album.getCollectionName());
         label_Type.setText("Album");
         imageCover.setImage(album.getAlbumArt());
         setupContextMenu();
@@ -69,7 +69,7 @@ public class PlaylistItemController {
     }
 
     public void updatePlaylistNameUI() {
-        label_PlaylistName.setText(playlist.getPlaylistName());
+        label_PlaylistName.setText(playlist.getCollectionName());
     }
 
     public HBox getPlaylistItemBox() {

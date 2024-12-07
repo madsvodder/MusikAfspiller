@@ -19,8 +19,7 @@ public class MediaPlayer {
         this.mainViewController = mainViewController;
     }
 
-    Playlist playingPlaylist;
-    Album album;
+    MusicCollection musicCollection;
 
     Logger logger = Logger.getLogger(MediaPlayer.class.getName());
 
@@ -28,9 +27,6 @@ public class MediaPlayer {
 
     @Getter @Setter
     private boolean shuffle = false;
-
-    @Getter @Setter
-    private boolean isPlayingAlbum;
 
     @Getter
     private javafx.scene.media.MediaPlayer mediaPlayer;
@@ -41,20 +37,21 @@ public class MediaPlayer {
     private Song lastPlayedSong;
 
     // Play the song
-    public void getReadyToPlaySongInPlaylist(Song songToPlay, Object playlistOrAlbumToPlay) {
+    public void getReadyToPlaySongInPlaylist(Song songToPlay, Object collectionToPlay) {
         // Check if the song file exists
         if (songToPlay.getSongFile() == null || !songToPlay.getSongFile().exists()) {
             logger.warning("Invalid song file.");
             return;
         }
 
-        if (playlistOrAlbumToPlay != null) {
-            if (playlistOrAlbumToPlay instanceof Playlist) {
-                playingPlaylist = (Playlist) playlistOrAlbumToPlay;
-            } else if (playlistOrAlbumToPlay instanceof Album) {
-                album = (Album) playlistOrAlbumToPlay;
+        /*
+        if (collectionToPlay != null) {
+            if (collectionToPlay instanceof Playlist) {
+                musicCollection = (Playlist) collectionToPlay;
+            } else if (collectionToPlay instanceof Album) {
+                musicCollection = (Album) collectionToPlay;
             }
-        }
+        }*/
 
         if (!isSongPlaying) {
             System.out.println("Song is not playing");
@@ -86,7 +83,7 @@ public class MediaPlayer {
         // Set up media player events
         mediaPlayer.setOnReady(() -> {
             logger.info("Song: " + songToPlay.getSongTitle() + " - " + songToPlay.getSongArtist());
-            currentSongIndex = playingPlaylist.getSongs().indexOf(songToPlay);
+            currentSongIndex = musicCollection.getSongs().indexOf(songToPlay);
             lastPlayedSong = songToPlay;
         });
 
@@ -100,7 +97,7 @@ public class MediaPlayer {
             if (isNextSongAvailable() && !shuffle) {
                 doPlaySong(getNextSong());
             } else if (shuffle) {
-                doPlaySong(playingPlaylist.getRandomSong(lastPlayedSong));
+                doPlaySong(musicCollection.getRandomSong(lastPlayedSong));
             }
         });
 
@@ -114,50 +111,50 @@ public class MediaPlayer {
     public int currentSongIndex = 0;
 
     public boolean isNextSongAvailable() {
-        if (playingPlaylist.getSongs().isEmpty()) {
+        if (musicCollection.getSongs().isEmpty()) {
             return false; // Playlist is empty
         }
-        return currentSongIndex < playingPlaylist.getSongs().size() - 1; // Check if next song exists
+        return currentSongIndex < musicCollection.getSongs().size() - 1; // Check if next song exists
     }
 
     public boolean isPreviousSongAvailable() {
-        if (playingPlaylist.getSongs().isEmpty()) {
+        if (musicCollection.getSongs().isEmpty()) {
             return false;
         }
         return currentSongIndex > 0; // Check previous song
     }
 
     public Song getPreviousSong() {
-        if (playingPlaylist.getSongs().isEmpty()) {
+        if (musicCollection.getSongs().isEmpty()) {
             return null; // Return null if the playlist is null or empty
         }
 
         if (currentSongIndex > 0) {
-            return playingPlaylist.getSongs().get(--currentSongIndex);
+            return musicCollection.getSongs().get(--currentSongIndex);
         } else {
             return null;
         }
     }
 
     public Song getNextSong() {
-        if (playingPlaylist.getSongs().isEmpty()) {
+        if (musicCollection.getSongs().isEmpty()) {
             return null; // Return null if the playlist is null or empty
         }
 
-        if (currentSongIndex >= playingPlaylist.getSongs().size()) {
+        if (currentSongIndex >= musicCollection.getSongs().size()) {
             currentSongIndex = 0;
-            return playingPlaylist.getSongs().get(currentSongIndex);
+            return musicCollection.getSongs().get(currentSongIndex);
         } else {
-            return playingPlaylist.getSongs().get(++currentSongIndex);
+            return musicCollection.getSongs().get(++currentSongIndex);
         }
 
     }
 
     public Song getCurrentSong() {
-        if (playingPlaylist.getSongs().isEmpty()) {
+        if (musicCollection.getSongs().isEmpty()) {
             return null; // No song in the playlist
         }
-        return playingPlaylist.getSongs().get(currentSongIndex);
+        return musicCollection.getSongs().get(currentSongIndex);
     }
 
     // Pause the song
@@ -187,11 +184,7 @@ public class MediaPlayer {
             mediaPlayer.dispose();
             mediaPlayer = null;
             isSongPlaying = false;
-            if (isPlayingAlbum) {
-                doPlaySong(album.getRandomSong(lastPlayedSong));
-            } else {
-                doPlaySong(playingPlaylist.getRandomSong(lastPlayedSong));
-            }
+            doPlaySong(musicCollection.getRandomSong(lastPlayedSong));
         } else {
             if (isNextSongAvailable()) {
                 mediaPlayer.stop();

@@ -328,31 +328,38 @@ public class MainViewController {
 
 
     public void updatePlaylistNameInSidebar(Playlist playlist) {
-        // Print the UUID of the playlist being passed in
+        // Log the UUID of the playlist being updated
         logger.info("Attempting to update playlist with UUID: " + playlist.getUuid());
 
+        // Iterate through children in the VBox
         for (Node node : vbox_playlists.getChildren()) {
+            // Check if the node is an HBox
             if (node instanceof HBox) {
-                // Get the PlaylistItemController from userData
-                PlaylistItemController itemController = (PlaylistItemController) node.getUserData();
+                // Retrieve the PlaylistItemController from userData
+                Object userData = node.getUserData();
+                if (userData instanceof PlaylistItemController) {
+                    PlaylistItemController itemController = (PlaylistItemController) userData;
 
-                // Check if the controller is not null
-                if (itemController != null) {
-                    // Debug print for the UUID of the playlist in the sidebar
-                    logger.info("Sidebar playlist UUID: " + itemController.getPlaylist().getUuid());
-
-                    // Compare UUIDs instead of playlist names
+                    // Compare UUIDs to identify the correct playlist
                     if (itemController.getPlaylist().getUuid().equals(playlist.getUuid())) {
-                        logger.info("UUIDs match! Updating playlist name...");
+                        logger.info("UUIDs match! Updating playlist name in UI.");
                         itemController.updatePlaylistNameUI();
-                        break;
+                        return; // Exit once the playlist is found and updated
+                    } else {
+                        logger.fine("UUID mismatch for playlist: " + itemController.getPlaylist().getUuid());
                     }
                 } else {
-                    logger.info("Item controller is null for this node.");
+                    logger.warning("User data is not a PlaylistItemController for node: " + node);
                 }
+            } else {
+                logger.fine("Node is not an HBox: " + node);
             }
         }
+
+        // Log if no match was found
+        logger.warning("No matching playlist found in the sidebar for UUID: " + playlist.getUuid());
     }
+
 
     // Window for viewing all the albums that's imported
     @FXML
@@ -398,7 +405,7 @@ public class MainViewController {
 
             if (item instanceof Playlist) {
                 // Pass the required data to the controller
-                controller.setPlaylist((Playlist) item);
+                controller.setMusicCollection((Playlist) item);
                 controller.setUserLibrary(userLibrary);
                 controller.setMainViewController(this);
                 controller.customInit(false);
@@ -409,7 +416,7 @@ public class MainViewController {
                 // Log for debugging
                 logger.info("Switching to playlist view with playlist: " + (Playlist) item + " and userLibrary: " + userLibrary);
             } else if (item instanceof Album) {
-                controller.setAlbum((Album) item);
+                controller.setMusicCollection((Album) item);
                 controller.setUserLibrary(userLibrary);
                 controller.setMainViewController(this);
                 controller.customInit(true);
@@ -455,11 +462,11 @@ public class MainViewController {
                     // Create new album
                     Album newAlbum = new Album(newSong.getAlbumTitle(), newSong.getSongArtist(), newSong.getSongYear());
                     newAlbum.setAlbumArtPath(newSong.getAlbumCoverPath());
-                    newAlbum.addSongToAlbum(newSong);
+                    newAlbum.addSong(newSong);
                     userLibrary.addAlbum(newAlbum);
                 } else {
                     // Add song to existing album
-                    existingAlbum.addSongToAlbum(newSong);
+                    existingAlbum.addSong(newSong);
                 }
             }
         }
@@ -470,17 +477,11 @@ public class MainViewController {
     private void onPressedPlay() {togglePlayPause();}
 
     // Play a specific song. This is also used when double-clicking a song in a playlist.
-    public void playSongFromPlaylist(Song song, Object playlistOrAlbum) {
+    public void playSongFromPlaylist(Song song, MusicCollection playlistOrAlbum) {
         if (song != null) {
-            if (playlistOrAlbum instanceof Playlist) {
-                mediaPlayer.setPlayingAlbum(false);
-                mediaPlayer.getReadyToPlaySongInPlaylist(song, playlistOrAlbum);
-                mediaPlayer.setCurrentSongIndex(((Playlist) playlistOrAlbum).getSongs().indexOf(song));
-            } else if (playlistOrAlbum instanceof Album) {
-                mediaPlayer.setPlayingAlbum(true);
-                mediaPlayer.getReadyToPlaySongInPlaylist(song, playlistOrAlbum);
-                mediaPlayer.setCurrentSongIndex(((Album) playlistOrAlbum).getSongs().indexOf(song));
-            }
+            //mediaPlayer.setPlayingAlbum(true);
+            mediaPlayer.getReadyToPlaySongInPlaylist(song, playlistOrAlbum);
+            mediaPlayer.setCurrentSongIndex((playlistOrAlbum).getSongs().indexOf(song));
         }
         updateSongUI(song);
     }
@@ -628,6 +629,7 @@ public class MainViewController {
 
             // Check if userLibrary has playlists
             System.out.println("Loaded user library: " + userLibrary);
+
 
             for (Playlist playlist : userLibrary.getPlaylists()) {
                 System.out.println("Loading playlist: " + playlist);
