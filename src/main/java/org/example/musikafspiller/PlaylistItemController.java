@@ -87,7 +87,7 @@ public class PlaylistItemController {
             if (isAlbum) {
                 if (mainViewController != null && album != null) {
                     mainViewController.removeItemFromSidebar(album, this);
-
+                    mainViewController.getUserLibrary().unlikeAlbum(album);
                 }
             } else {
                 if (mainViewController != null && playlist != null) {

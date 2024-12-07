@@ -78,6 +78,7 @@ public class MainViewController {
     private String cacheDataPath;
 
     // The main classes. The user library, and the media player.
+    @Getter
     UserLibrary userLibrary = new UserLibrary();
     MediaPlayer mediaPlayer = new MediaPlayer(this);
     DataSaver dataSaver;
@@ -549,7 +550,6 @@ public class MainViewController {
         double targetTimeInSeconds = slider_songProgress.getValue();
         mediaPlayer.getMediaPlayer().seek(Duration.seconds(targetTimeInSeconds));
     }
-
 
     public void updateSongUI(Song songToPlay) {
         if (songToPlay != null) {

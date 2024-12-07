@@ -17,6 +17,13 @@
 
     /* Make the annoying borders transparent */
     -fx-table-cell-border-color: transparent;
+
+    /* Fixes the weird problem where it expands a bit when pressed */
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
 }
 
 
@@ -42,12 +49,23 @@
 
 /* make the rows transparent */
 .table-row-cell {
-    -fx-background-color: transparent;
+    -fx-background-color: #1A191B;
 }
 
 .table-row-cell:odd {
+    -fx-background-color: #232023;
+}
+
+
+
+.table-row-cell:empty {
     -fx-background-color: transparent;
 }
+.table-row-cell:empty:odd {
+    -fx-background-color: transparent;
+}
+
+
 
 .table-row-cell:filled {
 

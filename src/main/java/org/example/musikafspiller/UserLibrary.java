@@ -51,10 +51,12 @@ public class UserLibrary {
 
     public void unlikeAlbum(Album album) {
         album.setLiked(false);
+        System.out.println("Unliked album: " + album.getAlbumName());
     }
 
     public void likeAlbum(Album album) {
         album.setLiked(true);
+        System.out.println("Liked album: " + album.getAlbumName());
     }
 
     public Album findAlbum(String albumName) {
