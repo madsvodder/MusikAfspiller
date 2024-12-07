@@ -150,9 +150,9 @@
                </HBox.margin>
             </VBox>
             <Region prefHeight="80.0" prefWidth="240.0" HBox.hgrow="ALWAYS" />
-            <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" layoutX="1228.0" layoutY="38.0" mnemonicParsing="false" text="Button">
+            <Button fx:id="button_Shuffle" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" layoutX="1228.0" layoutY="38.0" mnemonicParsing="false" onAction="#enableShuffle" opacity="0.3" text="Button">
                <graphic>
-                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imgview_Shuffle" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../../images/LightImages/Shuffle.png" />
                      </image>

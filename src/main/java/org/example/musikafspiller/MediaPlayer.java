@@ -20,10 +20,14 @@ public class MediaPlayer {
     }
 
     Playlist playingPlaylist;
+    Album album;
 
     Logger logger = Logger.getLogger(MediaPlayer.class.getName());
 
     private boolean isSongPlaying = false;
+
+    @Getter @Setter
+    private boolean shuffle = false;
 
     @Getter
     private javafx.scene.media.MediaPlayer mediaPlayer;
@@ -31,7 +35,7 @@ public class MediaPlayer {
     @Getter
     private StringProperty currentTimeProperty = new SimpleStringProperty("0:00");
 
-
+    private Song lastPlayedSong;
 
     // Play the song
     public void getReadyToPlaySongInPlaylist(Song songToPlay, Playlist playlistToPlay) {
@@ -76,6 +80,7 @@ public class MediaPlayer {
         mediaPlayer.setOnReady(() -> {
             logger.info("Song: " + songToPlay.getSongTitle() + " - " + songToPlay.getSongArtist());
             currentSongIndex = playingPlaylist.getSongs().indexOf(songToPlay);
+            lastPlayedSong = songToPlay;
         });
 
         mediaPlayer.setOnEndOfMedia(() -> {
@@ -85,8 +90,10 @@ public class MediaPlayer {
             mediaPlayer = null;
             isSongPlaying = false;
 
-            if (isNextSongAvailable()) {
+            if (isNextSongAvailable() && !shuffle) {
                 doPlaySongInPlaylist(getNextSong());
+            } else if (shuffle) {
+                doPlaySongInPlaylist(playingPlaylist.getRandomSong(lastPlayedSong));
             }
         });
 
@@ -168,7 +175,13 @@ public class MediaPlayer {
     }
 
     public void skipSong() {
-        if (mediaPlayer != null) {
+        if (shuffle) {
+            mediaPlayer.stop();
+            mediaPlayer.dispose();
+            mediaPlayer = null;
+            isSongPlaying = false;
+            doPlaySongInPlaylist(playingPlaylist.getRandomSong(lastPlayedSong));
+        } else {
             if (isNextSongAvailable()) {
                 mediaPlayer.stop();
                 mediaPlayer.dispose();
@@ -183,6 +196,10 @@ public class MediaPlayer {
                 isSongPlaying = false;
             }
         }
+    }
+
+    public void shuffle() {
+        shuffle = !shuffle;
     }
 
     public void previousSong() {

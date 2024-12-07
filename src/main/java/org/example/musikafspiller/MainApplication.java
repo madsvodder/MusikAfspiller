@@ -13,7 +13,6 @@ public class MainApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        //Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("main-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         MainViewController controller = fxmlLoader.getController();
@@ -26,6 +25,8 @@ public class MainApplication extends Application {
     }
 
     public static void main(String[] args) {
+        // Set the property for macOS system menu bar integration
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
         launch();
     }
 }

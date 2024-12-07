@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
@@ -59,11 +60,16 @@ public class MainViewController {
     private Label label_CurrentSongName;
     @FXML
     private Label label_currentArtistName;
+    @FXML
+    private Button button_Shuffle;
+    @FXML
+    private ImageView imgview_Shuffle;
 
     // These images are the ones that we change during runtime.
     private Image playImage;
     private Image pauseImage;
     private Image musicRecordImage;
+
 
     // A reference to the selected song that is playing or paused
     @Setter @Getter
@@ -492,6 +498,18 @@ public class MainViewController {
     private void previousSong() {
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.previousSong();
+        }
+    }
+
+    @FXML
+    private void enableShuffle() {
+        if (mediaPlayer != null) {
+            mediaPlayer.shuffle();
+            if (mediaPlayer.isShuffle()) {
+                button_Shuffle.setOpacity(1);
+            } else {
+                button_Shuffle.setOpacity(0.3);
+            }
         }
     }
 
