@@ -246,10 +246,6 @@ public class MainViewController {
         addItemToSidebar(userLibrary.newPlaylist(), false);
     }
 
-    public void addAlbumToSidebar(Album album) {
-        addItemToSidebar(album, true);
-    }
-
     private void addItemToSidebar(Object item, boolean isAlbum) {
         try {
             // Load FXML file and add it to the side
@@ -295,8 +291,6 @@ public class MainViewController {
             logger.warning(e.getMessage()); // Log the specific type error
         }
     }
-
-
 
     // Removes playlist or album from sidebar and in the user library
     public void removeItemFromSidebar(Object item, PlaylistItemController playlistItemController) {
@@ -592,7 +586,7 @@ public class MainViewController {
         // If the album isnt liked, then like it
         if (!albumToLike.isLiked()) {
             userLibrary.likeAlbum(albumToLike);
-            addAlbumToSidebar(albumToLike);
+            addItemToSidebar(albumToLike, true);
         } else {
             userLibrary.unlikeAlbum(albumToLike);
         }
