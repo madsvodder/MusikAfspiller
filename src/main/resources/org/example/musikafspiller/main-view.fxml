@@ -86,12 +86,12 @@
             </ImageView>
             <VBox alignment="CENTER_LEFT" prefHeight="80.0">
                <children>
-                  <Label fx:id="label_CurrentSongName" maxWidth="200.0" minWidth="200.0">
+                  <Label fx:id="label_CurrentSongName" maxWidth="200.0" minWidth="200.0" textFill="WHITE">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <Label fx:id="label_currentArtistName" layoutX="10.0" layoutY="10.0" />
+                  <Label fx:id="label_currentArtistName" layoutX="10.0" layoutY="10.0" textFill="WHITE" />
                </children>
             </VBox>
             <Region prefHeight="80.0" prefWidth="55.0" HBox.hgrow="ALWAYS" />
