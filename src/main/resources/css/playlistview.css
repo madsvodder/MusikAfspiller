@@ -1,9 +1,12 @@
-* {
-
-}
+/*-fx-background-color: #232023;*/
+/*-fx-background-color: #1A191B;*/
 
 .border-pane {
-    -fx-background-color: #2B292D;
+
+    -fx-background-color: #14151C;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+     -fx-padding: 10 0 0 10;  /*Push child elements inward */
 }
 
 .custom-view {
@@ -13,7 +16,8 @@
 
 /* background color of the whole table view */
 .table-view {
-    -fx-background-color: linear-gradient(#2B292D 0%, #1A191B 100%);
+    -fx-background-color: transparent;
+    /* -fx-background-color: linear-gradient(#2B292D 0%, #1A191B 100%); */
 
     /* Make the annoying borders transparent */
     -fx-table-cell-border-color: transparent;
@@ -49,11 +53,12 @@
 
 /* make the rows transparent */
 .table-row-cell {
-    -fx-background-color: #1A191B;
+
+    -fx-background-color: #14151C;
 }
 
 .table-row-cell:odd {
-    -fx-background-color: #232023;
+    -fx-background-color: #14151C;
 }
 
 
@@ -128,6 +133,7 @@
 .table-view .filler {
     -fx-background-color: transparent; /* Match this to your theme */
 }
+
 
 
 

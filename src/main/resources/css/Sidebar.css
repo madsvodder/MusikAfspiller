@@ -1,3 +1,9 @@
+
+
+/* Fixes the white edges on the scrollpane */
+.scroll-pane .viewport {
+    -fx-background-color: transparent; /* Ensures viewport doesn't override */
+}
 ScrollPane {
     -fx-background-color: transparent;
 }
@@ -7,8 +13,10 @@ HBox {
 }
 
 VBox {
-    -fx-background-color: #111111;
+    -fx-background-color: #121318;
+    -fx-background-radius: 20;
 }
+
 
 .button:hover {
     -fx-text-fill: white;

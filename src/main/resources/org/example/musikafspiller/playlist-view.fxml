@@ -14,9 +14,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../../../css/playlistview.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.musikafspiller.PlaylistViewController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="border-pane" stylesheets="@../../../css/playlistview.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.musikafspiller.PlaylistViewController">
    <top>
-      <HBox alignment="BOTTOM_LEFT" maxHeight="100.0" opacity="0.85" prefHeight="100.0" spacing="25.0" stylesheets="@../../../css/PlaylistTop.css">
+      <HBox alignment="BOTTOM_LEFT" maxHeight="100.0" prefHeight="100.0" spacing="25.0" stylesheets="@../../../css/PlaylistTop.css">
          <children>
             <ImageView fx:id="image_cover" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                <image>

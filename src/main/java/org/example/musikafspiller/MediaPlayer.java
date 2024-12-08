@@ -37,21 +37,16 @@ public class MediaPlayer {
     private Song lastPlayedSong;
 
     // Play the song
-    public void getReadyToPlaySongInPlaylist(Song songToPlay, Object collectionToPlay) {
+    public void getReadyToPlaySongInPlaylist(Song songToPlay, MusicCollection collectionToPlay) {
         // Check if the song file exists
         if (songToPlay.getSongFile() == null || !songToPlay.getSongFile().exists()) {
             logger.warning("Invalid song file.");
             return;
         }
 
-        /*
-        if (collectionToPlay != null) {
-            if (collectionToPlay instanceof Playlist) {
-                musicCollection = (Playlist) collectionToPlay;
-            } else if (collectionToPlay instanceof Album) {
-                musicCollection = (Album) collectionToPlay;
-            }
-        }*/
+        // Set the reference for the current playing collection
+        musicCollection = collectionToPlay;
+
 
         if (!isSongPlaying) {
             System.out.println("Song is not playing");
