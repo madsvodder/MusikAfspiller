@@ -187,7 +187,8 @@
       <AnchorPane fx:id="anchorCenter" prefWidth="1037.0" style="-fx-background-color: #14151C; -fx-background-radius: 20;">
          <BorderPane.margin>
             <Insets right="10.0" top="10.0" />
-         </BorderPane.margin></AnchorPane>
+         </BorderPane.margin>
+      </AnchorPane>
    </center>
    <top>
       <MenuBar useSystemMenuBar="true" BorderPane.alignment="CENTER">
