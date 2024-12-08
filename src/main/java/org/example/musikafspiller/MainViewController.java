@@ -5,11 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Slider;
-import javafx.scene.effect.ColorAdjust;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -17,12 +13,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 import lombok.Getter;
 import lombok.Setter;
-import org.controlsfx.control.TaskProgressView;
 
 import java.io.File;
 import java.io.IOException;
@@ -118,45 +111,6 @@ public class MainViewController {
         } else {
             save();
         }
-    }
-
-    private Task<Void> createSongParsingTask() {
-        return new Task<>() {
-            @Override
-            protected Void call() {
-                updateTitle("Parsing Songs");
-                SongParser songParser = new SongParser();
-
-                List<File> audioFiles = getAudioFilesFromDocuments();
-                System.out.println("Found " + audioFiles.size() + " audio files.");
-
-                int totalFiles = audioFiles.size();
-                int progress = 0;
-
-                if (totalFiles == 0) {
-                    updateMessage("No files found to parse.");
-                    return null;
-                }
-
-                for (File file : audioFiles) {
-                    try {
-                        updateMessage("Parsing " + file.getName());
-                        songParser.parseSong(file, cacheDataPath, userLibrary);
-                        System.out.println("Parsing " + file.getName());
-
-                        progress++;
-                        updateProgress(progress, totalFiles);
-                    } catch (Exception ex) {
-                        updateMessage("Error parsing " + file.getName() + ": " + ex.getMessage());
-                        ex.printStackTrace();
-                    }
-                }
-
-                updateMessage("Parsing Complete");
-                return null;
-            }
-
-        };
     }
 
     private void setupUserDocuments() {
@@ -366,7 +320,7 @@ public class MainViewController {
     private void switchToAlbumsView() throws IOException {
         // Load the new FXML file (albums-overview.fxml)
         FXMLLoader loader = new FXMLLoader(getClass().getResource("albums-overview.fxml"));
-        BorderPane newView = loader.load();
+        ScrollPane newView = loader.load();
 
         // Get the controller of the new FXML view
         AlbumsOverviewController albumsOverviewController = loader.getController();

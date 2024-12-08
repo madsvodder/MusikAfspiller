@@ -1,16 +1,14 @@
 .scroll-pane {
-    -fx-background-color: transparent; /* Makes the outer ScrollPane transparent */
-    -fx-border-color: transparent;    /* Removes any borders */
+    -fx-background-radius: 15px; /* Set the corner radius for ScrollPane */
+    -fx-background-insets: 0; /* Ensure the background fills the entire area */
+    -fx-background-color: #14151C; /* Dark background color */
 }
 
 .scroll-pane .viewport {
-    -fx-background-color: transparent; /* Makes the content area transparent */
+    -fx-background-color: #14151C; /* Ensure the viewport also has the same dark background */
+    -fx-background-radius: 15px; /* Round the corners of the viewport */
 }
 
-.grid-pane {
-    -fx-background-color: transparent; /* Makes the background transparent */
-}
-
-.border-pane {
-    -fx-background-color: #282929;
+.scroll-pane .corner {
+    -fx-background-color: transparent; /* Optional: make the corner transparent (no background) */
 }
