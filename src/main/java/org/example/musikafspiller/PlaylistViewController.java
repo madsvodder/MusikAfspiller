@@ -1,5 +1,6 @@
 package org.example.musikafspiller;
 
+import io.github.palexdev.materialfx.controls.MFXSlider;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -222,9 +223,11 @@ public class PlaylistViewController {
         // Setup context menu
         ContextMenu contextMenu = new ContextMenu();
         MenuItem removeItem = new MenuItem("Remove");
+        MenuItem queueSong = new MenuItem("Add To Queue");
 
         // Add the remove item to the context menu
         contextMenu.getItems().add(removeItem);
+        contextMenu.getItems().add(queueSong);
 
         // Add action to remove the selected song
         removeItem.setOnAction(event -> {
@@ -239,6 +242,13 @@ public class PlaylistViewController {
                 System.out.println(musicCollection.getDurationAsString());
 
                 logger.info("Removed song: " + selectedSong);
+            }
+        });
+
+        queueSong.setOnAction(event -> {
+            Song selectedSong = tableview_playlist.getSelectionModel().getSelectedItem();
+            if (selectedSong != null) {
+                mainViewController.handleAddSongToQueue(selectedSong);
             }
         });
 

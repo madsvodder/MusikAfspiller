@@ -33,7 +33,7 @@ public class Song {
     @JsonIgnore
     public Image getAlbumCover() {
         if (albumCoverPath != null && !albumCoverPath.isEmpty()) {
-            System.out.println("Returned image: " + albumCoverPath);
+            //System.out.println("Returned image: " + albumCoverPath);
             return new Image("file:" + albumCoverPath);  // Ensure it's a valid file URL
         }
         System.out.println("No image to return");

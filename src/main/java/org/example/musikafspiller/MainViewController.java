@@ -1,5 +1,6 @@
 package org.example.musikafspiller;
 
+import io.github.palexdev.materialfx.controls.MFXSlider;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -57,6 +58,8 @@ public class MainViewController {
     private Button button_Shuffle;
     @FXML
     private ImageView imgview_Shuffle;
+    @FXML
+    private MFXSlider slider_Volume;
 
     // These images are the ones that we change during runtime.
     private Image playImage;
@@ -98,6 +101,9 @@ public class MainViewController {
         slider_songProgress.valueProperty().addListener((observable, oldValue, newValue) -> {
             progressBar_SongProgress.setProgress(newValue.doubleValue() / slider_songProgress.getMax());
         });
+
+        // Set up the volume slider
+        setupVolumeSlider();
 
         // Load images
         playImage = new Image(getClass().getResourceAsStream("/images/LightImages/CircledPlay.png"));
@@ -433,16 +439,16 @@ public class MainViewController {
     // Play a specific song. This is also used when double-clicking a song in a playlist.
     public void playSongFromPlaylist(Song song, MusicCollection collection) {
         if (song != null && collection != null) {
-            //mediaPlayer.setPlayingAlbum(true);
-            mediaPlayer.getReadyToPlaySongInPlaylist(song, collection);
-            mediaPlayer.setCurrentSongIndex((collection).getSongs().indexOf(song));
+            // Use the refactored method to play the song
+            mediaPlayer.playSong(song, collection);
+            mediaPlayer.setCurrentSongIndex(collection.getSongs().indexOf(song));
         }
         updateSongUI(song);
     }
 
     // Toggle between Play and Pause
     private void togglePlayPause() {
-        if (mediaPlayer.isPlaying()) {
+        if (mediaPlayer.isSongPlaying) {
             mediaPlayer.pauseSong();
             image_PlayPause.setImage(playImage);
         } else {
@@ -453,29 +459,26 @@ public class MainViewController {
 
     @FXML
     private void nextSong() {
-        if (mediaPlayer.isPlaying()) {
+        if (mediaPlayer.isSongPlaying) {
             mediaPlayer.skipSong();
         }
     }
 
     @FXML
     private void previousSong() {
-        if (mediaPlayer.isPlaying()) {
+        if (mediaPlayer.isSongPlaying) {
             mediaPlayer.previousSong();
         }
     }
 
     @FXML
-    private void enableShuffle() {
+    private void toggleShuffle() {
         if (mediaPlayer != null) {
-            mediaPlayer.shuffle();
-            if (mediaPlayer.isShuffle()) {
-                button_Shuffle.setOpacity(1);
-            } else {
-                button_Shuffle.setOpacity(0.3);
-            }
+            mediaPlayer.toggleShuffle();
+            button_Shuffle.setOpacity(mediaPlayer.isShuffle() ? 1 : 0.3);
         }
     }
+
 
     private void setupSongProgressSlider() {
         if (mediaPlayer != null) {
@@ -520,6 +523,15 @@ public class MainViewController {
         }
     }
 
+    private void setupVolumeSlider() {
+        if (mediaPlayer != null) {
+            slider_Volume.valueProperty().addListener((observable, oldValue, newValue) -> {
+                double volume = newValue.doubleValue() / 100; // Convert to range [0.0, 1.0]
+                mediaPlayer.adjustVolume(volume);
+            });
+        }
+    }
+
     // Helper method to format Duration into a string (MM:SS)
     private String formatTime(Duration duration) {
         int minutes = (int) duration.toMinutes();
@@ -552,6 +564,10 @@ public class MainViewController {
             label_songDurationFinal.setText("0:00");
         }
 
+    }
+
+    public void handleAddSongToQueue(Song songToAdd) {
+        mediaPlayer.addSongToQueue(songToAdd);
     }
 
     public void handleLikeAlbum(Album albumToLike) {

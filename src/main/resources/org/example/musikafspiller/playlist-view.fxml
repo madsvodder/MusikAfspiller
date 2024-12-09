@@ -57,6 +57,8 @@
                   </HBox>
                </children>
             </VBox>
+            <Button fx:id="button_Play" mnemonicParsing="false" text="Play" />
+            <Button fx:id="button_Shuffle" layoutX="621.0" layoutY="149.0" mnemonicParsing="false" text="Shuffle" />
             <Button fx:id="button_addSong" mnemonicParsing="false" onAction="#addSongToPlaylist" text="add song" />
          </children>
          <padding>

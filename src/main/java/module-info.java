@@ -1,5 +1,4 @@
 module org.example.musikafspiller {
-    requires javafx.fxml;
     requires static lombok;
     requires jaudiotagger;
     requires com.jfoenix;
@@ -10,6 +9,7 @@ module org.example.musikafspiller {
     requires atlantafx.base;
     requires jdk.security.jgss;
     requires java.logging;
+    requires MaterialFX;
 
     opens org.example.musikafspiller to javafx.fxml;
     exports org.example.musikafspiller;
