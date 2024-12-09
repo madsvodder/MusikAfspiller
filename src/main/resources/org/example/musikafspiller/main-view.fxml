@@ -159,7 +159,7 @@
             <Region prefHeight="80.0" prefWidth="80.0" HBox.hgrow="ALWAYS" />
             <HBox alignment="CENTER">
                <children>
-                  <Button fx:id="button_Volume" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#enableShuffle" text="Button">
+                  <Button fx:id="button_Volume" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Button">
                      <graphic>
                         <ImageView fx:id="imgview_Shuffle1" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
