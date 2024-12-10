@@ -180,7 +180,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" layoutX="719.0" layoutY="38.0" mnemonicParsing="false" text="Button">
+            <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" layoutX="719.0" layoutY="38.0" mnemonicParsing="false" onAction="#showQueueView" text="Button">
                <graphic>
                   <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>

@@ -234,7 +234,7 @@ public class PlaylistViewController {
             Song selectedSong = tableview_playlist.getSelectionModel().getSelectedItem();
             if (selectedSong != null) {
                 musicCollection.removeSong(selectedSong); // Remove from Playlist
-                songObservableList.remove(selectedSong); // Remove from ObservableList (UI refreshes automatically)//                playlist.getSongs().remove(selectedSong); // Remove from Playlist
+                songObservableList.remove(selectedSong); // Remove from ObservableList (UI refreshes automatically)//
 
                 // Update the playlist duration after the change
                 updatePlaylistDuration();

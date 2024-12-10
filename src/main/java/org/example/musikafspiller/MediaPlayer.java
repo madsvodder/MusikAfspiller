@@ -24,6 +24,7 @@ public class MediaPlayer {
     private MusicCollection musicCollection;
     @Getter private javafx.scene.media.MediaPlayer mediaPlayer;
 
+    @Getter
     private ArrayList<Song> songQueue = new ArrayList<>();
     private Song lastPlayedSong;
     private Double mediaVolume = 0.5;
@@ -37,11 +38,11 @@ public class MediaPlayer {
 
     /* Public Methods */
 
-    public void playSong(Song songToPlay, MusicCollection collectionToPlayer) {
+    public void playSong(Song songToPlay, MusicCollection collectionToPlay) {
         if (!isValidSong(songToPlay)) return;
 
         cleanupMediaPlayer();
-        musicCollection = collectionToPlayer;
+        musicCollection = collectionToPlay;
         doPlaySong(songToPlay);
     }
 
@@ -73,12 +74,14 @@ public class MediaPlayer {
     public void pauseSong() {
         if (mediaPlayer != null) {
             mediaPlayer.pause();
+            isSongPlaying = false;
         }
     }
 
     public void resumeSong() {
         if (mediaPlayer != null) {
             mediaPlayer.play();
+            isSongPlaying = true;
         }
     }
 
@@ -105,6 +108,11 @@ public class MediaPlayer {
 
     public void addSongToQueue(Song songToAdd) {
         songQueue.add(songToAdd);
+    }
+
+    public void removeSongFromQueue(Song songToRemove) {
+        songQueue.remove(songToRemove);
+        System.out.println("Song Removed From Queue");
     }
 
     public void toggleShuffle() {
