@@ -7,7 +7,6 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox stylesheets="@../../../css/AlbumCover.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.musikafspiller.AlbumCoverController">
@@ -16,27 +15,14 @@
          <children>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <StackPane maxHeight="170.0" maxWidth="170.0" prefHeight="170.0" prefWidth="170.0">
-                     <children>
-                        <ImageView fx:id="image_cover" fitHeight="170.0" fitWidth="170.0" onMouseClicked="#viewAlbum" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../images/OasisDefinitelyMaybealbumcover.jpg" />
-                           </image>
-                           <effect>
-                              <DropShadow offsetX="5.0" offsetY="5.0" />
-                           </effect>
-                        </ImageView>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="VBox">
-                           <children>
-                              <ImageView fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../images/LightImages/LoveCircled.png" />
-                                 </image>
-                              </ImageView>
-                           </children>
-                        </VBox>
-                     </children>
-                  </StackPane>
+                  <ImageView fx:id="image_cover" fitHeight="170.0" fitWidth="170.0" onMouseClicked="#viewAlbum" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../images/OasisDefinitelyMaybealbumcover.jpg" />
+                     </image>
+                     <effect>
+                        <DropShadow offsetX="5.0" offsetY="5.0" />
+                     </effect>
+                  </ImageView>
                   <HBox alignment="CENTER" maxWidth="170.0" spacing="3.0">
                      <VBox.margin>
                         <Insets />
