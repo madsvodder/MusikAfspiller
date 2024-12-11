@@ -70,6 +70,7 @@ public class AlbumsOverviewController {
             controller.setLabel_title(album.getCollectionName());
             controller.setAlbum(album);
             controller.setMainViewController(mainViewController);
+
             albumBoxes.add(albumBox);
             if (album.isLiked())
             {

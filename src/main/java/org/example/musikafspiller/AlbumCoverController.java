@@ -28,7 +28,7 @@ public class AlbumCoverController {
 
     @Getter @Setter private Album album;
     @Setter private MainViewController mainViewController;
-    @Setter private PlaylistItemController playlistItemController;
+    @Setter @Getter private PlaylistItemController playlistItemController;
 
     public AlbumCoverController() {
         likedImage = new Image(getClass().getResourceAsStream("/images/LightImages/Love.png"));
@@ -47,14 +47,15 @@ public class AlbumCoverController {
     private void likeAlbum() {
         if (mainViewController != null) {
             if (album.isLiked()) {
-                mainViewController.handleLikeAlbum(album);
+                mainViewController.handleUnlikedAlbum(album); // Album is liked
                 imgview_isLiked.setImage(unlikedImage);
             } else {
-                mainViewController.handleUnlikedAlbum(album);
+                mainViewController.handleLikeAlbum(album, this); // Album is unliked
                 imgview_isLiked.setImage(likedImage);
             }
         }
     }
+
 
     @FXML
     private void viewAlbum() {

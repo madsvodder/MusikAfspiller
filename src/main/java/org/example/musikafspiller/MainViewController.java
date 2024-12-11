@@ -1,13 +1,10 @@
 package org.example.musikafspiller;
 
 import io.github.palexdev.materialfx.controls.MFXSlider;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -17,7 +14,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Popup;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import lombok.Getter;
@@ -31,6 +27,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class MainViewController {
@@ -65,6 +62,8 @@ public class MainViewController {
     private ImageView imgview_Shuffle;
     @FXML
     private MFXSlider slider_Volume;
+
+    private List<PlaylistItemController> sidebarItems = new ArrayList<>();
 
     // These images are the ones that we change during runtime.
     private Image playImage;
@@ -254,6 +253,11 @@ public class MainViewController {
 
             // Initialize playlistItem with appropriate flag
             playlistItemController.customInitialize(isAlbum);
+
+            sidebarItems.add(playlistItemController);
+            logger.info("Added item to sidebarItems list");
+
+
         } catch (IOException e) {
             logger.warning("Failed to add or load item: " + e.getMessage());
         } catch (IllegalArgumentException e) {
@@ -269,27 +273,17 @@ public class MainViewController {
         if (item instanceof Playlist) {
             // Remove the playlist item from the sidebar
             vbox_playlists.getChildren().remove(playlistItemBox);
-
-            // Remove the playlist from the user library
             userLibrary.removePlaylist((Playlist) item);
             System.out.println("Removed playlist item: " + item);
-
-            // If the selected playlist is the one being removed, reset the selectedPlaylist
-            if (selectedPlaylist == item) {
-                selectedPlaylist = null;
-                // Switch to the first playlist if available
-                if (!userLibrary.getPlaylists().isEmpty()) {
-                    switchToPlaylistView(userLibrary.getPlaylists().getFirst());
-                }
-            }
         } else if (item instanceof Album) {
             // Remove the album item from the sidebar
             vbox_playlists.getChildren().remove(playlistItemBox);
-
-            // Unlike the album in the user library
             userLibrary.unlikeAlbum((Album) item);
             System.out.println("Removed album item: " + item);
         }
+
+        // Remove the controller from the sidebarItems list
+        sidebarItems.remove(playlistItemController);
     }
 
 
@@ -580,10 +574,17 @@ public class MainViewController {
         addItemToSidebar(albumToLike, true);
     }
 
+
     public void handleUnlikedAlbum(Album albumToUnlike) {
-        userLibrary.unlikeAlbum(albumToUnlike);
-        removeItemFromSidebar(albumToUnlike, playlistItemController);
+        for (PlaylistItemController controller : sidebarItems) {
+            if (Objects.equals(controller.getAlbum(), albumToUnlike)) {
+                removeItemFromSidebar(albumToUnlike, controller);
+                userLibrary.unlikeAlbum(albumToUnlike);
+                break; // Exit the loop once the item is found and removed
+            }
+        }
     }
+
 
     @FXML
     public void showQueueView() {
@@ -634,10 +635,6 @@ public class MainViewController {
             e.printStackTrace();
         }
     }
-
-
-
-
 
 
     @FXML
