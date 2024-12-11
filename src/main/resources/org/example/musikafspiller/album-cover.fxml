@@ -6,6 +6,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -17,15 +18,15 @@
                <children>
                   <StackPane maxHeight="170.0" maxWidth="170.0" prefHeight="170.0" prefWidth="170.0">
                      <children>
-                        <ImageView fx:id="image_cover" fitHeight="170.0" fitWidth="170.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="image_cover" fitHeight="170.0" fitWidth="170.0" onMouseClicked="#viewAlbum" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../../../images/OasisDefinitelyMaybealbumcover.jpg" />
                            </image>
                            <effect>
-                              <DropShadow height="40.0" radius="19.5" width="40.0" />
+                              <DropShadow offsetX="5.0" offsetY="5.0" />
                            </effect>
                         </ImageView>
-                        <VBox alignment="CENTER" onMouseClicked="#likeAlbum" prefHeight="200.0" prefWidth="100.0" styleClass="VBox">
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="VBox">
                            <children>
                               <ImageView fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -36,11 +37,19 @@
                         </VBox>
                      </children>
                   </StackPane>
-                  <Label fx:id="label_title" text="Definitely Maybe" textFill="WHITE">
+                  <HBox alignment="CENTER" maxWidth="170.0" spacing="3.0">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
-                  </Label>
+                     <children>
+                        <Label fx:id="label_title" text="Definitely Maybe" textFill="WHITE" />
+                        <ImageView fx:id="imgview_isLiked" fitHeight="15.0" fitWidth="15.0" onMouseClicked="#likeAlbum" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../images/LightImages/Heart.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
                </children>
             </VBox>
          </children>

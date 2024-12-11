@@ -1,29 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.SearchableComboBox?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" stylesheets="@../../../css/AlbumsOverview.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.musikafspiller.AlbumsOverviewController">
-        <content>
-            <GridPane fx:id="grid_Albums" hgap="5.0" vgap="5.0">
-                <!-- Column Constraints -->
-                <columnConstraints>
-                    <ColumnConstraints hgrow="ALWAYS" minWidth="50.0" prefWidth="100.0" />
-                </columnConstraints>
-
-                                  <!-- Row Constraints -->
-                <rowConstraints>
-                    <RowConstraints minHeight="50.0" prefHeight="100.0" vgrow="ALWAYS" />
-                </rowConstraints>
-         <padding>
-            <Insets top="20.0" />
-         </padding>
-
-                                  <!-- Example of adding elements to the GridPane -->
-                
-                                          </GridPane>
-        </content>
-    </ScrollPane>
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.musikafspiller.AlbumsOverviewController">
+   <center>
+      <ScrollPane fitToHeight="true" fitToWidth="true" stylesheets="@../../../css/AlbumsOverview.css">
+              <content>
+                  <GridPane fx:id="grid_Albums" hgap="5.0" vgap="5.0">
+                      <!-- Column Constraints -->
+                      <columnConstraints>
+                          <ColumnConstraints hgrow="ALWAYS" minWidth="50.0" prefWidth="100.0" />
+                      </columnConstraints>
+      
+                                        <!-- Row Constraints -->
+                      <rowConstraints>
+                          <RowConstraints minHeight="50.0" prefHeight="100.0" vgrow="ALWAYS" />
+                      </rowConstraints>
+               <padding>
+                  <Insets top="20.0" />
+               </padding>
+      
+                                        <!-- Example of adding elements to the GridPane -->
+                      
+                                                </GridPane>
+              </content>
+          </ScrollPane>
+   </center>
+   <top>
+      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="CENTER" spacing="10.0">
+               <children>
+                  <Label text="ARTISTS">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <SearchableComboBox fx:id="cb_Artists" maxHeight="30.0" prefHeight="30.0" />
+               </children>
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+            </VBox>
+         </children>
+      </HBox>
+   </top>
+</BorderPane>

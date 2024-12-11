@@ -17,10 +17,22 @@ public class AlbumCoverController {
     @FXML
     private Label label_title;
 
+    @FXML @Setter @Getter
+    private ImageView imgview_isLiked;
+
+    // These images are the ones that we change during runtime.
+
+    @Getter private Image likedImage;
+
+    @Getter private Image unlikedImage;
+
     @Getter @Setter private Album album;
     @Setter private MainViewController mainViewController;
+    @Setter private PlaylistItemController playlistItemController;
 
     public AlbumCoverController() {
+        likedImage = new Image(getClass().getResourceAsStream("/images/LightImages/Love.png"));
+        unlikedImage = new Image(getClass().getResourceAsStream("/images/LightImages/Heart.png"));
     }
 
     public void setImage_cover(Image image) {
@@ -34,7 +46,20 @@ public class AlbumCoverController {
     @FXML
     private void likeAlbum() {
         if (mainViewController != null) {
-            mainViewController.handleLikeAlbum(album);
+            if (album.isLiked()) {
+                mainViewController.handleLikeAlbum(album);
+                imgview_isLiked.setImage(unlikedImage);
+            } else {
+                mainViewController.handleUnlikedAlbum(album);
+                imgview_isLiked.setImage(likedImage);
+            }
+        }
+    }
+
+    @FXML
+    private void viewAlbum() {
+        if (mainViewController != null) {
+            mainViewController.switchToPlaylistView(album);
         }
     }
 }

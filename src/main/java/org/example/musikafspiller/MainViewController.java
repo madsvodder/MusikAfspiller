@@ -332,7 +332,7 @@ public class MainViewController {
     private void switchToAlbumsView() throws IOException {
         // Load the new FXML file (albums-overview.fxml)
         FXMLLoader loader = new FXMLLoader(getClass().getResource("albums-overview.fxml"));
-        ScrollPane newView = loader.load();
+        BorderPane newView = loader.load();
 
         // Get the controller of the new FXML view
         AlbumsOverviewController albumsOverviewController = loader.getController();
@@ -361,7 +361,7 @@ public class MainViewController {
     }
 
     // Method to switch to the selected playlist view
-    private void switchToPlaylistView(Object item) {
+    public void switchToPlaylistView(Object item) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist-view.fxml"));
             BorderPane newView = loader.load();
@@ -575,14 +575,14 @@ public class MainViewController {
         mediaPlayer.addSongToQueue(songToAdd);
     }
 
-    public void handleLikeAlbum(Album albumToLike) {
-        // If the album isnt liked, then like it
-        if (!albumToLike.isLiked()) {
-            userLibrary.likeAlbum(albumToLike);
-            addItemToSidebar(albumToLike, true);
-        } else {
-            userLibrary.unlikeAlbum(albumToLike);
-        }
+    public void handleLikeAlbum(Album albumToLike, AlbumCoverController albumCoverController) {
+        userLibrary.likeAlbum(albumToLike);
+        addItemToSidebar(albumToLike, true);
+    }
+
+    public void handleUnlikedAlbum(Album albumToUnlike) {
+        userLibrary.unlikeAlbum(albumToUnlike);
+        removeItemFromSidebar(albumToUnlike, playlistItemController);
     }
 
     @FXML

@@ -8,8 +8,10 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import lombok.Setter;
+import org.controlsfx.control.SearchableComboBox;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class AlbumsOverviewController {
 
@@ -22,9 +24,17 @@ public class AlbumsOverviewController {
     @Setter
     private MainViewController mainViewController;
 
+    @FXML
+    private SearchableComboBox<String> cb_Artists;
+
+    private ArrayList<VBox> albumBoxes = new ArrayList<>();
+
     public void populateAlbumGrid() {
+        albumBoxes.clear();
         grid_Albums.getChildren().clear();  // Clear any previous content
 
+        cb_Artists.setOnAction(event -> applyFilter());
+        cb_Artists.getItems().clear();
         // Set column constraints dynamically based on your requirements
         addColumnConstraints();
 
@@ -60,6 +70,16 @@ public class AlbumsOverviewController {
             controller.setLabel_title(album.getCollectionName());
             controller.setAlbum(album);
             controller.setMainViewController(mainViewController);
+            albumBoxes.add(albumBox);
+            if (album.isLiked())
+            {
+                controller.getImgview_isLiked().setImage(controller.getLikedImage());
+            } else {
+                controller.getImgview_isLiked().setImage(controller.getUnlikedImage());
+            }
+            if (album.getAlbumArtist() != null && !cb_Artists.getItems().contains(album.getAlbumArtist())) {
+                cb_Artists.getItems().add(album.getAlbumArtist());
+            }
 
             return albumBox;
 
@@ -89,4 +109,38 @@ public class AlbumsOverviewController {
             grid_Albums.getRowConstraints().add(row);  // Add row constraint
         }
     }
+
+    public void applyFilter() {
+        String artistFilter = cb_Artists.getSelectionModel().getSelectedItem();
+
+        grid_Albums.getChildren().clear();
+
+        int column = 0;
+        int row = 0;
+
+        for (Album album : userLibrary.getAlbums()) {
+            if (album != null) {
+                // Check for null or empty artist filter
+                if (artistFilter != null && !artistFilter.isEmpty()) {
+                    // Artist filter logic
+                    if (!album.getAlbumArtist().toLowerCase().contains(artistFilter.toLowerCase())) {
+                        continue;
+                    }
+                }
+
+                // If album passes filters, create and add its VBox to the grid
+                VBox albumBox = createAlbumBox(album);
+                if (albumBox != null) {
+                    grid_Albums.add(albumBox, column, row);
+                    column++;
+
+                    if (column == 5) { // Adjust based on your column layout
+                        column = 0;
+                        row++;
+                    }
+                }
+            }
+        }
+    }
+
 }
