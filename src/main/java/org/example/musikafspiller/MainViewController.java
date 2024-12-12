@@ -3,6 +3,7 @@ package org.example.musikafspiller;
 import io.github.palexdev.materialfx.controls.MFXSlider;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -62,6 +63,10 @@ public class MainViewController {
     private ImageView imgview_Shuffle;
     @FXML
     private MFXSlider slider_Volume;
+    @FXML
+    private HBox hbox_playerBarLocation;
+    @FXML
+    private BorderPane bp_mainBorderPane;
 
     private List<PlaylistItemController> sidebarItems = new ArrayList<>();
 
@@ -109,6 +114,8 @@ public class MainViewController {
 
         // Set up the volume slider
         setupVolumeSlider();
+
+        setupPlayerBar();
 
         // Load images
         playImage = new Image(getClass().getResourceAsStream("/images/LightImages/CircledPlay.png"));
@@ -206,6 +213,18 @@ public class MainViewController {
             }
             return audioFiles;
         }
+
+    private void setupPlayerBar() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("playerbar-view.fxml"));
+            HBox playerBar = loader.load(); // Load the FXML file into an HBox (or whatever root node is defined).
+            bp_mainBorderPane.setBottom(playerBar); // Set the loaded node as the bottom of the BorderPane.
+            // Add 10px margin on all sides
+            BorderPane.setMargin(playerBar, new Insets(10, 10, 10, 10));
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load player bar view", e);
+        }
+    }
 
     // Method for adding a new playlist (called by Scene Builder)
     @FXML

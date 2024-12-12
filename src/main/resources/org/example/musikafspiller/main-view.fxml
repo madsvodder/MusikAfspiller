@@ -21,7 +21,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.musikafspiller.MainViewController">
+<BorderPane fx:id="bp_mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.musikafspiller.MainViewController">
    <left>
       <VBox prefHeight="720.0" prefWidth="243.0" spacing="10.0" stylesheets="@../../../css/Sidebar.css" BorderPane.alignment="CENTER">
          <children>
@@ -81,9 +81,9 @@
       </VBox>
    </left>
    <bottom>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="1280.0" stylesheets="@../../../css/Playerbar.css">
+      <HBox fx:id="hbox_playerBarLocation" alignment="CENTER" prefHeight="100.0" prefWidth="1280.0" stylesheets="@../../../css/Playerbar.css">
          <children>
-            <ImageView fx:id="image_currentAlbumPlaying" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="image_currentAlbumPlaying" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" visible="false">
                <image>
                   <Image url="@../../../images/LightImages/MusicRecord.png" />
                </image>
@@ -91,7 +91,7 @@
                   <Insets right="10.0" />
                </HBox.margin>
             </ImageView>
-            <VBox alignment="CENTER_LEFT" prefHeight="80.0">
+            <VBox alignment="CENTER_LEFT" prefHeight="80.0" visible="false">
                <children>
                   <Label fx:id="label_CurrentSongName" maxWidth="200.0" minWidth="200.0" textFill="WHITE">
                      <font>
@@ -101,8 +101,8 @@
                   <Label fx:id="label_currentArtistName" layoutX="10.0" layoutY="10.0" textFill="WHITE" />
                </children>
             </VBox>
-            <Region prefHeight="80.0" prefWidth="55.0" HBox.hgrow="ALWAYS" />
-            <VBox alignment="CENTER" maxWidth="450.0" minWidth="450.0" prefHeight="80.0" prefWidth="450.0">
+            <Region prefHeight="80.0" prefWidth="55.0" visible="false" HBox.hgrow="ALWAYS" />
+            <VBox alignment="CENTER" maxWidth="450.0" minWidth="450.0" prefHeight="80.0" prefWidth="450.0" visible="false">
                <children>
                   <HBox alignment="CENTER" maxWidth="800.0">
                      <children>
@@ -156,8 +156,8 @@
                   <Insets />
                </HBox.margin>
             </VBox>
-            <Region prefHeight="80.0" prefWidth="80.0" HBox.hgrow="ALWAYS" />
-            <HBox alignment="CENTER">
+            <Region prefHeight="80.0" prefWidth="80.0" visible="false" HBox.hgrow="ALWAYS" />
+            <HBox alignment="CENTER" visible="false">
                <children>
                   <Button fx:id="button_Volume" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Button">
                      <graphic>
@@ -171,7 +171,7 @@
                   <MFXSlider fx:id="slider_Volume" value="100.0" />
                </children>
             </HBox>
-            <Button fx:id="button_Shuffle" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" layoutX="1228.0" layoutY="38.0" mnemonicParsing="false" onAction="#toggleShuffle" opacity="0.3" text="Button">
+            <Button fx:id="button_Shuffle" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" layoutX="1228.0" layoutY="38.0" mnemonicParsing="false" onAction="#toggleShuffle" opacity="0.3" text="Button" visible="false">
                <graphic>
                   <ImageView fx:id="imgview_Shuffle" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -180,7 +180,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" layoutX="719.0" layoutY="38.0" mnemonicParsing="false" onAction="#showQueueView" text="Button">
+            <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" layoutX="719.0" layoutY="38.0" mnemonicParsing="false" onAction="#showQueueView" text="Button" visible="false">
                <graphic>
                   <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
