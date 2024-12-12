@@ -210,14 +210,15 @@ public class MainViewController {
         }
     }
 
+
     // Method for adding a new playlist (called by Scene Builder)
     @FXML
     private void addNewPlaylistToSidebar() {
         // null indicates a new playlist
-        addItemToSidebar(userLibrary.newPlaylist(), false);
+        addItemToSidebar(userLibrary.newPlaylist());
     }
 
-    private void addItemToSidebar(Object item, boolean isAlbum) {
+    private void addItemToSidebar(Object item) {
         try {
             // Load FXML file and add it to the side
             FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist-item.fxml"));
@@ -226,40 +227,29 @@ public class MainViewController {
 
             logger.info("Added item to sidebar");
 
-            // Get the controller from the FXML playlistitem
+            // Get the controller from the FXML
             PlaylistItemController playlistItemController = loader.getController();
 
             // Set reference to MainViewController
             playlistItemController.setMainViewController(this);
 
-            // Set the item (either playlist or album) with proper type checking
-            if (isAlbum) {
-                // Check if it's an Album
-                if (item instanceof Album) {
-                    // Casting as Album
-                    playlistItemController.setAlbum((Album) item);
-                } else {
-                    throw new IllegalArgumentException("Expected an Album, but got: " + item.getClass());
-                }
+            // Determine the type of item and initialize appropriately
+            if (item instanceof Album) {
+                playlistItemController.setAlbum((Album) item);
+                playlistItemController.initializeAsAlbum();
+            } else if (item instanceof Playlist) {
+                playlistItemController.setPlaylist((Playlist) item);
+                playlistItemController.initializeAsPlaylist();
             } else {
-                // Check if it's a Playlist
-                if (item instanceof Playlist) {
-                    // Casting as Playlist
-                    playlistItemController.setPlaylist((Playlist) item);
-                } else {
-                    throw new IllegalArgumentException("Expected a Playlist, but got: " + item.getClass());
-                }
+                throw new IllegalArgumentException("Unsupported item type: " + item.getClass());
             }
 
             // Set the userData of the HBox to the controller
             playlistItem.setUserData(playlistItemController);
 
-            // Initialize playlistItem with appropriate flag
-            playlistItemController.customInitialize(isAlbum);
-
+            // Add controller to the sidebarItems list
             sidebarItems.add(playlistItemController);
             logger.info("Added item to sidebarItems list");
-
 
         } catch (IOException e) {
             logger.warning("Failed to add or load item: " + e.getMessage());
@@ -442,7 +432,7 @@ public class MainViewController {
 
     public void handleLikeAlbum(Album albumToLike, AlbumCoverController albumCoverController) {
         userLibrary.likeAlbum(albumToLike);
-        addItemToSidebar(albumToLike, true);
+        addItemToSidebar(albumToLike);
     }
 
 
@@ -480,12 +470,12 @@ public class MainViewController {
 
             for (Playlist playlist : userLibrary.getPlaylists()) {
                 System.out.println("Loading playlist: " + playlist);
-                addItemToSidebar(playlist, false);
+                addItemToSidebar(playlist);
             }
 
             for (Album album : userLibrary.getAlbums()) {
                 if (album.isLiked()) {
-                    addItemToSidebar(album, true);
+                    addItemToSidebar(album);
                 }
             }
 

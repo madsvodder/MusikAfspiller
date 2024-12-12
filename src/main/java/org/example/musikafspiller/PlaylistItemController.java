@@ -9,7 +9,12 @@ import javafx.scene.layout.HBox;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.logging.Logger;
+
 public class PlaylistItemController {
+
+    // Logger
+    Logger logger = Logger.getLogger(PlaylistItemController.class.getName());
 
     @Setter
     MainViewController mainViewController;
@@ -32,31 +37,19 @@ public class PlaylistItemController {
 
     private boolean isAlbum;
 
-    public PlaylistItemController() {
-    }
-
-    public void customInitialize(Boolean isAlbum) {
-        if (isAlbum) {
-            initializeAsAlbum();
-        } else {
-            initializeAsPlaylist();
-        }
-    }
-
-
     public void initializeAsPlaylist() {
         label_PlaylistName.setText(playlist.getCollectionName());
         label_Type.setText("Playlist");
-        setupContextMenu();
         isAlbum = false;
+        setupContextMenu();
     }
 
     public void initializeAsAlbum() {
         label_PlaylistName.setText(album.getCollectionName());
         label_Type.setText("Album");
         imageCover.setImage(album.getAlbumArt());
-        setupContextMenu();
         isAlbum = true;
+        setupContextMenu();
     }
 
     @FXML
@@ -80,32 +73,34 @@ public class PlaylistItemController {
         // Create the context menu
         ContextMenu contextMenu = new ContextMenu();
 
-        // Create the menu items
-        MenuItem deleteItem = new MenuItem("Delete");
-        deleteItem.setOnAction(event -> {
-            // Handle delete playlist from sidebar here
-            if (isAlbum) {
-                if (mainViewController != null && album != null) {
-                    mainViewController.removeItemFromSidebar(album, this);
-                    mainViewController.getUserLibrary().unlikeAlbum(album);
-                }
-            } else {
-                if (mainViewController != null && playlist != null) {
-                    mainViewController.removeItemFromSidebar(playlist, this);
-                }
-            }
-        });
+        // Delete menu item
+        MenuItem deleteItem = new MenuItem(isAlbum ? "Unlike Album" : "Delete Playlist");
+        deleteItem.setOnAction(event -> {handleDeleteAction();});
 
-        MenuItem renameItem = new MenuItem("Rename");
-        renameItem.setOnAction(event -> {
-            // Handle rename here
-        });
+        // Configure the context menu
+        contextMenu.getItems().add(deleteItem);
 
-        contextMenu.getItems().addAll(deleteItem, renameItem);
-
-        // Add right click context menu event
+        // Make it appear with right click
         hbox_playlist.setOnContextMenuRequested(event -> {
             contextMenu.show(hbox_playlist, event.getScreenX(), event.getScreenY());
         });
+    }
+
+    private void handleDeleteAction() {
+        if (mainViewController == null) {
+            logger.warning("MainViewController is null. Cannot perform delete action.");
+            return;
+        }
+
+        if (isAlbum && album != null) {
+            mainViewController.removeItemFromSidebar(album, this);
+            mainViewController.getUserLibrary().unlikeAlbum(album);
+            logger.info("Album removed from sidebar and unliked.");
+        } else if (!isAlbum && playlist != null) {
+            mainViewController.removeItemFromSidebar(playlist, this);
+            logger.info("Playlist removed from sidebar.");
+        } else {
+            logger.warning("No valid item to delete.");
+        }
     }
 }

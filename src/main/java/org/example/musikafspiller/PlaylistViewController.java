@@ -1,6 +1,5 @@
 package org.example.musikafspiller;
 
-import io.github.palexdev.materialfx.controls.MFXSlider;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -8,11 +7,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import lombok.Getter;
 import lombok.Setter;
@@ -170,10 +166,6 @@ public class PlaylistViewController {
     }
 
     private void setupCells() {
-        //kolonne_album.setCellValueFactory(new PropertyValueFactory<>("albumTitle"));
-        //kolonne_duration.setCellValueFactory(new PropertyValueFactory<>("songDurationFormatted"));
-        //kolonne_title.setCellValueFactory(new PropertyValueFactory<>("songTitle"));
-
 
         kolonne_album.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getAlbumTitle()));
         kolonne_duration.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getSongDurationFormatted()));
