@@ -14,7 +14,8 @@ import java.util.logging.Logger;
 
 public class MediaPlayer {
 
-    private MainViewController mainViewController;
+    private PlayerBarController playerBarController;
+    //private MainViewController mainViewController;
     Logger logger = Logger.getLogger(MediaPlayer.class.getName());
 
 
@@ -32,8 +33,8 @@ public class MediaPlayer {
     @Getter boolean isSongPlaying = false;
 
     // Constructor
-    public MediaPlayer(MainViewController mainViewController) {
-        this.mainViewController = mainViewController;
+    public MediaPlayer(PlayerBarController playerBarController) {
+        this.playerBarController = playerBarController;
     }
 
     /* Public Methods */
@@ -87,7 +88,7 @@ public class MediaPlayer {
 
     public void stopSong() {
         cleanupMediaPlayer();
-        mainViewController.updateSongUI(null);
+        playerBarController.updateSongUI(null);
         isSongPlaying = false;
     }
 
@@ -132,7 +133,7 @@ public class MediaPlayer {
         setupMediaPlayerEvents(songToPlay);
 
         mediaPlayer.play();
-        mainViewController.updateSongUI(songToPlay);
+        playerBarController.updateSongUI(songToPlay);
         isSongPlaying = true;
     }
 
@@ -171,7 +172,7 @@ public class MediaPlayer {
     }
 
     private void handleNoSongsAvailable() {
-        mainViewController.updateSongUI(null);
+        playerBarController.updateSongUI(null);
         logger.info("No songs available to play.");
     }
 

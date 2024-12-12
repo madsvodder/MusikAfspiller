@@ -32,6 +32,9 @@ public class PlaylistViewController {
     @Setter
     private MainViewController mainViewController;
 
+    @Setter
+    private PlayerBarController playerBarController;
+
     @FXML
     private TableColumn<Song, String> kolonne_album;
 
@@ -212,7 +215,7 @@ public class PlaylistViewController {
                 Song selectedSong = tableview_playlist.getSelectionModel().getSelectedItem();
                 if (selectedSong != null) {
                     mainViewController.setSelectedSong(selectedSong);
-                    mainViewController.playSongFromPlaylist(selectedSong, musicCollection);
+                    playerBarController.playSongFromPlaylist(selectedSong, musicCollection);
                     logger.info("Selected song: " + selectedSong);
                 }
             }
@@ -248,7 +251,7 @@ public class PlaylistViewController {
         queueSong.setOnAction(event -> {
             Song selectedSong = tableview_playlist.getSelectionModel().getSelectedItem();
             if (selectedSong != null) {
-                mainViewController.handleAddSongToQueue(selectedSong);
+                playerBarController.handleAddSongToQueue(selectedSong);
             }
         });
 
