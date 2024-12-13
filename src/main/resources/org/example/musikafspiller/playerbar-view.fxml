@@ -2,6 +2,7 @@
 
 <?import io.github.palexdev.materialfx.controls.MFXSlider?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
@@ -26,10 +27,13 @@
       </ImageView>
       <VBox alignment="CENTER_LEFT" prefHeight="80.0">
          <children>
-            <Label fx:id="label_CurrentSongName" maxWidth="200.0" minWidth="200.0" textFill="WHITE">
+            <Label fx:id="label_CurrentSongName" maxWidth="200.0" minWidth="200.0" onMouseClicked="#goToPlaylist" onMouseEntered="#setUnderlineOnHover" onMouseExited="#setUnderlineOffHover" textFill="WHITE">
                <font>
                   <Font size="18.0" />
                </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </Label>
             <Label fx:id="label_currentArtistName" layoutX="10.0" layoutY="10.0" textFill="WHITE" />
          </children>

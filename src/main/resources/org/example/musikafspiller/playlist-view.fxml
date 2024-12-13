@@ -67,7 +67,7 @@
       </HBox>
    </top>
    <center>
-      <TableView fx:id="tableview_playlist" BorderPane.alignment="CENTER">
+      <TableView fx:id="tableview_playlist" editable="true" BorderPane.alignment="CENTER">
         <columns>
           <TableColumn fx:id="kolonne_number" prefWidth="50.0" resizable="false" text="#" />
             <TableColumn fx:id="kolonne_cover" minWidth="15.0" prefWidth="61.9803581237793" resizable="false" />

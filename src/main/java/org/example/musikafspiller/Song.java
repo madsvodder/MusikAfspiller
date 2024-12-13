@@ -1,5 +1,6 @@
 package org.example.musikafspiller;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javafx.scene.image.Image;
 import lombok.Getter;
@@ -9,6 +10,9 @@ import java.io.File;
 
 @Getter @Setter
 public class Song {
+
+    @Getter @Setter
+    private int amountOfPlays;
 
     private String songTitle;
     private String songArtist;

@@ -42,31 +42,9 @@ public class MainViewController {
     @FXML
     private VBox vbox_playlists;
     @FXML
-    private Label label_songDuration;
-    @FXML
-    private ImageView image_PlayPause;
-    @FXML
-    private ProgressBar progressBar_SongProgress;
-    @FXML
-    private Slider slider_songProgress;
-    @FXML
-    private Label label_songDurationFinal;
-    @FXML
-    private ImageView image_currentAlbumPlaying;
-    @FXML
-    private Label label_CurrentSongName;
-    @FXML
-    private Label label_currentArtistName;
-    @FXML
-    private Button button_Shuffle;
-    @FXML
-    private ImageView imgview_Shuffle;
-    @FXML
-    private MFXSlider slider_Volume;
-    @FXML
-    private HBox hbox_playerBarLocation;
-    @FXML
     private BorderPane bp_mainBorderPane;
+    @FXML
+    private VBox vbox_queue;
 
     private List<PlaylistItemController> sidebarItems = new ArrayList<>();
 
@@ -101,8 +79,10 @@ public class MainViewController {
         SongParser songParser = new SongParser();
         songParser.parseSongs(userLibrary, getAudioFilesFromDocuments(), cacheDataPath);
 
-
         setupPlayerBar();
+
+
+
 
         // Load everything
         if (dataSaver.doesSaveFileExist()) {
@@ -203,6 +183,7 @@ public class MainViewController {
             // Add 10px margin on all sides
             BorderPane.setMargin(playerBar, new Insets(10, 10, 10, 10));
             this.playerBarController = loader.getController();
+            playerBarController.setMainViewController(this);
             playerBarController.customInit();
             System.out.println("Player Bar Initialized: " + playerBarController);
         } catch (IOException e) {
@@ -210,6 +191,25 @@ public class MainViewController {
         }
     }
 
+    public QueueViewController showQueueSidebar() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("queue-view.fxml"));
+            VBox vboxQueue = loader.load();
+            QueueViewController queueViewController = loader.getController();
+            bp_mainBorderPane.setRight(vboxQueue);
+
+            // Add 10 margin
+            BorderPane.setMargin(vboxQueue, new Insets(10, 10, 10, 10));
+
+            // Initialize the queue
+            queueViewController.customInit(playerBarController.getMediaPlayer());
+
+            return queueViewController;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     // Method for adding a new playlist (called by Scene Builder)
     @FXML
@@ -426,7 +426,6 @@ public class MainViewController {
             }
         }
     }
-
 
 
 

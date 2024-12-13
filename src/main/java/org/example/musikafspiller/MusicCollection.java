@@ -1,6 +1,7 @@
 package org.example.musikafspiller;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javafx.scene.image.Image;
 import lombok.Getter;
@@ -38,6 +39,11 @@ public abstract class MusicCollection {
 
     public void removeSong(Song song) {
         songs.remove(song);
+        updateDuration();
+    }
+
+    public void clearSongs() {
+        songs.clear();
         updateDuration();
     }
 

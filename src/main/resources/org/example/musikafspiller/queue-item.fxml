@@ -6,14 +6,14 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 
-<HBox alignment="CENTER_LEFT" maxHeight="50.0" maxWidth="200.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="200.0" spacing="5.0" style="-fx-background-color: #14151C; -fx-background-radius: 0;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.musikafspiller.QueueItemController">
+<HBox alignment="CENTER_LEFT" maxHeight="50.0" maxWidth="200.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="250.0" spacing="5.0" stylesheets="@../../../css/QueueItem.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.musikafspiller.QueueItemController">
    <children>
       <ImageView fx:id="image_Cover" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../../images/LightImages/MusicRecord.png" />
          </image>
       </ImageView>
-      <Label fx:id="label_SongName" text="Song Name" />
+      <Label fx:id="label_SongName" text="Song Name" textFill="WHITE" HBox.hgrow="ALWAYS" />
       <Button fx:id="button_Remove" mnemonicParsing="false" onAction="#removeSongFromQueue" text="X" />
    </children>
 </HBox>

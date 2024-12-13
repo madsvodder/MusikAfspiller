@@ -76,7 +76,7 @@
       </VBox>
    </left>
    <center>
-      <AnchorPane fx:id="anchorCenter" prefWidth="1037.0" style="-fx-background-color: #14151C; -fx-background-radius: 20;">
+      <AnchorPane fx:id="anchorCenter" style="-fx-background-color: #14151C; -fx-background-radius: 20;">
          <BorderPane.margin>
             <Insets right="10.0" top="10.0" />
          </BorderPane.margin>
@@ -106,4 +106,7 @@
         </menus>
       </MenuBar>
    </top>
+   <right>
+      <VBox fx:id="vbox_queue" BorderPane.alignment="CENTER" />
+   </right>
 </BorderPane>

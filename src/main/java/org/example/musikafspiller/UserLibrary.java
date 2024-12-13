@@ -1,12 +1,15 @@
 package org.example.musikafspiller;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javafx.scene.image.Image;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class UserLibrary {
 
@@ -43,6 +46,15 @@ public class UserLibrary {
     public boolean doesAlbumExist(String title) {
         for (Album album : albums) {
             if (album.getCollectionName().equals(title)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean doesPlaylistExist(String title) {
+        for (Playlist playlist : playlists) {
+            if (playlist.getCollectionName().equals(title)) {
                 return true;
             }
         }
@@ -91,5 +103,24 @@ public class UserLibrary {
 
     public void addPlaylist(Playlist playlist) {
         playlists.add(playlist);
+    }
+
+    public List<Song> getMostPlayedSongs() {
+        System.out.println("Total songs: " + songs.size());
+        songs.forEach(song -> System.out.println("Song: " + song.getSongTitle() + ", Plays: " + song.getAmountOfPlays()));
+
+        return songs.stream()
+                .filter(song -> song.getAmountOfPlays() >= 1) // Filter songs with plays >= 1
+                .sorted((s1, s2) -> Integer.compare(s2.getAmountOfPlays(), s1.getAmountOfPlays())) // Sort in descending order
+                .collect(Collectors.toList()); // Collect and return the result as a new list
+    }
+
+    public Playlist findPlaylist(String title) {
+        for (Playlist playlist : playlists) {
+            if (playlist.getCollectionName().equals(title)) {
+                return playlist;
+            }
+        }
+        return null;
     }
 }

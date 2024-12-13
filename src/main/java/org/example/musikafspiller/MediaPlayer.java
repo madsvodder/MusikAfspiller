@@ -15,14 +15,15 @@ import java.util.logging.Logger;
 public class MediaPlayer {
 
     private PlayerBarController playerBarController;
-    //private MainViewController mainViewController;
     Logger logger = Logger.getLogger(MediaPlayer.class.getName());
 
 
     @Getter @Setter private boolean shuffle = false;
     @Getter private StringProperty currentTimeProperty = new SimpleStringProperty("0:00");
 
-    private MusicCollection musicCollection;
+    @Getter @Setter
+    private MusicCollection currentPlayingMusicCollection;
+
     @Getter private javafx.scene.media.MediaPlayer mediaPlayer;
 
     @Getter
@@ -41,11 +42,32 @@ public class MediaPlayer {
 
     public void playSong(Song songToPlay, MusicCollection collectionToPlay) {
         if (!isValidSong(songToPlay)) return;
-
         cleanupMediaPlayer();
-        musicCollection = collectionToPlay;
+        currentPlayingMusicCollection = collectionToPlay;
+
         doPlaySong(songToPlay);
     }
+
+    public void removeLastSongFromQueue() {
+        System.out.println("Removing last song from queue");
+        if (lastPlayedSong == null) {
+            System.out.println("No last played song to remove.");
+            return;
+        }
+
+        if (songQueue.contains(lastPlayedSong)) {
+            songQueue.remove(lastPlayedSong);
+            System.out.println("Removed last played song from queue: " + lastPlayedSong);
+        } else {
+            System.out.println("Last played song not found in queue: " + lastPlayedSong);
+        }
+
+        // Update the queue view to reflect the changes
+        playerBarController.queueViewController.refreshQueue(getSongQueue());
+
+        System.out.println("Current queue size after removal: " + songQueue.size());
+    }
+
 
     public void skipSong() {
         cleanupMediaPlayer();
@@ -107,7 +129,7 @@ public class MediaPlayer {
         return (mediaPlayer != null) ? mediaPlayer.getCurrentTime() : Duration.ZERO;
     }
 
-    public void addSongToQueue(Song songToAdd) {
+    public void addSongToQueue(Song songToAdd, MusicCollection collectionToPlay) {
         songQueue.add(songToAdd);
     }
 
@@ -123,6 +145,10 @@ public class MediaPlayer {
     /* Private Methods */
 
     private void doPlaySong(Song songToPlay) {
+        // Remove the last played song from the queue
+        removeLastSongFromQueue();
+
+        // Prepare to play the song
         File songFile = songToPlay.getSongFile();
         Media media = new Media(songFile.toURI().toString());
 
@@ -132,13 +158,23 @@ public class MediaPlayer {
         bindCurrentTimeProperty();
         setupMediaPlayerEvents(songToPlay);
 
+        // Play the song
         mediaPlayer.play();
         playerBarController.updateSongUI(songToPlay);
         isSongPlaying = true;
+        lastPlayedSong = songToPlay;
+        songToPlay.setAmountOfPlays(songToPlay.getAmountOfPlays() + 1);
+
+        // Log the song details
+        logger.info("Now playing: " + songToPlay.getSongTitle() + " by " + songToPlay.getSongArtist());
+
+        // Update the current song index based on the current collection
+        currentSongIndex = currentPlayingMusicCollection.getSongs().indexOf(songToPlay);
+        System.out.println("Song has plays; now playing: " + songToPlay.getAmountOfPlays());
     }
 
+
     private void setupMediaPlayerEvents(Song songToPlay) {
-        mediaPlayer.setOnReady(() -> handleMediaReady(songToPlay));
         mediaPlayer.setOnEndOfMedia(() -> handleMediaEnd());
     }
 
@@ -146,12 +182,6 @@ public class MediaPlayer {
         mediaPlayer.currentTimeProperty().addListener((observable, oldTime, newTime) ->
                 currentTimeProperty.set(formatDuration(newTime))
         );
-    }
-
-    private void handleMediaReady(Song songToPlay) {
-        logger.info("Now playing: " + songToPlay.getSongTitle() + " by " + songToPlay.getSongArtist());
-        currentSongIndex = musicCollection.getSongs().indexOf(songToPlay);
-        lastPlayedSong = songToPlay;
     }
 
     private void handleMediaEnd() {
@@ -164,7 +194,7 @@ public class MediaPlayer {
     }
 
     private void playRandomSong() {
-        doPlaySong(musicCollection.getRandomSong(lastPlayedSong));
+        doPlaySong(currentPlayingMusicCollection.getRandomSong(lastPlayedSong));
     }
 
     private void playNextSong() {
@@ -196,20 +226,20 @@ public class MediaPlayer {
 
     private Song getPreviousSong() {
         if (!isPreviousSongAvailable()) return null;
-        return musicCollection.getSongs().get(--currentSongIndex);
+        return currentPlayingMusicCollection.getSongs().get(--currentSongIndex);
     }
 
     private Song getNextSong() {
         if (!isNextSongAvailable()) return null;
-        return musicCollection.getSongs().get(++currentSongIndex);
+        return currentPlayingMusicCollection.getSongs().get(++currentSongIndex);
     }
 
     private boolean isNextSongAvailable() {
-        return musicCollection != null && currentSongIndex < musicCollection.getSongs().size() - 1;
+        return currentPlayingMusicCollection != null && currentSongIndex < currentPlayingMusicCollection.getSongs().size() - 1;
     }
 
     private boolean isPreviousSongAvailable() {
-        return musicCollection != null && currentSongIndex > 0;
+        return currentPlayingMusicCollection != null && currentSongIndex > 0;
     }
 
     private String formatDuration(Duration duration) {

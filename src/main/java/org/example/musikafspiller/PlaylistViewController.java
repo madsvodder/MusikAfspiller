@@ -162,6 +162,7 @@ public class PlaylistViewController {
         // Different setup methods
         setupCells();
         setupMouseClicks();
+        tableview_playlist.setFocusTraversable(true);
         setupContextMenu();
     }
 
@@ -243,7 +244,7 @@ public class PlaylistViewController {
         queueSong.setOnAction(event -> {
             Song selectedSong = tableview_playlist.getSelectionModel().getSelectedItem();
             if (selectedSong != null) {
-                playerBarController.handleAddSongToQueue(selectedSong);
+                playerBarController.handleAddSongToQueue(selectedSong, musicCollection);
             }
         });
 
@@ -326,25 +327,4 @@ public class PlaylistViewController {
         return dialog.showAndWait();
     }
 
-    /*
-    private void populateTableView() {
-        // Clear the table view for all old songs
-        tableview_playlist.getItems().clear();
-
-        // Populate the table view with all the songs from the playlist
-        for (Song song : playlist.getSongs()) {
-            // Reload the album for each song
-            //song.reloadAlbum();
-
-            // Debug: Check if the album is set properly before adding to the table
-            System.out.println("Album for song '" + song.getSongTitle() + "': " + song.getAlbumCover());
-
-            // Add song to the table
-            tableview_playlist.getItems().add(song);
-        }
-
-        // Refresh the table to ensure it renders all the updated content
-        tableview_playlist.refresh();
-    }
-    */
 }

@@ -21,6 +21,8 @@ public class QueueViewController {
 
     public void customInit(MediaPlayer mediaPlayer) {
 
+        System.out.println("Refreshed Queue");
+
         this.mediaPlayer = mediaPlayer;
 
         vbox_queueItems.getChildren().clear();
@@ -33,6 +35,21 @@ public class QueueViewController {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void refreshQueue(ArrayList<Song> songs) {
+
+        System.out.println("Refreshed Queue");
+
+        vbox_queueItems.getChildren().clear();
+            for (Song song : songs) {
+                try {
+                    vbox_queueItems.getChildren().add(createQueueItem(song));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
     }
 
     // Method to create a queue item for a given song
