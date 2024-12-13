@@ -20,7 +20,7 @@
    <left>
       <VBox prefHeight="720.0" prefWidth="243.0" spacing="10.0" stylesheets="@../../../css/Sidebar.css" BorderPane.alignment="CENTER">
          <children>
-            <Label text="POTIFY" textFill="WHITE">
+            <Label text="MyTunes" textFill="WHITE">
                <font>
                   <Font size="36.0" />
                </font>

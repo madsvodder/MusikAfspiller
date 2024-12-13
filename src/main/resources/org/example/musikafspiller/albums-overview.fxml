@@ -41,7 +41,7 @@
          <children>
             <VBox alignment="CENTER" spacing="10.0">
                <children>
-                  <Label text="ARTISTS">
+                  <Label text="ARTISTS" textFill="WHITE">
                      <font>
                         <Font size="18.0" />
                      </font>
