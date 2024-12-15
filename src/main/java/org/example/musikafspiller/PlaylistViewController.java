@@ -221,9 +221,14 @@ public class PlaylistViewController {
         MenuItem removeItem = new MenuItem("Remove");
         MenuItem queueSong = new MenuItem("Add To Queue");
 
-        // Add the remove item to the context menu
+        // Add the remove item to the context menu - Only add remove if it's a playlist, and not a album
         contextMenu.getItems().add(removeItem);
         contextMenu.getItems().add(queueSong);
+
+        if (isAlbum) {
+            removeItem.setDisable(true);
+            removeItem.setVisible(false);
+        }
 
         // Add action to remove the selected song
         removeItem.setOnAction(event -> {
@@ -272,19 +277,26 @@ public class PlaylistViewController {
 
     private void setupLabels() {
 
+        System.out.println("Setting up labels for: " + musicCollection.getCollectionName() );
+
         if (isAlbum) {
             TF_PlaylistName.setText(musicCollection.getCollectionName());
             TF_PlaylistName.setEditable(false);
+
+            // Get artist name
+            if (musicCollection instanceof Album album) {
+                label_Artist.setText(album.getAlbumArtist());
+            } else {
+                label_Artist.setText("Unknown Artist");
+            }
         } else {
+            System.out.println("is Playlist");
             TF_PlaylistName.setText(musicCollection.getCollectionName());
+            label_Artist.setText("User Playlist");
         }
 
         // Set the initial playlist duration
         updatePlaylistDuration();
-
-        if (userMadePlaylist) {
-            label_Artist.setText("User Playlist");
-        }
     }
 
     // Helper method to update the playlist duration label

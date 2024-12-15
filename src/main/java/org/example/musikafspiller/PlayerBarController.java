@@ -213,7 +213,11 @@ public class PlayerBarController {
     @FXML
     private void previousSong() {
         if (mediaPlayer.isSongPlaying) {
-            mediaPlayer.previousSong();
+            if (mediaPlayer.getCurrentTime().toSeconds() < 2 && mediaPlayer.getCurrentSongIndex() > 0) {
+                mediaPlayer.previousSong();
+            } else {
+                mediaPlayer.getMediaPlayer().seek(Duration.ZERO);
+            }
         }
     }
 
