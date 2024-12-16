@@ -107,7 +107,7 @@ public class UserLibrary {
 
     public List<Song> getMostPlayedSongs() {
         System.out.println("Total songs: " + songs.size());
-        songs.forEach(song -> System.out.println("Song: " + song.getSongTitle() + ", Plays: " + song.getAmountOfPlays()));
+        //songs.forEach(song -> System.out.println("Song: " + song.getSongTitle() + ", Plays: " + song.getAmountOfPlays()));
 
         return songs.stream()
                 .filter(song -> song.getAmountOfPlays() >= 1) // Filter songs with plays >= 1
