@@ -74,21 +74,64 @@ public class MainViewController {
         // Set up the user documents folder
         setupUserDocuments();
 
-        
-        // Read all the songs in the documents folder
+        // Hvis brugerdatafil eksisterer, skal vi indlæse gemte data
+        if (dataSaver.doesSaveFileExist()) {
+            UserLibrary loadedLibrary = dataSaver.loadUserData();
+
+            // Kombiner gemte data med den eksisterende struktur
+            if (loadedLibrary != null) {
+                if (loadedLibrary.getPlaylists() != null) {
+                    userLibrary.getPlaylists().addAll(loadedLibrary.getPlaylists());
+                }
+                if (loadedLibrary.getAlbums() != null) {
+                    userLibrary.getAlbums().addAll(loadedLibrary.getAlbums());
+                }
+                if (loadedLibrary.getSongs() != null) {
+                    userLibrary.getSongs().addAll(loadedLibrary.getSongs());
+                }
+                System.out.println("Loaded user library: " + userLibrary);
+            } else {
+                System.out.println("No user data found to load. Starting with an empty library.");
+            }
+        }
+
+        // Parse kun nye sange fra disk
         SongParser songParser = new SongParser();
-        songParser.parseSongs(userLibrary, getAudioFilesFromDocuments(), cacheDataPath);
+        List<File> audioFiles = getAudioFilesFromDocuments(); // Få alle filer fra disk
 
+        // Tilføj sange fra disk, der ikke findes i biblioteket
+        List<File> newFiles = audioFiles.stream()
+                .filter(file -> !userLibrary.containsSongFile(file))
+                .toList();
+        songParser.parseSongs(userLibrary, new ArrayList<>(newFiles), cacheDataPath);
+
+        // Initialiser UI-elementer
         setupPlayerBar();
-
         setupQueueSidebar();
 
+        // Tilføj gemte playlister og albums til UI
+        reloadSidebar();
 
-        // Load everything
-        if (dataSaver.doesSaveFileExist()) {
-            load();
-        } else {
-            save();
+        // Gem opdateret brugerdata
+        save();
+    }
+
+    private void reloadSidebar() {
+        // Clear sidebar før opdatering
+        vbox_playlists.getChildren().clear();
+
+        // Tilføj playlister til sidebar
+        for (Playlist playlist : userLibrary.getPlaylists()) {
+            System.out.println("Loading playlist into sidebar: " + playlist.getCollectionName());
+            addItemToSidebar(playlist);
+        }
+
+        // Tilføj albums til sidebar, hvis de er liket
+        for (Album album : userLibrary.getAlbums()) {
+            if (album.isLiked()) {
+                System.out.println("Loading liked album into sidebar: " + album.getCollectionName());
+                addItemToSidebar(album);
+            }
         }
     }
 

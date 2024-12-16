@@ -119,24 +119,30 @@ public class SongParser {
             return;
         }
 
-        // Loop through each song file to parse
+        // Loop gennem sangfiler
         for (File file : songsFilesToParse) {
             if (file == null || !file.exists()) {
                 logger.warning("Invalid file encountered: " + file);
                 continue;
             }
 
-            // Parse the song
+            // Tjek, om sang allerede findes (baseret på filsti)
+            if (userLibrary.containsSongFile(file)) {
+                logger.info("Skipping song. Already exists in UserLibrary: " + file.getName());
+                continue; // Spring denne sang over
+            }
+
+            // Parse sangen
             Song newSong = parseSong(file, cacheDataPath, userLibrary);
             if (newSong == null) {
                 logger.warning("Failed to parse song: " + file.getName());
                 continue;
             }
 
-            // Add song to the library
+            // Tilføj sang til biblioteket
             userLibrary.addSong(newSong);
 
-            // Handle album association
+            // Associer sang med album
             associateSongWithAlbum(userLibrary, newSong);
         }
     }

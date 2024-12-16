@@ -6,6 +6,7 @@ import javafx.scene.image.Image;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -105,6 +106,11 @@ public class UserLibrary {
         playlists.add(playlist);
     }
 
+    // Tjekker, om en sang-fil allerede findes i brugerens bibliotek
+    public boolean containsSongFile(File file) {
+        return getSongs().stream()
+                .anyMatch(song -> song.getSongFile().equals(file));
+    }
     public List<Song> getMostPlayedSongs() {
         System.out.println("Total songs: " + songs.size());
 
