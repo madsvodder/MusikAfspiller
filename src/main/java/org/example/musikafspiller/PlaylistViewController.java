@@ -79,6 +79,7 @@ public class PlaylistViewController {
             if (musicCollection != null) {
                 // Set the playlist name in the playlist class
                 musicCollection.setCollectionName(newValue);
+                System.out.println("HELLOOO");
                 mainViewController.updatePlaylistNameInSidebar((Playlist) musicCollection);
             }
         });
@@ -276,6 +277,8 @@ public class PlaylistViewController {
 
     private void setupLabels() {
 
+        System.out.println("Setting up labels for: " + musicCollection.getCollectionName() );
+
         if (isAlbum) {
             TF_PlaylistName.setText(musicCollection.getCollectionName());
             TF_PlaylistName.setEditable(false);
@@ -287,6 +290,7 @@ public class PlaylistViewController {
                 label_Artist.setText("Unknown Artist");
             }
         } else {
+            System.out.println("is Playlist");
             TF_PlaylistName.setText(musicCollection.getCollectionName());
             label_Artist.setText("User Playlist");
         }

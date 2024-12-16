@@ -48,6 +48,8 @@ public class MainViewController {
 
     private List<PlaylistItemController> sidebarItems = new ArrayList<>();
 
+
+
     @Getter @Setter private Stage primaryStage;
 
     // A reference to the selected song that is playing or paused
@@ -68,8 +70,6 @@ public class MainViewController {
     DataSaver dataSaver;
     @Setter PlayerBarController playerBarController;
     private VBox vboxQueueSidebar;
-    private boolean isQueueVisible = true;
-
 
     // Initialize
     public void initialize() {
@@ -215,7 +215,7 @@ public class MainViewController {
         }
     }
 
-
+    private boolean isQueueVisible = true; // Track visibility state
     public void toggleQueueSidebar() {
         if (isQueueVisible) {
             bp_mainBorderPane.setRight(null); // Hide the queue
@@ -409,6 +409,7 @@ public class MainViewController {
     }
 
     // Method for importing a song using the file chooser
+
     @FXML
     private void importSong() {
         FileChooser fileChooser = new FileChooser();
@@ -440,11 +441,14 @@ public class MainViewController {
         }
     }
 
-    /* Unlike and Like Albums */
+
+
     public void handleLikeAlbum(Album albumToLike, AlbumCoverController albumCoverController) {
         userLibrary.likeAlbum(albumToLike);
         addItemToSidebar(albumToLike);
     }
+
+
     public void handleUnlikedAlbum(Album albumToUnlike) {
         for (PlaylistItemController controller : sidebarItems) {
             if (Objects.equals(controller.getAlbum(), albumToUnlike)) {
@@ -455,7 +459,7 @@ public class MainViewController {
         }
     }
 
-    /* Save And Load */
+
     @FXML
     public void save() {
         dataSaver.saveUserData(userLibrary);
