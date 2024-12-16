@@ -48,8 +48,6 @@ public class MainViewController {
 
     private List<PlaylistItemController> sidebarItems = new ArrayList<>();
 
-
-
     @Getter @Setter private Stage primaryStage;
 
     // A reference to the selected song that is playing or paused
@@ -76,6 +74,7 @@ public class MainViewController {
         // Set up the user documents folder
         setupUserDocuments();
 
+        
         // Read all the songs in the documents folder
         SongParser songParser = new SongParser();
         songParser.parseSongs(userLibrary, getAudioFilesFromDocuments(), cacheDataPath);
@@ -185,6 +184,7 @@ public class MainViewController {
             BorderPane.setMargin(playerBar, new Insets(10, 10, 10, 10));
             this.playerBarController = loader.getController();
             playerBarController.setMainViewController(this);
+            playerBarController.setUserLibrary(userLibrary);
             playerBarController.customInit();
             System.out.println("Player Bar Initialized: " + playerBarController);
         } catch (IOException e) {
@@ -291,6 +291,10 @@ public class MainViewController {
 
         // Remove the controller from the sidebarItems list
         sidebarItems.remove(playlistItemController);
+
+        if (userLibrary.getPlaylists().isEmpty()) {
+            switchToAlbumsView();
+        }
     }
 
 
@@ -330,28 +334,58 @@ public class MainViewController {
 
     // Window for viewing all the albums that's imported
     @FXML
-    private void switchToAlbumsView() throws IOException {
-        // Load the new FXML file (albums-overview.fxml)
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("albums-overview.fxml"));
-        BorderPane newView = loader.load();
+    private void switchToAlbumsView() {
+        try {
+            // Load the new FXML file (albums-overview.fxml)
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("albums-overview.fxml"));
+            BorderPane newView = loader.load();
 
-        // Get the controller of the new FXML view
-        AlbumsOverviewController albumsOverviewController = loader.getController();
-        albumsOverviewController.setMainViewController(this);
-        albumsOverviewController.setUserLibrary(userLibrary);
-        albumsOverviewController.populateAlbumGrid();
-
-
-        // Add the loaded view to the center of anchorCenter
-        anchorCenter.getChildren().clear();
-        anchorCenter.getChildren().add(newView);
+            // Get the controller of the new FXML view
+            AlbumsOverviewController albumsOverviewController = loader.getController();
+            albumsOverviewController.setMainViewController(this);
+            albumsOverviewController.setUserLibrary(userLibrary);
+            albumsOverviewController.populateAlbumGrid();
 
 
-        // Ensure the new view fills the AnchorPane completely by setting anchors
-        AnchorPane.setTopAnchor(newView, 0.0);
-        AnchorPane.setBottomAnchor(newView, 0.0);
-        AnchorPane.setLeftAnchor(newView, 0.0);
-        AnchorPane.setRightAnchor(newView, 0.0);
+            // Add the loaded view to the center of anchorCenter
+            anchorCenter.getChildren().clear();
+            anchorCenter.getChildren().add(newView);
+
+
+            // Ensure the new view fills the AnchorPane completely by setting anchors
+            AnchorPane.setTopAnchor(newView, 0.0);
+            AnchorPane.setBottomAnchor(newView, 0.0);
+            AnchorPane.setLeftAnchor(newView, 0.0);
+            AnchorPane.setRightAnchor(newView, 0.0);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    private void switchToLikedSongsView() {
+        if (!userLibrary.doesPlaylistExist("Liked songs")) {
+            Album album = new Album("Liked songs", "MyTunes", "2024");
+            userLibrary.addAlbum(album);
+
+            logger.info("Creating new Liked songs album: " + album);
+        }
+
+        switchToPlaylistView(userLibrary.findAlbum("Liked songs"));
+    }
+
+    @FXML
+    private void switchToMostPlayedSongsView() {
+        if (!userLibrary.doesPlaylistExist("Most Played Songs")) {
+            Album album = new Album("Most Played Songs", "MyTunes", "2024");
+            userLibrary.addAlbum(album);
+
+            logger.info("Creating new Most Played Songs album: " + album);
+        }
+
+        userLibrary.refreshMostPlayedSongs();
+
+        switchToPlaylistView(userLibrary.findAlbum("Most Played Songs"));
     }
 
     // This method runs when you select a playlist in the sidebar
@@ -440,8 +474,6 @@ public class MainViewController {
             }
         }
     }
-
-
 
     public void handleLikeAlbum(Album albumToLike, AlbumCoverController albumCoverController) {
         userLibrary.likeAlbum(albumToLike);

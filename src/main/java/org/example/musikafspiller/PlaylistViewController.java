@@ -19,17 +19,7 @@ import java.util.logging.Logger;
 
 public class PlaylistViewController {
 
-    @Getter @Setter
-    private MusicCollection musicCollection;
-
-    @Setter
-    private UserLibrary userLibrary;
-
-    @Setter
-    private MainViewController mainViewController;
-
-    @Setter
-    private PlayerBarController playerBarController;
+    private static final Logger logger = Logger.getLogger(PlaylistViewController.class.getName());
 
     @FXML
     private TableColumn<Song, String> kolonne_album;
@@ -70,7 +60,19 @@ public class PlaylistViewController {
     @Getter @Setter
     private boolean isAlbum;
 
-    private static final Logger logger = Logger.getLogger(PlaylistViewController.class.getName());
+    @Getter @Setter
+    private MusicCollection musicCollection;
+
+    @Setter
+    private UserLibrary userLibrary;
+
+    @Setter
+    private MainViewController mainViewController;
+
+    @Setter
+    private PlayerBarController playerBarController;
+
+    private MediaPlayer mediaPlayer;
 
     private ObservableList<Song> songObservableList = FXCollections.observableArrayList();
 
@@ -102,6 +104,8 @@ public class PlaylistViewController {
     }
 
     public void customInit(boolean album) {
+
+        this.mediaPlayer = playerBarController.getMediaPlayer();
 
         isAlbum = album;
 
@@ -337,6 +341,17 @@ public class PlaylistViewController {
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         dialog.getDialogPane().setContent(content);
         return dialog.showAndWait();
+    }
+
+    @FXML
+    private void handlePlayButton() {
+        mediaPlayer.playSong(musicCollection.getSongs().getFirst(), musicCollection);
+    }
+
+    @FXML
+    private void handleShuffleButton() {
+        mediaPlayer.playSong(musicCollection.getSongs().get( (int) (Math.random() * musicCollection.getSongs().size()) ), musicCollection);
+        playerBarController.toggleShuffle();
     }
 
 }

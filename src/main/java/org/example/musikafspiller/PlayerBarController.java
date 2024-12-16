@@ -12,6 +12,8 @@ import javafx.util.Duration;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 public class PlayerBarController {
 
     @Getter @Setter
@@ -19,6 +21,9 @@ public class PlayerBarController {
 
     @Setter
     private MainViewController mainViewController;
+
+    @Setter
+    UserLibrary userLibrary;
 
     @FXML
     private Button button_Shuffle;
@@ -70,11 +75,12 @@ public class PlayerBarController {
     public void customInit() {
 
         mediaPlayer = new MediaPlayer(this);
+        mediaPlayer.setUserLibrary(userLibrary);
 
         // Load images
-        playImage = new Image(getClass().getResourceAsStream("/images/LightImages/CircledPlay.png"));
-        pauseImage = new Image(getClass().getResourceAsStream("/images/LightImages/PauseButton.png"));
-        musicRecordImage = new Image(getClass().getResourceAsStream("/images/LightImages/MusicRecord.png"));
+        playImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/LightImages/CircledPlay.png")));
+        pauseImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/LightImages/PauseButton.png")));
+        musicRecordImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/LightImages/MusicRecord.png")));
 
         // Bind the label in the corner for the song duration
         label_songDuration.textProperty().bind(mediaPlayer.getCurrentTimeProperty());
@@ -182,7 +188,7 @@ public class PlayerBarController {
 
 
     @FXML
-    private void toggleShuffle() {
+    public void toggleShuffle() {
         if (mediaPlayer != null) {
             mediaPlayer.toggleShuffle();
             button_Shuffle.setOpacity(mediaPlayer.isShuffle() ? 1 : 0.3);

@@ -30,6 +30,9 @@ public class MediaPlayer {
     private Song lastPlayedSong;
     private Double mediaVolume = 0.5;
 
+    @Setter
+    UserLibrary userLibrary;
+
     private ArrayList<Song> playedSongs = new ArrayList<>();
 
     @Getter @Setter @JsonIgnore private int currentSongIndex = 0;
@@ -172,10 +175,16 @@ public class MediaPlayer {
         playerBarController.updateSongUI(songToPlay);
         isSongPlaying = true;
         lastPlayedSong = songToPlay;
-        songToPlay.setAmountOfPlays(songToPlay.getAmountOfPlays() + 1);
+
+        Song userLibrarySong = userLibrary.findSong(songToPlay.getSongTitle());
+
+        userLibrarySong.increasePlays();
+
+        System.out.println("Song: " + userLibrarySong + " played " + userLibrarySong.getAmountOfPlays() + " times." );
 
         logger.info("Now playing: " + songToPlay.getSongTitle() + " by " + songToPlay.getSongArtist());
         currentSongIndex = currentPlayingMusicCollection.getSongs().indexOf(songToPlay);
+
     }
 
     private void setupMediaPlayerEvents(Song songToPlay) {

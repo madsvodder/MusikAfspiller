@@ -44,6 +44,10 @@ public class Song {
         return null;
     }
 
+    public void increasePlays() {
+        amountOfPlays++;
+    }
+
     @JsonIgnore
     public String getSongDurationFormatted() {
         int minutes = songDuration / 60; // Get full minutes

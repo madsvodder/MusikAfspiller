@@ -37,15 +37,37 @@
                         <Separator prefWidth="200.0" visible="false" />
                         <HBox prefWidth="200.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#switchToAlbumsView" prefHeight="47.0" text="Albums" textFill="WHITE">
-                                 <graphic>
-                                    <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../../../images/LightImages/MusicFolder2.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
-                              </Button>
+                              <VBox>
+                                 <children>
+                                    <Button mnemonicParsing="false" onAction="#switchToAlbumsView" prefHeight="47.0" text="Albums" textFill="WHITE">
+                                       <graphic>
+                                          <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../../images/LightImages/MusicFolder2.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#switchToLikedSongsView" prefHeight="47.0" text="Liked Songs" textFill="WHITE">
+                                       <graphic>
+                                          <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../../images/LightImages/LoveCircled.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button layoutX="10.0" layoutY="57.0" mnemonicParsing="false" onAction="#switchToMostPlayedSongsView" prefHeight="47.0" text="Most Played" textFill="WHITE">
+                                       <graphic>
+                                          <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../../images/LightImages/MusicRecordOutlined.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </VBox>
                            </children>
                         </HBox>
                         <Label layoutX="10.0" layoutY="10.0" text="PLAYLISTS" textFill="WHITE">

@@ -107,14 +107,34 @@ public class UserLibrary {
 
     public List<Song> getMostPlayedSongs() {
         System.out.println("Total songs: " + songs.size());
-        //songs.forEach(song -> System.out.println("Song: " + song.getSongTitle() + ", Plays: " + song.getAmountOfPlays()));
 
-        return songs.stream()
-                .filter(song -> song.getAmountOfPlays() >= 1) // Filter songs with plays >= 1
-                .sorted((s1, s2) -> Integer.compare(s2.getAmountOfPlays(), s1.getAmountOfPlays())) // Sort in descending order
-                .collect(Collectors.toList()); // Collect and return the result as a new list
+        // Filtrer, sorter og indsamle de mest spillede sange
+        List<Song> mostPlayedSongs = songs.stream()
+                .filter(song -> song.getAmountOfPlays() >= 1) // Filtrer sange med plays >= 1
+                .sorted((s1, s2) -> Integer.compare(s2.getAmountOfPlays(), s1.getAmountOfPlays())) // Sorter i faldende rækkefølge
+                .collect(Collectors.toList()); // Indsaml som en liste
+
+        if (!mostPlayedSongs.isEmpty()) {
+            System.out.println("Most played songs:");
+            for (Song song : mostPlayedSongs) {
+                System.out.println("Song: " + song.getSongTitle() + ", Plays: " + song.getAmountOfPlays());
+            }
+        } else {
+            System.out.println("No songs with plays found.");
+        }
+
+        return mostPlayedSongs;
     }
 
+
+    public Song findSong(String title) {
+        for (Song song : songs) {
+            if (song.getSongTitle().equals(title)) {
+                return song;
+            }
+        }
+        return null;
+    }
     public Playlist findPlaylist(String title) {
         for (Playlist playlist : playlists) {
             if (playlist.getCollectionName().equals(title)) {
@@ -122,5 +142,17 @@ public class UserLibrary {
             }
         }
         return null;
+    }
+
+    public void refreshMostPlayedSongs() {
+
+        System.out.println("Refreshing most played songs...");
+
+        Album mostPlayedAlbum = findAlbum("Most Played Songs");
+        mostPlayedAlbum.clearSongs();
+
+        for (Song song : getMostPlayedSongs()) {
+            mostPlayedAlbum.addSong(song);
+        }
     }
 }
