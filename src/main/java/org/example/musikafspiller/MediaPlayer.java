@@ -10,30 +10,32 @@ import lombok.Setter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public class MediaPlayer {
 
-    private PlayerBarController playerBarController;
-    Logger logger = Logger.getLogger(MediaPlayer.class.getName());
-
+    private final PlayerBarController playerBarController;
+    private static final Logger logger = Logger.getLogger(MediaPlayer.class.getName());
 
     @Getter @Setter private boolean shuffle = false;
     @Getter private StringProperty currentTimeProperty = new SimpleStringProperty("0:00");
 
-    @Getter @Setter
-    private MusicCollection currentPlayingMusicCollection;
+    @Getter @Setter private MusicCollection currentPlayingMusicCollection;
 
     @Getter private javafx.scene.media.MediaPlayer mediaPlayer;
 
-    @Getter
-    private ArrayList<Song> songQueue = new ArrayList<>();
+    @Getter private ArrayList<Song> songQueue = new ArrayList<>();
     private Song lastPlayedSong;
     private Double mediaVolume = 0.5;
-    @Getter @Setter @JsonIgnore private int currentSongIndex = 0;
-    @Getter boolean isSongPlaying = false;
 
-    // Constructor
+    private ArrayList<Song> playedSongs = new ArrayList<>();
+
+    @Getter @Setter @JsonIgnore private int currentSongIndex = 0;
+    @Getter
+    public boolean isSongPlaying = false;
+
     public MediaPlayer(PlayerBarController playerBarController) {
         this.playerBarController = playerBarController;
     }
@@ -45,35 +47,32 @@ public class MediaPlayer {
         cleanupMediaPlayer();
         currentPlayingMusicCollection = collectionToPlay;
 
-        doPlaySong(songToPlay);
+        startPlayingSong(songToPlay, true);
     }
 
     public void removeLastSongFromQueue() {
-        System.out.println("Removing last song from queue");
+        logger.info("Removing last song from queue");
         if (lastPlayedSong == null) {
-            System.out.println("No last played song to remove.");
+            logger.warning("No last played song to remove.");
             return;
         }
 
-        if (songQueue.contains(lastPlayedSong)) {
-            songQueue.remove(lastPlayedSong);
-            System.out.println("Removed last played song from queue: " + lastPlayedSong);
+        if (songQueue.remove(lastPlayedSong)) {
+            logger.info("Removed last played song from queue: " + lastPlayedSong);
         } else {
-            System.out.println("Last played song not found in queue: " + lastPlayedSong);
+            logger.warning("Last played song not found in queue: " + lastPlayedSong);
         }
 
-        // Update the queue view to reflect the changes
         playerBarController.queueViewController.refreshQueue(getSongQueue());
-
-        System.out.println("Current queue size after removal: " + songQueue.size());
+        logger.info("Current queue size after removal: " + songQueue.size());
     }
-
 
     public void skipSong() {
         cleanupMediaPlayer();
         isSongPlaying = false;
 
         if (!songQueue.isEmpty()) {
+            System.out.println("Play Next In Queue");
             playNextInQueue();
         } else if (shuffle) {
             playRandomSong();
@@ -82,16 +81,19 @@ public class MediaPlayer {
         } else {
             handleNoSongsAvailable();
         }
+
+        playerBarController.queueViewController.refreshQueue(getSongQueue());
     }
 
     public void previousSong() {
         cleanupMediaPlayer();
-
         if (isPreviousSongAvailable()) {
-            doPlaySong(getPreviousSong());
+            startPlayingSong(getPreviousSong(), false); // Automatisk
         } else {
             handleNoSongsAvailable();
         }
+
+        playerBarController.queueViewController.refreshQueue(getSongQueue());
     }
 
     public void pauseSong() {
@@ -114,8 +116,9 @@ public class MediaPlayer {
         isSongPlaying = false;
     }
 
-    public boolean isSongPlaying() {
-        return mediaPlayer != null && mediaPlayer.getStatus() == javafx.scene.media.MediaPlayer.Status.PLAYING;
+    public void shuffleQueue() {
+        Collections.shuffle(songQueue); // Bland køen tilfældigt
+        logger.info("Queue shuffled");
     }
 
     public void adjustVolume(double volume) {
@@ -130,25 +133,32 @@ public class MediaPlayer {
     }
 
     public void addSongToQueue(Song songToAdd, MusicCollection collectionToPlay) {
+        if (!isValidSong(songToAdd)) {
+            logger.warning("Cannot add invalid song to queue.");
+            return;
+        }
         songQueue.add(songToAdd);
+        logger.info("Song added to queue: " + songToAdd.getSongTitle());
     }
 
     public void removeSongFromQueue(Song songToRemove) {
         songQueue.remove(songToRemove);
-        System.out.println("Song Removed From Queue");
+        logger.info("Song Removed From Queue");
     }
 
     public void toggleShuffle() {
         shuffle = !shuffle;
+        shuffleQueue();  // Bland køen når shuffle ændres
     }
 
     /* Private Methods */
 
-    private void doPlaySong(Song songToPlay) {
-        // Remove the last played song from the queue
-        removeLastSongFromQueue();
+    private void startPlayingSong(Song songToPlay, boolean isManualPlay) {
+        if (!isManualPlay && lastPlayedSong != null) {
+            //removeLastSongFromQueue();
+            playedSongs.add(lastPlayedSong); // Tilføj den tidligere afspillede
+        }
 
-        // Prepare to play the song
         File songFile = songToPlay.getSongFile();
         Media media = new Media(songFile.toURI().toString());
 
@@ -158,24 +168,18 @@ public class MediaPlayer {
         bindCurrentTimeProperty();
         setupMediaPlayerEvents(songToPlay);
 
-        // Play the song
         mediaPlayer.play();
         playerBarController.updateSongUI(songToPlay);
         isSongPlaying = true;
         lastPlayedSong = songToPlay;
         songToPlay.setAmountOfPlays(songToPlay.getAmountOfPlays() + 1);
 
-        // Log the song details
         logger.info("Now playing: " + songToPlay.getSongTitle() + " by " + songToPlay.getSongArtist());
-
-        // Update the current song index based on the current collection
         currentSongIndex = currentPlayingMusicCollection.getSongs().indexOf(songToPlay);
-        System.out.println("Song has plays; now playing: " + songToPlay.getAmountOfPlays());
     }
 
-
     private void setupMediaPlayerEvents(Song songToPlay) {
-        mediaPlayer.setOnEndOfMedia(() -> handleMediaEnd());
+        mediaPlayer.setOnEndOfMedia(this::handleMediaEnd);
     }
 
     private void bindCurrentTimeProperty() {
@@ -190,15 +194,16 @@ public class MediaPlayer {
     }
 
     private void playNextInQueue() {
-        doPlaySong(songQueue.remove(0));
+        Song nextSong = songQueue.remove(0); // Fjern og hent den første sang i køen
+        startPlayingSong(nextSong, false); // Afspil sangen
     }
 
     private void playRandomSong() {
-        doPlaySong(currentPlayingMusicCollection.getRandomSong(lastPlayedSong));
+        startPlayingSong(currentPlayingMusicCollection.getRandomSong(lastPlayedSong), false); // Automatisk
     }
 
     private void playNextSong() {
-        doPlaySong(getNextSong());
+        startPlayingSong(getNextSong(), false); // Automatisk
     }
 
     private void handleNoSongsAvailable() {
