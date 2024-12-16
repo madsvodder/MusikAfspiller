@@ -64,7 +64,8 @@ public class PlayerBarController {
     private Image pauseImage;
     private Image musicRecordImage;
 
-    QueueViewController queueViewController;
+
+    @Setter QueueViewController queueViewController;
 
     public void customInit() {
 
@@ -175,7 +176,7 @@ public class PlayerBarController {
 
     @FXML
     public void showQueueView() {
-        queueViewController = mainViewController.showQueueSidebar();
+        mainViewController.toggleQueueSidebar();
     }
 
 

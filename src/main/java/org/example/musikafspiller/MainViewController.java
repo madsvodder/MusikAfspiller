@@ -69,6 +69,7 @@ public class MainViewController {
     UserLibrary userLibrary = new UserLibrary();
     DataSaver dataSaver;
     @Setter PlayerBarController playerBarController;
+    private VBox vboxQueueSidebar;
 
     // Initialize
     public void initialize() {
@@ -81,7 +82,7 @@ public class MainViewController {
 
         setupPlayerBar();
 
-
+        setupQueueSidebar();
 
 
         // Load everything
@@ -191,24 +192,37 @@ public class MainViewController {
         }
     }
 
-    public QueueViewController showQueueSidebar() {
+    public void setupQueueSidebar() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("queue-view.fxml"));
             VBox vboxQueue = loader.load();
+            vboxQueueSidebar = vboxQueue;
             QueueViewController queueViewController = loader.getController();
-            bp_mainBorderPane.setRight(vboxQueue);
+
+            // Dont show the queue on startup
+            //bp_mainBorderPane.setRight(vboxQueue);
 
             // Add 10 margin
-            BorderPane.setMargin(vboxQueue, new Insets(10, 10, 10, 10));
+            BorderPane.setMargin(vboxQueue, new Insets(10, 10, 10, 0));
 
             // Initialize the queue
             queueViewController.customInit(playerBarController.getMediaPlayer());
 
-            return queueViewController;
+            playerBarController.setQueueViewController(queueViewController);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private boolean isQueueVisible = true; // Track visibility state
+    public void toggleQueueSidebar() {
+        if (isQueueVisible) {
+            bp_mainBorderPane.setRight(null); // Hide the queue
+        } else {
+            bp_mainBorderPane.setRight(vboxQueueSidebar); // Show the queue
+        }
+        isQueueVisible = !isQueueVisible; // Toggle state
     }
 
     // Method for adding a new playlist (called by Scene Builder)
