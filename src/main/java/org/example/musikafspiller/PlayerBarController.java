@@ -191,7 +191,7 @@ public class PlayerBarController {
 
     // Toggle between Play and Pause
     private void togglePlayPause() {
-        if (mediaPlayer.isSongPlaying) {
+        if (mediaPlayer.isSongPlaying()) {
             mediaPlayer.pauseSong();
             image_PlayPause.setImage(playImage);
         } else {
@@ -206,20 +206,22 @@ public class PlayerBarController {
 
     @FXML
     private void nextSong() {
-        if (mediaPlayer.isSongPlaying) {
+        if (mediaPlayer.isSongPlaying()) {
             mediaPlayer.skipSong();
         }
     }
 
     @FXML
     private void previousSong() {
+        mediaPlayer.previousSong();
+        /*
         if (mediaPlayer.isSongPlaying) {
             if (mediaPlayer.getCurrentTime().toSeconds() < 2 && mediaPlayer.getCurrentSongIndex() > 0) {
                 mediaPlayer.previousSong();
             } else {
                 mediaPlayer.getMediaPlayer().seek(Duration.ZERO);
             }
-        }
+        }*/
     }
 
     public void playSongFromPlaylist(Song song, MusicCollection musicCollection) {
