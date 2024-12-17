@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -13,7 +14,10 @@ import javafx.scene.layout.VBox;
 import lombok.Getter;
 import lombok.Setter;
 import org.controlsfx.control.SearchableComboBox;
+import org.controlsfx.control.ListSelectionView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -333,6 +337,60 @@ public class PlaylistViewController {
         });
     }
 
+    @FXML
+    private void addMultipleSongsToPlaylist() {
+        // Opret et ListSelectionView med brugerens sange
+        ListSelectionView<Song> listSelectionView = new ListSelectionView<>();
+        listSelectionView.getSourceItems().addAll(userLibrary.getSongs());
+
+        // Opret en TextField til søgning
+        TextField searchField = new TextField();
+        searchField.setPromptText("Search songs...");
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            // Filtrér kun kilden (source items)
+            ObservableList<Song> filteredList = FXCollections.observableArrayList(
+                    userLibrary.getSongs().stream()
+                            .filter(song -> song.getSongTitle().toLowerCase().contains(newValue.toLowerCase()) ||
+                                    song.getSongArtist().toLowerCase().contains(newValue.toLowerCase()))
+                            .toList()
+            );
+            listSelectionView.getSourceItems().setAll(filteredList);
+        });
+
+        // Layout til dialogens indhold
+        VBox content = new VBox(searchField, listSelectionView);
+        content.setSpacing(10);
+        content.setPrefWidth(600); // Sæt dialogens bredde
+        listSelectionView.setPrefHeight(400); // Sæt højde for ListSelectionView
+
+        // Vis dialogboksen
+        Optional<ButtonType> result = showDialogWithContent(
+                "Add Songs to Playlist",
+                "Select the songs you want to add to the playlist:",
+                content
+        );
+
+        // Hvis brugeren trykker OK, tilføj de valgte sange til playlisten
+        result.ifPresent(buttonType -> {
+            if (buttonType.equals(ButtonType.OK)) {
+                List<Song> selectedSongs = new ArrayList<>(listSelectionView.getTargetItems());
+
+                if (selectedSongs != null && !selectedSongs.isEmpty()) {
+                    // Tilføj de valgte sange til playlisten
+                    for (Song song : selectedSongs) {
+                        musicCollection.addSong(song);      // Tilføj til playlisten
+                        songObservableList.add(song);      // Tilføj til ObservableList (automatisk UI-opdatering)
+                    }
+
+                    // Opdater playlistens varighed efter ændringen
+                    updatePlaylistDuration();
+                } else {
+                    logger.info("No songs selected to add to the playlist.");
+                }
+            }
+        });
+    }
+
     // Helper method to set up and show a dialog with custom content
     private Optional<ButtonType> showDialogWithContent(String title, String headerText, Node content) {
         Dialog<ButtonType> dialog = new Dialog<>();
@@ -351,7 +409,7 @@ public class PlaylistViewController {
     @FXML
     private void handleShuffleButton() {
         mediaPlayer.playSong(musicCollection.getSongs().get( (int) (Math.random() * musicCollection.getSongs().size()) ), musicCollection);
-        playerBarController.toggleShuffle();
+        playerBarController.handleShuffleTopButton();
     }
 
 }

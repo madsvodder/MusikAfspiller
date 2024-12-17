@@ -49,6 +49,18 @@ public class Song {
     }
 
     @JsonIgnore
+    public boolean isSongFileValid() {
+
+        String filePath = songFile.getAbsolutePath();
+
+        if (filePath.isEmpty()) {
+            return false;
+        }
+        File file = new File(filePath);
+        return file.exists() && file.isFile();
+    }
+
+    @JsonIgnore
     public String getSongDurationFormatted() {
         int minutes = songDuration / 60; // Get full minutes
         int seconds = songDuration % 60; // Get remaining seconds

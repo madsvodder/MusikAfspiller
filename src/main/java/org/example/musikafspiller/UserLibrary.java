@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 
 public class UserLibrary {
 
+    @Setter @JsonIgnore
+    MainViewController mainViewController;
     Logger logger = Logger.getLogger(UserLibrary.class.getName());
 
     @Getter @Setter @JsonProperty
@@ -132,7 +134,23 @@ public class UserLibrary {
         return mostPlayedSongs;
     }
 
+    public void removeSong(Song song) {
 
+        // Remove song from the imported songs
+        songs.remove(song);
+
+        // Remove from all albums
+        for (Album album : albums) {
+            album.removeSong(song);
+        }
+
+        // Remove from all playlists
+        for (Playlist playlist : playlists) {
+            playlist.removeSong(song);
+        }
+
+        logger.info("Removed song from User Library" + song.getSongTitle());
+    }
     public Song findSong(String title) {
         for (Song song : songs) {
             if (song.getSongTitle().equals(title)) {
@@ -161,4 +179,25 @@ public class UserLibrary {
             mostPlayedAlbum.addSong(song);
         }
     }
+
+    public void validateLibraryFiles() {
+        List<Song> invalidSongs = new ArrayList<>();
+
+        for (Song song : songs) {
+            if (!song.isSongFileValid()) {
+                logger.warning("Invalid file in user library: " + song.getSongTitle());
+                invalidSongs.add(song);
+            }
+        }
+
+        // Remove all invalid songs from the imported songs array
+        songs.removeAll(invalidSongs);
+
+        if (!invalidSongs.isEmpty()) {
+            logger.warning("Removed " + invalidSongs.size() + " invalid songs from user library.");
+        } else {
+            logger.info("No invalid songs found in user library.");
+        }
+    }
+
 }

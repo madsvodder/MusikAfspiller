@@ -76,6 +76,7 @@ public class PlayerBarController {
 
         mediaPlayer = new MediaPlayer(this);
         mediaPlayer.setUserLibrary(userLibrary);
+        mediaPlayer.setMainViewController(mainViewController);
 
         // Load images
         playImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/LightImages/CircledPlay.png")));
@@ -192,7 +193,19 @@ public class PlayerBarController {
         if (mediaPlayer != null) {
             mediaPlayer.toggleShuffle();
             button_Shuffle.setOpacity(mediaPlayer.isShuffle() ? 1 : 0.3);
+            System.out.println("Shuffle: " + mediaPlayer.isShuffle());
         }
+    }
+
+    public void handleShuffleTopButton() {
+        if (mediaPlayer != null) {
+            if (!mediaPlayer.isShuffle()) {
+                toggleShuffle();
+            }
+            button_Shuffle.setOpacity(mediaPlayer.isShuffle() ? 1 : 0.3);
+        }
+
+        System.out.println("Shuffle: " + mediaPlayer.isShuffle());
     }
 
     // Toggle between Play and Pause
@@ -230,17 +243,26 @@ public class PlayerBarController {
 
     public void playSongFromPlaylist(Song song, MusicCollection musicCollection) {
         if (song != null && musicCollection != null) {
-            mediaPlayer.playSong(song, musicCollection);
-            mediaPlayer.setCurrentSongIndex(musicCollection.getSongs().indexOf(song));
-            mediaPlayer.setCurrentPlayingMusicCollection(musicCollection);
+            if (song.isSongFileValid()) {
+                mediaPlayer.playSong(song, musicCollection);
+                mediaPlayer.setCurrentSongIndex(musicCollection.getSongs().indexOf(song));
+                mediaPlayer.setCurrentPlayingMusicCollection(musicCollection);
+                updateSongUI(song);
+            } else {
+                mainViewController.showFileNotFoundPrompt(song);
+            }
         }
-        updateSongUI(song);
     }
 
     public void handleAddSongToQueue(Song songToAdd, MusicCollection musicCollection) {
-        mediaPlayer.addSongToQueue(songToAdd, musicCollection);
-        if (queueViewController != null) {
-            queueViewController.customInit(mediaPlayer);
+        if (songToAdd != null && musicCollection != null && queueViewController != null) {
+
+            if (songToAdd.isSongFileValid()) {
+                mediaPlayer.addSongToQueue(songToAdd, musicCollection);
+                queueViewController.customInit(mediaPlayer);
+            } else {
+                mainViewController.showFileNotFoundPrompt(songToAdd);
+            }
         }
     }
 

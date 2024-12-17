@@ -29,6 +29,7 @@ import java.util.ArrayList;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public class MainViewController {
@@ -71,6 +72,10 @@ public class MainViewController {
 
     // Initialize
     public void initialize() {
+
+        // Set the reference to the user library, so it can scan all the files on start
+        userLibrary.setMainViewController(this);
+
         // Set up the user documents folder
         setupUserDocuments();
 
@@ -94,6 +99,9 @@ public class MainViewController {
                 System.out.println("No user data found to load. Starting with an empty library.");
             }
         }
+
+        // Validate and remove all invalid songs
+        userLibrary.validateLibraryFiles();
 
         // Parse kun nye sange fra disk
         SongParser songParser = new SongParser();
@@ -490,7 +498,7 @@ public class MainViewController {
     @FXML
     private void importSong() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Audio Files", "*.FLAC", "*.MP3", "*.WAV"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Audio Files", "*.MP3", "*.WAV"));
 
         File selectedFile = fileChooser.showOpenDialog(anchorCenter.getScene().getWindow());
 
@@ -516,6 +524,9 @@ public class MainViewController {
                 }
             }
         }
+
+        // Validate and remove invalid songs
+        userLibrary.validateLibraryFiles();
     }
 
     public void handleLikeAlbum(Album albumToLike, AlbumCoverController albumCoverController) {
@@ -535,6 +546,24 @@ public class MainViewController {
     }
 
 
+    public void showFileNotFoundPrompt(Song song) {
+        // Dette kan være GUI-kode afhængigt af produktet, Fx Alert i JavaFX
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Fil ikke fundet");
+        alert.setHeaderText("Sangfilen findes ikke længere: " + song.getSongTitle());
+        alert.setContentText("Vil du fjerne sangen fra dit bibliotek?");
+
+        ButtonType yesButton = new ButtonType("Ja");
+        ButtonType noButton = new ButtonType("Nej", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton) {
+            // Fjern sangen fra biblioteket
+            userLibrary.removeSong(song);
+        }
+    }
+
     @FXML
     public void save() {
         dataSaver.saveUserData(userLibrary);
@@ -548,6 +577,9 @@ public class MainViewController {
         // If the loaded library is not null, replace the existing userLibrary
         if (newuserLibrary != null) {
             userLibrary = newuserLibrary;
+
+            // Validate library files
+            userLibrary.validateLibraryFiles();
 
             //Clear sidebar
             vbox_playlists.getChildren().clear();
@@ -569,6 +601,42 @@ public class MainViewController {
 
         } else {
             System.out.println("No user data found to load.");
+        }
+    }
+
+    @FXML
+    private void handleValidateLibrary() {
+        userLibrary.validateLibraryFiles();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Library validation completed. Invalid songs removed.");
+        alert.showAndWait();
+    }
+    
+    @FXML
+    private void scanForNewFiles() {
+        List<File> audioFiles = getAudioFilesFromDocuments();
+    
+        // Filter for new files that are not already in the library
+        List<File> newFiles = audioFiles.stream()
+                .filter(file -> !userLibrary.containsSongFile(file))
+                .toList();
+    
+        // Parse and add the new files
+        if (!newFiles.isEmpty()) {
+            SongParser songParser = new SongParser();
+            songParser.parseSongs(userLibrary, new ArrayList<>(newFiles), cacheDataPath);
+    
+            // Validate and remove invalid library files after adding new ones
+            userLibrary.validateLibraryFiles();
+    
+            // Provide feedback to the user
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, newFiles.size() + " new files detected and added to the library.");
+            alert.showAndWait();
+    
+            // Reload the sidebar to reflect updated playlists and albums
+            reloadSidebar();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "No new files detected in the Documents folder.");
+            alert.showAndWait();
         }
     }
 }

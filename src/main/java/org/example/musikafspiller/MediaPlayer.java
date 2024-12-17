@@ -16,7 +16,9 @@ import java.util.logging.Logger;
 
 public class MediaPlayer {
 
-    private final PlayerBarController playerBarController;
+    @Setter
+    MainViewController mainViewController;
+    private PlayerBarController playerBarController;
     private static final Logger logger = Logger.getLogger(MediaPlayer.class.getName());
 
     @Getter @Setter private boolean shuffle = false;
@@ -46,28 +48,16 @@ public class MediaPlayer {
     /* Public Methods */
 
     public void playSong(Song songToPlay, MusicCollection collectionToPlay) {
-        if (!isValidSong(songToPlay)) return;
-        cleanupMediaPlayer();
-        currentPlayingMusicCollection = collectionToPlay;
 
-        startPlayingSong(songToPlay, true);
-    }
+        if (songToPlay.isSongFileValid()) {
+            cleanupMediaPlayer();
+            currentPlayingMusicCollection = collectionToPlay;
 
-    public void removeLastSongFromQueue() {
-        logger.info("Removing last song from queue");
-        if (lastPlayedSong == null) {
-            logger.warning("No last played song to remove.");
-            return;
-        }
-
-        if (songQueue.remove(lastPlayedSong)) {
-            logger.info("Removed last played song from queue: " + lastPlayedSong);
+            startPlayingSong(songToPlay, true);
         } else {
-            logger.warning("Last played song not found in queue: " + lastPlayedSong);
+            logger.warning("Song file does not exist or is not a file.");
+            mainViewController.showFileNotFoundPrompt(songToPlay);
         }
-
-        playerBarController.queueViewController.refreshQueue(getSongQueue());
-        logger.info("Current queue size after removal: " + songQueue.size());
     }
 
     public void skipSong() {
@@ -157,34 +147,45 @@ public class MediaPlayer {
     /* Private Methods */
 
     private void startPlayingSong(Song songToPlay, boolean isManualPlay) {
-        if (!isManualPlay && lastPlayedSong != null) {
-            //removeLastSongFromQueue();
-            playedSongs.add(lastPlayedSong); // Tilføj den tidligere afspillede
+
+        try {
+            if (songToPlay.getSongFile() == null || !songToPlay.getSongFile().exists()) {
+                logger.warning("Song file does not exist or is not a file.");
+                mainViewController.showFileNotFoundPrompt(songToPlay);
+                return;
+            }
+
+            if (!isManualPlay && lastPlayedSong != null) {
+                //removeLastSongFromQueue();
+                playedSongs.add(lastPlayedSong); // Tilføj den tidligere afspillede
+            }
+
+            File songFile = songToPlay.getSongFile();
+            Media media = new Media(songFile.toURI().toString());
+
+            mediaPlayer = new javafx.scene.media.MediaPlayer(media);
+            mediaPlayer.setVolume(mediaVolume);
+
+            bindCurrentTimeProperty();
+            setupMediaPlayerEvents(songToPlay);
+
+            mediaPlayer.play();
+            playerBarController.updateSongUI(songToPlay);
+            isSongPlaying = true;
+            lastPlayedSong = songToPlay;
+
+            Song userLibrarySong = userLibrary.findSong(songToPlay.getSongTitle());
+
+            userLibrarySong.increasePlays();
+
+            System.out.println("Song: " + userLibrarySong + " played " + userLibrarySong.getAmountOfPlays() + " times." );
+
+            logger.info("Now playing: " + songToPlay.getSongTitle() + " by " + songToPlay.getSongArtist());
+            currentSongIndex = currentPlayingMusicCollection.getSongs().indexOf(songToPlay);
+        } catch (Exception e) {
+            logger.severe("Error while playing song: " + e.getMessage());
+            handleNoSongsAvailable();
         }
-
-        File songFile = songToPlay.getSongFile();
-        Media media = new Media(songFile.toURI().toString());
-
-        mediaPlayer = new javafx.scene.media.MediaPlayer(media);
-        mediaPlayer.setVolume(mediaVolume);
-
-        bindCurrentTimeProperty();
-        setupMediaPlayerEvents(songToPlay);
-
-        mediaPlayer.play();
-        playerBarController.updateSongUI(songToPlay);
-        isSongPlaying = true;
-        lastPlayedSong = songToPlay;
-
-        Song userLibrarySong = userLibrary.findSong(songToPlay.getSongTitle());
-
-        userLibrarySong.increasePlays();
-
-        System.out.println("Song: " + userLibrarySong + " played " + userLibrarySong.getAmountOfPlays() + " times." );
-
-        logger.info("Now playing: " + songToPlay.getSongTitle() + " by " + songToPlay.getSongArtist());
-        currentSongIndex = currentPlayingMusicCollection.getSongs().indexOf(songToPlay);
-
     }
 
     private void setupMediaPlayerEvents(Song songToPlay) {
@@ -230,9 +231,14 @@ public class MediaPlayer {
 
     private void cleanupMediaPlayer() {
         if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.dispose();
-            mediaPlayer = null;
+            try {
+                mediaPlayer.stop();
+                mediaPlayer.dispose();
+            } catch (Exception e) {
+                logger.severe("Error while cleaning up media player: " + e.getMessage());
+            } finally {
+                mediaPlayer = null;
+            }
         }
     }
 
