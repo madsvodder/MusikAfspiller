@@ -193,7 +193,14 @@ public class UserLibrary {
         }
 
         // Fjern alle ugyldige sange fra biblioteket
-        songs.removeAll(invalidSongs);
+
+        for (Song song : invalidSongs) {
+            if (song != null) {
+                removeSong(song);
+            }
+        }
+
+        //songs.removeAll(invalidSongs);
 
         if (!invalidSongs.isEmpty()) {
             logger.warning("Removed " + invalidSongs.size() + " invalid songs from user library.");
