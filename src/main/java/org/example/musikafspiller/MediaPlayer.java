@@ -141,7 +141,7 @@ public class MediaPlayer {
 
     public void toggleShuffle() {
         shuffle = !shuffle;
-        shuffleQueue();  // Bland køen når shuffle ændres
+        //shuffleQueue();
     }
 
     /* Private Methods */
