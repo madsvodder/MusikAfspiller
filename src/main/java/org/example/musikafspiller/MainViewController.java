@@ -1,22 +1,16 @@
 package org.example.musikafspiller;
 
-import io.github.palexdev.materialfx.controls.MFXSlider;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -49,6 +43,8 @@ public class MainViewController {
 
     private List<PlaylistItemController> sidebarItems = new ArrayList<>();
 
+    private PlaylistViewController currentPlaylistViewController;
+
     @Getter @Setter private Stage primaryStage;
 
     // A reference to the selected song that is playing or paused
@@ -56,7 +52,10 @@ public class MainViewController {
     Song selectedSong;
 
     // Selected playlist
-    Playlist selectedPlaylist;
+    MusicCollection selectedMusicCollection;
+
+    // Use this to check if the user is looking at albums. Used for refreshing
+    AlbumsOverviewController albumsOverviewController;
 
     // Directory of the users music
     private String libraryPath;
@@ -397,6 +396,7 @@ public class MainViewController {
             albumsOverviewController.setUserLibrary(userLibrary);
             albumsOverviewController.populateAlbumGrid();
 
+            this.albumsOverviewController = albumsOverviewController;
 
             // Add the loaded view to the center of anchorCenter
             anchorCenter.getChildren().clear();
@@ -414,21 +414,10 @@ public class MainViewController {
     }
 
     @FXML
-    private void switchToLikedSongsView() {
-        if (!userLibrary.doesPlaylistExist("Liked songs")) {
-            Album album = new Album("Liked songs", "MyTunes", "2024");
-            userLibrary.addAlbum(album);
-
-            logger.info("Creating new Liked songs album: " + album);
-        }
-
-        switchToPlaylistView(userLibrary.findAlbum("Liked songs"));
-    }
-
-    @FXML
     private void switchToMostPlayedSongsView() {
         if (!userLibrary.doesPlaylistExist("Most Played Songs")) {
             Album album = new Album("Most Played Songs", "MyTunes", "2024");
+
             userLibrary.addAlbum(album);
 
             logger.info("Creating new Most Played Songs album: " + album);
@@ -447,7 +436,7 @@ public class MainViewController {
     }
 
     // Method to switch to the selected playlist view
-    public void switchToPlaylistView(MusicCollection item) {
+    public void switchToPlaylistView(MusicCollection musicCollection) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist-view.fxml"));
             BorderPane newView = loader.load();
@@ -455,27 +444,34 @@ public class MainViewController {
             // Retrieve the controller instance created by FXMLLoader
             PlaylistViewController controller = loader.getController();
 
-            if (item instanceof Playlist) {
+            if (musicCollection instanceof Playlist) {
                 // Pass the required data to the controller
-                controller.setMusicCollection((Playlist) item);
+                controller.setMusicCollection((Playlist) musicCollection);
                 controller.setUserLibrary(userLibrary);
                 controller.setMainViewController(this);
                 controller.setPlayerBarController(playerBarController);
-                controller.customInit(false);
+                controller.customInit(musicCollection);
 
                 // Set reference to selected playlist
-                selectedPlaylist = (Playlist) item;
+                selectedMusicCollection = (Playlist) musicCollection;
 
                 // Log for debugging
-                logger.info("Switching to playlist view with playlist: " + (Playlist) item + " and userLibrary: " + userLibrary);
-            } else if (item instanceof Album) {
-                controller.setMusicCollection((Album) item);
+                logger.info("Switching to playlist view with playlist: " + (Playlist) musicCollection + " and userLibrary: " + userLibrary);
+            } else if (musicCollection instanceof Album) {
+                controller.setMusicCollection((Album) musicCollection);
                 controller.setUserLibrary(userLibrary);
                 controller.setMainViewController(this);
                 controller.setPlayerBarController(playerBarController);
-                controller.customInit(true);
-                logger.info("Switching to album view with album: " + (Album) item + " and userLibrary: " + userLibrary);
+                controller.customInit(musicCollection);
+
+                // Set reference to selected album
+                selectedMusicCollection = (Album) musicCollection;
+
+                logger.info("Switching to album view with album: " + (Album) musicCollection + " and userLibrary: " + userLibrary);
             }
+
+            // Update the reference in this class. Used for refreshing the ui, when a song is removed from the users files.
+            currentPlaylistViewController = controller;
 
             // Update the UI with the new view
             anchorCenter.getChildren().clear();
@@ -606,7 +602,21 @@ public class MainViewController {
 
     @FXML
     private void handleValidateLibrary() {
+
         userLibrary.validateLibraryFiles();
+
+        if (currentPlaylistViewController != null) {
+            currentPlaylistViewController.customInit(selectedMusicCollection);
+            logger.info("Refreshed Playlist View: " + currentPlaylistViewController.getMusicCollection().getCollectionName());
+        }
+
+        if (albumsOverviewController != null) {
+            albumsOverviewController.populateAlbumGrid();
+            logger.info("Refreshed Albums Overview");
+        }
+
+
+
         Alert alert = new Alert(Alert.AlertType.INFORMATION, "Library validation completed. Invalid songs removed.");
         alert.showAndWait();
     }
@@ -627,6 +637,12 @@ public class MainViewController {
     
             // Validate and remove invalid library files after adding new ones
             userLibrary.validateLibraryFiles();
+
+            // Refresh albums view
+            if (albumsOverviewController != null) {
+                albumsOverviewController.populateAlbumGrid();
+                logger.info("Refreshed Albums Overview");
+            }
     
             // Provide feedback to the user
             Alert alert = new Alert(Alert.AlertType.INFORMATION, newFiles.size() + " new files detected and added to the library.");

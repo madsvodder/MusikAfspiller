@@ -48,20 +48,11 @@
                                           </ImageView>
                                        </graphic>
                                     </Button>
-                                    <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#switchToLikedSongsView" prefHeight="47.0" text="Liked Songs" textFill="WHITE">
-                                       <graphic>
-                                          <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../../images/LightImages/LoveCircled.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </Button>
                                     <Button layoutX="10.0" layoutY="57.0" mnemonicParsing="false" onAction="#switchToMostPlayedSongsView" prefHeight="47.0" text="Most Played" textFill="WHITE">
                                        <graphic>
                                           <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@../../../images/LightImages/MusicRecordOutlined.png" />
+                                                <Image url="@../../../images/LightImages/MostListened.png" />
                                              </image>
                                           </ImageView>
                                        </graphic>

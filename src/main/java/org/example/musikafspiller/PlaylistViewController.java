@@ -107,20 +107,27 @@ public class PlaylistViewController {
         }
     }
 
-    public void customInit(boolean album) {
+    public void customInit(MusicCollection musicCollection) {
 
         this.mediaPlayer = playerBarController.getMediaPlayer();
 
-        isAlbum = album;
+        if (musicCollection == null) {
+            logger.warning("MusicCollection is null");
+            return;
+        }
 
-        if (album) {
+        if (musicCollection instanceof Album album) {
             initializeAsAlbum();
-        } else {
+        } else if (musicCollection instanceof Playlist playlist) {
             initializePlaylist();
         }
+
     }
 
     private void initializePlaylist() {
+
+        isAlbum = false;
+
         // Initialize labels and setup listeners
         setupLabels();
         logInitialize();
@@ -142,6 +149,9 @@ public class PlaylistViewController {
     }
 
     private void initializeAsAlbum() {
+
+        isAlbum = true;
+
         // Initialize labels and setup listeners
         setupLabels();
         logInitialize();

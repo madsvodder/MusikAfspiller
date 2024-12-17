@@ -152,6 +152,13 @@ public class MediaPlayer {
             if (songToPlay.getSongFile() == null || !songToPlay.getSongFile().exists()) {
                 logger.warning("Song file does not exist or is not a file.");
                 mainViewController.showFileNotFoundPrompt(songToPlay);
+
+                // Fixes bug where queue stops if a song is not valid.
+                if (!isManualPlay && lastPlayedSong != null) {
+                    System.out.println("Trying next song!");
+                    playNextSong();
+                }
+
                 return;
             }
 

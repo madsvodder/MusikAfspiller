@@ -64,6 +64,7 @@ public class PlayerBarController {
     @FXML
     private Slider slider_songProgress;
 
+
     // These images are the ones that we change during runtime.
     private Image playImage;
     private Image pauseImage;

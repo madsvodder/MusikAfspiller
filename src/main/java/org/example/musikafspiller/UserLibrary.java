@@ -116,10 +116,11 @@ public class UserLibrary {
     public List<Song> getMostPlayedSongs() {
         System.out.println("Total songs: " + songs.size());
 
-        // Filtrer, sorter og indsamle de mest spillede sange
+        // Filtrer, sorter og begræns til kun de 15 mest spillede sange
         List<Song> mostPlayedSongs = songs.stream()
                 .filter(song -> song.getAmountOfPlays() >= 1) // Filtrer sange med plays >= 1
                 .sorted((s1, s2) -> Integer.compare(s2.getAmountOfPlays(), s1.getAmountOfPlays())) // Sorter i faldende rækkefølge
+                .limit(15) // Begræns listen til de 15 første
                 .collect(Collectors.toList()); // Indsaml som en liste
 
         if (!mostPlayedSongs.isEmpty()) {
@@ -183,6 +184,7 @@ public class UserLibrary {
     public void validateLibraryFiles() {
         List<Song> invalidSongs = new ArrayList<>();
 
+        // Find alle ugyldige sange, hvor filen ikke er valid
         for (Song song : songs) {
             if (!song.isSongFileValid()) {
                 logger.warning("Invalid file in user library: " + song.getSongTitle());
@@ -190,7 +192,7 @@ public class UserLibrary {
             }
         }
 
-        // Remove all invalid songs from the imported songs array
+        // Fjern alle ugyldige sange fra biblioteket
         songs.removeAll(invalidSongs);
 
         if (!invalidSongs.isEmpty()) {
@@ -198,6 +200,17 @@ public class UserLibrary {
         } else {
             logger.info("No invalid songs found in user library.");
         }
-    }
 
+        // Fjern albums uden sange
+        List<Album> emptyAlbums = new ArrayList<>();
+        for (Album album : albums) {
+            if (album.getSongs().isEmpty()) {
+                emptyAlbums.add(album);
+                logger.warning("Removed album with no songs: " + album.getCollectionName());
+            }
+        }
+        albums.removeAll(emptyAlbums);
+
+        logger.info("Library validation completed.");
+    }
 }

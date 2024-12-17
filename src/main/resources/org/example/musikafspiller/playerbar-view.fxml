@@ -17,14 +17,18 @@
 
 <HBox alignment="CENTER" prefHeight="100.0" prefWidth="1280.0" stylesheets="@../../../css/Playerbar.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.musikafspiller.PlayerBarController">
    <children>
-      <ImageView fx:id="image_currentAlbumPlaying" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../../../images/LightImages/MusicRecord.png" />
-         </image>
+      <StackPane>
          <HBox.margin>
             <Insets right="10.0" />
          </HBox.margin>
-      </ImageView>
+         <children>
+            <ImageView fx:id="image_currentAlbumPlaying" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../images/LightImages/MusicRecord.png" />
+               </image>
+            </ImageView>
+         </children>
+      </StackPane>
       <VBox alignment="CENTER_LEFT" prefHeight="80.0">
          <children>
             <Label fx:id="label_CurrentSongName" maxWidth="200.0" minWidth="200.0" onMouseClicked="#goToPlaylist" onMouseEntered="#setUnderlineOnHover" onMouseExited="#setUnderlineOffHover" textFill="WHITE">

@@ -44,17 +44,20 @@ public class AlbumsOverviewController {
 
         // Iterate through albums and add them to the grid
         for (Album album : userLibrary.getAlbums()) {
-            VBox albumBox = createAlbumBox(album);
-            if (albumBox != null) {
-                grid_Albums.add(albumBox, column, row);  // Add the album box to the grid
-                column++;
+            if (album.getCollectionName() != "Most Played Songs")
+                {
+                    VBox albumBox = createAlbumBox(album);
+                    if (albumBox != null) {
+                        grid_Albums.add(albumBox, column, row);  // Add the album box to the grid
+                        column++;
 
-                // Move to the next row after 5 columns
-                if (column == 5) {
-                    column = 0;
-                    row++;
+                        // Move to the next row after 5 columns
+                        if (column == 5) {
+                            column = 0;
+                            row++;
+                        }
+                    }
                 }
-            }
         }
 
         // Adjust row constraints dynamically if needed (e.g., based on album count)
