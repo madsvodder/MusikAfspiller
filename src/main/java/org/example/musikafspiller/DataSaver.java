@@ -69,15 +69,6 @@ public class DataSaver {
         }
         return userLibrary;
     }
-
-    public void validateLibraryFiles(UserLibrary userLibrary) {
-        for (Song song : userLibrary.getSongs()) {
-            if (!song.isSongFileValid()) {
-                logger.warning("Invalid file in user library: " + song.getSongTitle());
-                // Måske fjerne sangen fra biblioteket direkte?
-            }
-        }
-    }
     public boolean doesSaveFileExist() {
         File file = new File(saveDataPath + "user_data.json");
         return file.exists();

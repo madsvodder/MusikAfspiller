@@ -440,14 +440,14 @@ public class MainViewController {
     }
 
     // This method runs when you select a playlist in the sidebar
-    public void onPlaylistSelected(Object item) {
+    public void onPlaylistSelected(MusicCollection item) {
         if (item != null) {
             switchToPlaylistView(item); // Switch to the playlist view
         }
     }
 
     // Method to switch to the selected playlist view
-    public void switchToPlaylistView(Object item) {
+    public void switchToPlaylistView(MusicCollection item) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist-view.fxml"));
             BorderPane newView = loader.load();

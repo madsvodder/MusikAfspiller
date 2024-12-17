@@ -213,7 +213,7 @@ public class MediaPlayer {
     }
 
     private void playNextSong() {
-        startPlayingSong(getNextSong(), false); // Automatisk
+        startPlayingSong(getNextSong(), false);
     }
 
     private void handleNoSongsAvailable() {

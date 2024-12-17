@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Playlist extends MusicCollection {
     public Playlist(String name) {
-        setCollectionName(name); // Use collectionName directly
+        setCollectionName(name);
     }
 
     public Playlist() {}
