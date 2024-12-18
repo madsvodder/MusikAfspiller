@@ -349,15 +349,15 @@ public class PlaylistViewController {
 
     @FXML
     private void addMultipleSongsToPlaylist() {
-        // Opret et ListSelectionView med brugerens sange
+        // Setup ListSelectionView with songs from the user library
         ListSelectionView<Song> listSelectionView = new ListSelectionView<>();
         listSelectionView.getSourceItems().addAll(userLibrary.getSongs());
 
-        // Opret en TextField til søgning
+        // Create a TextField for searching
         TextField searchField = new TextField();
         searchField.setPromptText("Search songs...");
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            // Filtrér kun kilden (source items)
+            // Search and show songs in userlibrary that fits the search
             ObservableList<Song> filteredList = FXCollections.observableArrayList(
                     userLibrary.getSongs().stream()
                             .filter(song -> song.getSongTitle().toLowerCase().contains(newValue.toLowerCase()) ||
@@ -367,20 +367,22 @@ public class PlaylistViewController {
             listSelectionView.getSourceItems().setAll(filteredList);
         });
 
-        // Layout til dialogens indhold
+        // Layout for the VBox
         VBox content = new VBox(searchField, listSelectionView);
         content.setSpacing(10);
-        content.setPrefWidth(600); // Sæt dialogens bredde
-        listSelectionView.setPrefHeight(400); // Sæt højde for ListSelectionView
+        content.setPrefWidth(600);
 
-        // Vis dialogboksen
+        // SelectionView Size
+        listSelectionView.setPrefHeight(400);
+
+        // Show the dialog
         Optional<ButtonType> result = showDialogWithContent(
                 "Add Songs to Playlist",
                 "Select the songs you want to add to the playlist:",
                 content
         );
 
-        // Hvis brugeren trykker OK, tilføj de valgte sange til playlisten
+        // If the user presses ok, add the songs to the playlist
         result.ifPresent(buttonType -> {
             if (buttonType.equals(ButtonType.OK)) {
                 List<Song> selectedSongs = new ArrayList<>(listSelectionView.getTargetItems());
@@ -388,11 +390,15 @@ public class PlaylistViewController {
                 if (selectedSongs != null && !selectedSongs.isEmpty()) {
                     // Tilføj de valgte sange til playlisten
                     for (Song song : selectedSongs) {
-                        musicCollection.addSong(song);      // Tilføj til playlisten
-                        songObservableList.add(song);      // Tilføj til ObservableList (automatisk UI-opdatering)
+
+                        // Add to playlist
+                        musicCollection.addSong(song);
+
+                        // Add to observable list (UI refreshing)
+                        songObservableList.add(song);
                     }
 
-                    // Opdater playlistens varighed efter ændringen
+                    // Update playlist length
                     updatePlaylistDuration();
                 } else {
                     logger.info("No songs selected to add to the playlist.");

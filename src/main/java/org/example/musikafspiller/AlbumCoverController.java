@@ -8,6 +8,8 @@ import javafx.scene.layout.Pane;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 
 public class AlbumCoverController {
 
@@ -31,8 +33,8 @@ public class AlbumCoverController {
     @Setter @Getter private PlaylistItemController playlistItemController;
 
     public AlbumCoverController() {
-        likedImage = new Image(getClass().getResourceAsStream("/images/LightImages/Love.png"));
-        unlikedImage = new Image(getClass().getResourceAsStream("/images/LightImages/Heart.png"));
+        likedImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/LightImages/Love.png")));
+        unlikedImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/LightImages/Heart.png")));
     }
 
     public void setImage_cover(Image image) {
@@ -55,7 +57,6 @@ public class AlbumCoverController {
             }
         }
     }
-
 
     @FXML
     private void viewAlbum() {

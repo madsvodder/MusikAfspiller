@@ -1,6 +1,5 @@
 package org.example.musikafspiller;
 
-import javafx.scene.image.Image;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.AudioHeader;
@@ -11,10 +10,8 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.images.Artwork;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -88,6 +85,7 @@ public class SongParser {
 
     private String saveArtworkToCache(byte[] imageData, String albumTitle, String songArtist, String cacheDirectory) {
         try {
+
             // Create a safe file name for the album artwork
             String sanitizedAlbumTitle = albumTitle.replaceAll("[^a-zA-Z0-9._-]", "_");
             String sanitizedArtistName = songArtist.replaceAll("[^a-zA-Z0-9._-]", "_");
@@ -108,6 +106,7 @@ public class SongParser {
     }
 
     public void parseSongs(UserLibrary userLibrary, ArrayList<File> songsFilesToParse, String cacheDataPath) {
+
         // Validate input
         if (songsFilesToParse == null || songsFilesToParse.isEmpty()) {
             logger.warning("No songs found to parse.");
@@ -119,30 +118,30 @@ public class SongParser {
             return;
         }
 
-        // Loop gennem sangfiler
+        // Loop through the song files
         for (File file : songsFilesToParse) {
             if (file == null || !file.exists()) {
                 logger.warning("Invalid file encountered: " + file);
                 continue;
             }
 
-            // Tjek, om sang allerede findes (baseret på filsti)
+            // Check if the song already exists, based on the file
             if (userLibrary.containsSongFile(file)) {
                 logger.info("Skipping song. Already exists in UserLibrary: " + file.getName());
                 continue; // Spring denne sang over
             }
 
-            // Parse sangen
+            // Parse the song
             Song newSong = parseSong(file, cacheDataPath, userLibrary);
             if (newSong == null) {
                 logger.warning("Failed to parse song: " + file.getName());
                 continue;
             }
 
-            // Tilføj sang til biblioteket
+            // Add to library
             userLibrary.addSong(newSong);
 
-            // Associer sang med album
+            // Add to album
             associateSongWithAlbum(userLibrary, newSong);
         }
     }

@@ -138,7 +138,9 @@ public class PlayerBarController {
                 if (label_songDuration.textProperty().isBound()) {
                     label_songDuration.textProperty().unbind();
                 }
-                label_songDuration.setText(formatTime(Duration.seconds(targetSeconds))); // Update label while dragging
+
+                // Update label while dragging
+                label_songDuration.setText(formatTime(Duration.seconds(targetSeconds)));
             });
 
             // Handle seeking when the user releases the slider
@@ -188,7 +190,6 @@ public class PlayerBarController {
     }
 
 
-
     @FXML
     public void toggleShuffle() {
         if (mediaPlayer != null) {
@@ -206,6 +207,8 @@ public class PlayerBarController {
             button_Shuffle.setOpacity(mediaPlayer.isShuffle() ? 1 : 0.3);
         }
 
+        // I don't know what this is, but intellij told me to use it
+        assert mediaPlayer != null;
         System.out.println("Shuffle: " + mediaPlayer.isShuffle());
     }
 

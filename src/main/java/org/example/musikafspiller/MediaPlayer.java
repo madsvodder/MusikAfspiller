@@ -11,7 +11,6 @@ import lombok.Setter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 public class MediaPlayer {
@@ -38,6 +37,7 @@ public class MediaPlayer {
     private ArrayList<Song> playedSongs = new ArrayList<>();
 
     @Getter @Setter @JsonIgnore private int currentSongIndex = 0;
+
     @Getter
     public boolean isSongPlaying = false;
 
@@ -45,8 +45,8 @@ public class MediaPlayer {
         this.playerBarController = playerBarController;
     }
 
-    /* Public Methods */
 
+    // Get ready to play a song. Executed when a user double-clicks a song
     public void playSong(Song songToPlay, MusicCollection collectionToPlay) {
 
         if (songToPlay.isSongFileValid()) {
@@ -110,7 +110,7 @@ public class MediaPlayer {
     }
 
     public void shuffleQueue() {
-        Collections.shuffle(songQueue); // Bland køen tilfældigt
+        Collections.shuffle(songQueue);
         logger.info("Queue shuffled");
     }
 
@@ -164,7 +164,10 @@ public class MediaPlayer {
 
             if (!isManualPlay && lastPlayedSong != null) {
                 //removeLastSongFromQueue();
-                playedSongs.add(lastPlayedSong); // Tilføj den tidligere afspillede
+
+                // Add the last played song. I dont even remember what this is used for.
+                // Prorably for fixing the annoying queue bugs
+                playedSongs.add(lastPlayedSong);
             }
 
             File songFile = songToPlay.getSongFile();
@@ -211,8 +214,9 @@ public class MediaPlayer {
     }
 
     private void playNextInQueue() {
-        Song nextSong = songQueue.remove(0); // Fjern og hent den første sang i køen
-        startPlayingSong(nextSong, false); // Afspil sangen
+        // Remove and get the first song in the queue
+        Song nextSong = songQueue.remove(0);
+        startPlayingSong(nextSong, false);
     }
 
     private void playRandomSong() {

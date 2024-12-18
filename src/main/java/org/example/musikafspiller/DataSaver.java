@@ -29,12 +29,15 @@ public class DataSaver {
 
     public void saveUserData(UserLibrary userLibrary) {
         try {
+
             // Create the JSON file
             File file = new File(saveDataPath + "user_data.json");
 
             // Ensure the parent directory exists
             if (!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs(); // Create directories if not present
+
+                // If not, create it.
+                file.getParentFile().mkdirs();
             }
 
             // Write the userLibrary object to the file as JSON
@@ -48,12 +51,16 @@ public class DataSaver {
     }
 
     public UserLibrary loadUserData() {
+
+        // Resetting user library. Don't know if I need to.
         UserLibrary userLibrary = null;
+
+        // Try to load
         try {
-            // Create the JSON file
+            // "Create" the JSON file / Make a object out of the JSON file
             File file = new File(saveDataPath + "user_data.json");
 
-            // Ensure the file exists
+            // Does the file exist?
             if (file.exists()) {
                 // Read the userLibrary object from the file
                 userLibrary = objectMapper.readValue(file, UserLibrary.class);
@@ -69,6 +76,7 @@ public class DataSaver {
         }
         return userLibrary;
     }
+
     public boolean doesSaveFileExist() {
         File file = new File(saveDataPath + "user_data.json");
         return file.exists();

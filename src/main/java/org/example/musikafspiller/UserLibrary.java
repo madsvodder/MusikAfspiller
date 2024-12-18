@@ -76,12 +76,10 @@ public class UserLibrary {
 
     public Album findAlbum(String albumName) {
         if (albumName == null || albumName.isEmpty()) {
-            //System.out.println("Provided album name is null or empty.");
             return null;
         }
         for (Album album : albums) {
             if (album.getCollectionName().equals(albumName)) {
-                //System.out.println("Found album: " + album.getAlbumName());
                 return album;
             }
         }
@@ -108,7 +106,7 @@ public class UserLibrary {
         playlists.add(playlist);
     }
 
-    // Tjekker, om en sang-fil allerede findes i brugerens bibliotek
+    // Check if a song already exists in the library
     public boolean containsSongFile(File file) {
         return getSongs().stream()
                 .anyMatch(song -> song.getSongFile().equals(file));
@@ -116,12 +114,18 @@ public class UserLibrary {
     public List<Song> getMostPlayedSongs() {
         System.out.println("Total songs: " + songs.size());
 
-        // Filtrer, sorter og begræns til kun de 15 mest spillede sange
+        // Filter the 15 most listened to songs
         List<Song> mostPlayedSongs = songs.stream()
-                .filter(song -> song.getAmountOfPlays() >= 1) // Filtrer sange med plays >= 1
-                .sorted((s1, s2) -> Integer.compare(s2.getAmountOfPlays(), s1.getAmountOfPlays())) // Sorter i faldende rækkefølge
-                .limit(15) // Begræns listen til de 15 første
-                .collect(Collectors.toList()); // Indsaml som en liste
+                .filter(song -> song.getAmountOfPlays() >= 1) // Find songs with more than 1 play >= 1
+
+                // Sorter i descending order
+                .sorted((s1, s2) -> Integer.compare(s2.getAmountOfPlays(), s1.getAmountOfPlays()))
+
+                // Limit to 15 songs
+                .limit(15)
+
+                // Collect as a list
+                .collect(Collectors.toList());
 
         if (!mostPlayedSongs.isEmpty()) {
             System.out.println("Most played songs:");
@@ -184,7 +188,7 @@ public class UserLibrary {
     public void validateLibraryFiles() {
         List<Song> invalidSongs = new ArrayList<>();
 
-        // Find alle ugyldige sange, hvor filen ikke er valid
+        // Remove all songs, which doesn't have a valid file
         for (Song song : songs) {
             if (!song.isSongFileValid()) {
                 logger.warning("Invalid file in user library: " + song.getSongTitle());
@@ -192,7 +196,7 @@ public class UserLibrary {
             }
         }
 
-        // Fjern alle ugyldige sange fra biblioteket
+        // Remove them from the library
 
         for (Song song : invalidSongs) {
             if (song != null) {
@@ -208,7 +212,7 @@ public class UserLibrary {
             logger.info("No invalid songs found in user library.");
         }
 
-        // Fjern albums uden sange
+        // Remove all empty albums
         List<Album> emptyAlbums = new ArrayList<>();
         for (Album album : albums) {
             if (album.getSongs().isEmpty()) {

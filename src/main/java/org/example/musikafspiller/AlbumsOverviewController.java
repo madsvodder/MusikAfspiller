@@ -29,30 +29,37 @@ public class AlbumsOverviewController {
 
     private ArrayList<VBox> albumBoxes = new ArrayList<>();
 
+    private final int columnSize = 5;
+
     public void populateAlbumGrid() {
+
+        // Clear any previous content
         albumBoxes.clear();
-        grid_Albums.getChildren().clear();  // Clear any previous content
+        grid_Albums.getChildren().clear();
 
         cb_Artists.setOnAction(event -> applyFilter());
         cb_Artists.getItems().clear();
-        // Set column constraints dynamically based on your requirements
+
+        // Set column constraints
         addColumnConstraints();
 
         // Variables to manage grid layout
         int column = 0;
         int row = 0;
 
-        // Iterate through albums and add them to the grid
+        // Find all albums and add them to the grid
         for (Album album : userLibrary.getAlbums()) {
             if (album.getCollectionName() != "Most Played Songs")
                 {
                     VBox albumBox = createAlbumBox(album);
                     if (albumBox != null) {
-                        grid_Albums.add(albumBox, column, row);  // Add the album box to the grid
+
+                        // Add the album box to the grid
+                        grid_Albums.add(albumBox, column, row);
                         column++;
 
                         // Move to the next row after 5 columns
-                        if (column == 5) {
+                        if (column == columnSize) {
                             column = 0;
                             row++;
                         }
@@ -60,20 +67,24 @@ public class AlbumsOverviewController {
                 }
         }
 
-        // Adjust row constraints dynamically if needed (e.g., based on album count)
+        // Der er skidt virker vidst ikke, men jeg tør ikke at røre ved det
         addRowConstraints(row);
     }
+
+    // Create single album cover box
     public VBox createAlbumBox(Album album) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("album-cover.fxml"));
             VBox albumBox = fxmlLoader.load();
 
+            // Setup content
             AlbumCoverController controller = fxmlLoader.getController();
             controller.setImage_cover(album.getAlbumArt());
             controller.setLabel_title(album.getCollectionName());
             controller.setAlbum(album);
             controller.setMainViewController(mainViewController);
 
+            // Set liked and not liked image
             albumBoxes.add(albumBox);
             if (album.isLiked())
             {
@@ -93,6 +104,7 @@ public class AlbumsOverviewController {
         }
     }
 
+    // Ikke rør det her
     private void addColumnConstraints() {
         grid_Albums.getColumnConstraints().clear();  // Clear existing column constraints
 
@@ -114,6 +126,7 @@ public class AlbumsOverviewController {
         }
     }
 
+    // Apply "Search" filter / Artist select filter
     public void applyFilter() {
         String artistFilter = cb_Artists.getSelectionModel().getSelectedItem();
 
@@ -124,8 +137,10 @@ public class AlbumsOverviewController {
 
         for (Album album : userLibrary.getAlbums()) {
             if (album != null) {
+
                 // Check for null or empty artist filter
                 if (artistFilter != null && !artistFilter.isEmpty()) {
+
                     // Artist filter logic
                     if (!album.getAlbumArtist().toLowerCase().contains(artistFilter.toLowerCase())) {
                         continue;
@@ -138,7 +153,7 @@ public class AlbumsOverviewController {
                     grid_Albums.add(albumBox, column, row);
                     column++;
 
-                    if (column == 5) { // Adjust based on your column layout
+                    if (column == columnSize) {
                         column = 0;
                         row++;
                     }

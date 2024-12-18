@@ -41,21 +41,26 @@ public class MainViewController {
     @FXML
     private VBox vbox_queue;
 
+    private VBox vboxQueueSidebar;
+
+    @Getter @Setter
+    private Stage primaryStage;
+
+    // List of all sidebar items. Playlists and albums
     private List<PlaylistItemController> sidebarItems = new ArrayList<>();
 
+    // Reference to the current viewed playlist / album controller
     private PlaylistViewController currentPlaylistViewController;
 
-    @Getter @Setter private Stage primaryStage;
+    // Reference to the albums overview controller. Used for refreshing
+    AlbumsOverviewController albumsOverviewController;
 
     // A reference to the selected song that is playing or paused
     @Setter @Getter
     Song selectedSong;
 
-    // Selected playlist
+    // Reference to the current viewed playlist / album
     MusicCollection selectedMusicCollection;
-
-    // Use this to check if the user is looking at albums. Used for refreshing
-    AlbumsOverviewController albumsOverviewController;
 
     // Directory of the users music
     private String libraryPath;
@@ -65,24 +70,29 @@ public class MainViewController {
     // The main classes. The user library, and the media player.
     @Getter
     UserLibrary userLibrary = new UserLibrary();
+
     DataSaver dataSaver;
-    @Setter PlayerBarController playerBarController;
-    private VBox vboxQueueSidebar;
+
+    @Setter
+    PlayerBarController playerBarController;
+
+    // Track queue sidebar visibility
+    private boolean isQueueVisible = true;
 
     // Initialize
     public void initialize() {
 
-        // Set the reference to the user library, so it can scan all the files on start
+        // Set the reference to the user library so it can scan all the files on start
         userLibrary.setMainViewController(this);
 
         // Set up the user documents folder
         setupUserDocuments();
 
-        // Hvis brugerdatafil eksisterer, skal vi indlæse gemte data
+        // If the user data file exists, load saved data
         if (dataSaver.doesSaveFileExist()) {
             UserLibrary loadedLibrary = dataSaver.loadUserData();
 
-            // Kombiner gemte data med den eksisterende struktur
+            // Combine saved data with the existing structure
             if (loadedLibrary != null) {
                 if (loadedLibrary.getPlaylists() != null) {
                     userLibrary.getPlaylists().addAll(loadedLibrary.getPlaylists());
@@ -102,38 +112,40 @@ public class MainViewController {
         // Validate and remove all invalid songs
         userLibrary.validateLibraryFiles();
 
-        // Parse kun nye sange fra disk
+        // Parse only new songs from disk
         SongParser songParser = new SongParser();
-        List<File> audioFiles = getAudioFilesFromDocuments(); // Få alle filer fra disk
+        List<File> audioFiles = getAudioFilesFromDocuments(); // Get all files from disk
 
-        // Tilføj sange fra disk, der ikke findes i biblioteket
+        // Add songs from disk that do not exist in the library
         List<File> newFiles = audioFiles.stream()
                 .filter(file -> !userLibrary.containsSongFile(file))
                 .toList();
         songParser.parseSongs(userLibrary, new ArrayList<>(newFiles), cacheDataPath);
 
-        // Initialiser UI-elementer
+        // Initialize UI elements
         setupPlayerBar();
         setupQueueSidebar();
 
-        // Tilføj gemte playlister og albums til UI
+        // Add saved playlists and albums to the UI
         reloadSidebar();
 
-        // Gem opdateret brugerdata
+        // Save updated user data
         save();
     }
 
+
     private void reloadSidebar() {
-        // Clear sidebar før opdatering
+
+        // Clear sidebar
         vbox_playlists.getChildren().clear();
 
-        // Tilføj playlister til sidebar
+        // Add playlists to sidebar
         for (Playlist playlist : userLibrary.getPlaylists()) {
             System.out.println("Loading playlist into sidebar: " + playlist.getCollectionName());
             addItemToSidebar(playlist);
         }
 
-        // Tilføj albums til sidebar, hvis de er liket
+        // Add albums to sidebar, if they are liked
         for (Album album : userLibrary.getAlbums()) {
             if (album.isLiked()) {
                 System.out.println("Loading liked album into sidebar: " + album.getCollectionName());
@@ -194,49 +206,71 @@ public class MainViewController {
         }
     }
 
-    private ArrayList<File> getAudioFilesFromDocuments () {
+    private ArrayList<File> getAudioFilesFromDocuments() {
 
-            ArrayList<File> audioFiles = new ArrayList<>();
+        // Initialize a list to store audio files
+        ArrayList<File> audioFiles = new ArrayList<>();
 
-            if (libraryPath != null) {
-                Path dir = Paths.get(libraryPath);
-                try {
-                    if (Files.exists(dir)) {
-                        Files.walk(dir)
-                                .filter(path -> Files.isRegularFile(path) && (
-                                        path.toString().endsWith(".mp3") ||
-                                                path.toString().endsWith(".flac") ||
-                                                path.toString().endsWith(".wav")))
-                                .forEach(path -> {
-                                    File file = path.toFile();
-                                    audioFiles.add(file);
-                                    logger.info("Found audio file: " + file.getAbsolutePath());
-                                });
-                    } else {
-                        logger.info("No audio files found in " + libraryPath);
-                    }
-                } catch (IOException e) {
-                    logger.severe("Error reading files from the directory: " + libraryPath);
-                    e.printStackTrace();
+        // Check if the library path is defined
+        if (libraryPath != null) {
+            Path dir = Paths.get(libraryPath);
+            try {
+                // Check if the directory exists
+                if (Files.exists(dir)) {
+                    // Walk the directory and find audio files with supported extensions
+                    Files.walk(dir)
+                            .filter(path -> Files.isRegularFile(path) && (
+                                    path.toString().endsWith(".mp3") ||  // Check for MP3 files
+                                            path.toString().endsWith(".flac") || // Check for FLAC files
+                                            path.toString().endsWith(".wav")))  // Check for WAV files
+                            .forEach(path -> {
+                                File file = path.toFile();
+
+                                // Add the file to the list
+                                audioFiles.add(file);
+
+                                // Log the file path
+                                logger.info("Found audio file: " + file.getAbsolutePath());
+                            });
+                } else {
+                    // Log if the directory does not contain audio files
+                    logger.info("No audio files found in " + libraryPath);
                 }
-            } else {
-                logger.info("No audio files found in " + libraryPath);
+            } catch (IOException e) {
+                // Handle any errors encountered while reading files from the directory
+                logger.severe("Error reading files from the directory: " + libraryPath);
+                e.printStackTrace();
             }
-            return audioFiles;
+        } else {
+            // Log if the library path is not defined
+            logger.info("No audio files found in " + libraryPath);
         }
+
+        // Return the list of audio files
+        return audioFiles;
+    }
+
 
     private void setupPlayerBar() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("playerbar-view.fxml"));
-            HBox playerBar = loader.load(); // Load the FXML file into an HBox (or whatever root node is defined).
-            bp_mainBorderPane.setBottom(playerBar); // Set the loaded node as the bottom of the BorderPane.
+
+            // Load the FXML file into an HBox
+            HBox playerBar = loader.load();
+
+            // Set the loaded node as the bottom of the BorderPane.
+            bp_mainBorderPane.setBottom(playerBar);
+
             // Add 10px margin on all sides
             BorderPane.setMargin(playerBar, new Insets(10, 10, 10, 10));
+
+            // Setup controller stuff and init the playerbar
             this.playerBarController = loader.getController();
             playerBarController.setMainViewController(this);
             playerBarController.setUserLibrary(userLibrary);
             playerBarController.customInit();
-            System.out.println("Player Bar Initialized: " + playerBarController);
+
+            logger.info("PlayerBar initialized" + playerBarController);
         } catch (IOException e) {
             throw new RuntimeException("Failed to load player bar view", e);
         }
@@ -265,25 +299,29 @@ public class MainViewController {
         }
     }
 
-    private boolean isQueueVisible = true; // Track visibility state
+
     public void toggleQueueSidebar() {
         if (isQueueVisible) {
-            bp_mainBorderPane.setRight(null); // Hide the queue
+
+            // Hide the queue if visible
+            bp_mainBorderPane.setRight(null);
         } else {
-            bp_mainBorderPane.setRight(vboxQueueSidebar); // Show the queue
+            // Show the queue
+            bp_mainBorderPane.setRight(vboxQueueSidebar);
         }
-        isQueueVisible = !isQueueVisible; // Toggle state
+        // Toggle boolean
+        isQueueVisible = !isQueueVisible;
     }
 
     // Method for adding a new playlist (called by Scene Builder)
     @FXML
     private void addNewPlaylistToSidebar() {
-        // null indicates a new playlist
         addItemToSidebar(userLibrary.newPlaylist());
     }
 
     private void addItemToSidebar(Object item) {
         try {
+
             // Load FXML file and add it to the side
             FXMLLoader loader = new FXMLLoader(getClass().getResource("playlist-item.fxml"));
             HBox playlistItem = loader.load();
@@ -292,23 +330,10 @@ public class MainViewController {
             logger.info("Added item to sidebar");
 
             // Get the controller from the FXML
-            PlaylistItemController playlistItemController = loader.getController();
+            PlaylistItemController playlistItemController = getPlaylistItemController(item, loader);
 
-            // Set reference to MainViewController
-            playlistItemController.setMainViewController(this);
-
-            // Determine the type of item and initialize appropriately
-            if (item instanceof Album) {
-                playlistItemController.setAlbum((Album) item);
-                playlistItemController.initializeAsAlbum();
-            } else if (item instanceof Playlist) {
-                playlistItemController.setPlaylist((Playlist) item);
-                playlistItemController.initializeAsPlaylist();
-            } else {
-                throw new IllegalArgumentException("Unsupported item type: " + item.getClass());
-            }
-
-            // Set the userData of the HBox to the controller
+            // Set the userData of the HBox to the controller.
+            // I have no idea why, but it breaks if i don't do it
             playlistItem.setUserData(playlistItemController);
 
             // Add controller to the sidebarItems list
@@ -322,21 +347,40 @@ public class MainViewController {
         }
     }
 
+    private PlaylistItemController getPlaylistItemController(Object item, FXMLLoader loader) {
+        PlaylistItemController playlistItemController = loader.getController();
+
+        // Set reference to MainViewController
+        playlistItemController.setMainViewController(this);
+
+        // Determine the type of item and initialize appropriately
+        if (item instanceof Album) {
+            playlistItemController.setAlbum((Album) item);
+            playlistItemController.initializeAsAlbum();
+        } else if (item instanceof Playlist) {
+            playlistItemController.setPlaylist((Playlist) item);
+            playlistItemController.initializeAsPlaylist();
+        } else {
+            throw new IllegalArgumentException("Unsupported item type: " + item.getClass());
+        }
+        return playlistItemController;
+    }
+
     // Removes playlist or album from sidebar and in the user library
-    public void removeItemFromSidebar(Object item, PlaylistItemController playlistItemController) {
+    public void removeItemFromSidebar(MusicCollection musicCollection, PlaylistItemController playlistItemController) {
         // Get the HBox (playlist item) from the controller
         HBox playlistItemBox = playlistItemController.getPlaylistItemBox();
 
-        if (item instanceof Playlist) {
+        if (musicCollection instanceof Playlist) {
             // Remove the playlist item from the sidebar
             vbox_playlists.getChildren().remove(playlistItemBox);
-            userLibrary.removePlaylist((Playlist) item);
-            System.out.println("Removed playlist item: " + item);
-        } else if (item instanceof Album) {
+            userLibrary.removePlaylist((Playlist) musicCollection);
+            System.out.println("Removed playlist item: " + musicCollection);
+        } else if (musicCollection instanceof Album) {
             // Remove the album item from the sidebar
             vbox_playlists.getChildren().remove(playlistItemBox);
-            userLibrary.unlikeAlbum((Album) item);
-            System.out.println("Removed album item: " + item);
+            userLibrary.unlikeAlbum((Album) musicCollection);
+            System.out.println("Removed album item: " + musicCollection);
         }
 
         // Remove the controller from the sidebarItems list
@@ -348,14 +392,18 @@ public class MainViewController {
     }
 
 
+    // This is a mess
     public void updatePlaylistNameInSidebar(Playlist playlist) {
-        // Log the UUID of the playlist being updated
+
+        // Log the UUID of the playlist being updated for debugging
         logger.info("Attempting to update playlist with UUID: " + playlist.getUuid());
 
-        // Iterate through children in the VBox
+        // Iterate through children in the VBox, to find the correct playlist
         for (Node node : vbox_playlists.getChildren()) {
-            // Check if the node is an HBox
+
+            // Check if the node is a HBox
             if (node instanceof HBox) {
+
                 // Retrieve the PlaylistItemController from userData
                 Object userData = node.getUserData();
                 if (userData instanceof PlaylistItemController) {
@@ -365,7 +413,9 @@ public class MainViewController {
                     if (itemController.getPlaylist().getUuid().equals(playlist.getUuid())) {
                         logger.info("UUIDs match! Updating playlist name in UI.");
                         itemController.updatePlaylistNameUI();
-                        return; // Exit once the playlist is found and updated
+
+                        // Exit once the playlist is found and updated
+                        return;
                     } else {
                         logger.fine("UUID mismatch for playlist: " + itemController.getPlaylist().getUuid());
                     }
@@ -398,7 +448,7 @@ public class MainViewController {
 
             this.albumsOverviewController = albumsOverviewController;
 
-            // Add the loaded view to the center of anchorCenter
+            // Add the loaded view to anchorCenter
             anchorCenter.getChildren().clear();
             anchorCenter.getChildren().add(newView);
 
@@ -429,9 +479,9 @@ public class MainViewController {
     }
 
     // This method runs when you select a playlist in the sidebar
-    public void onPlaylistSelected(MusicCollection item) {
-        if (item != null) {
-            switchToPlaylistView(item); // Switch to the playlist view
+    public void onPlaylistSelected(MusicCollection musicCollection) {
+        if (musicCollection != null) {
+            switchToPlaylistView(musicCollection);
         }
     }
 
@@ -445,6 +495,7 @@ public class MainViewController {
             PlaylistViewController controller = loader.getController();
 
             if (musicCollection instanceof Playlist) {
+
                 // Pass the required data to the controller
                 controller.setMusicCollection((Playlist) musicCollection);
                 controller.setUserLibrary(userLibrary);
@@ -489,8 +540,7 @@ public class MainViewController {
         }
     }
 
-    // Method for importing a song using the file chooser
-
+    // Method for importing a song using the file chooser. Not really used anymore
     @FXML
     private void importSong() {
         FileChooser fileChooser = new FileChooser();
@@ -536,26 +586,30 @@ public class MainViewController {
             if (Objects.equals(controller.getAlbum(), albumToUnlike)) {
                 removeItemFromSidebar(albumToUnlike, controller);
                 userLibrary.unlikeAlbum(albumToUnlike);
-                break; // Exit the loop once the item is found and removed
+
+                // Exit the loop once the item is found and removed
+                break;
             }
         }
     }
 
 
     public void showFileNotFoundPrompt(Song song) {
-        // Dette kan være GUI-kode afhængigt af produktet, Fx Alert i JavaFX
+
+        // Make a new alert
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Fil ikke fundet");
         alert.setHeaderText("Sangfilen findes ikke længere: " + song.getSongTitle());
         alert.setContentText("Vil du fjerne sangen fra dit bibliotek?");
 
+        // Setup buttons
         ButtonType yesButton = new ButtonType("Ja");
         ButtonType noButton = new ButtonType("Nej", ButtonBar.ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(yesButton, noButton);
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == yesButton) {
-            // Fjern sangen fra biblioteket
+            // Remove the song using the removeSong method. It removes the song from everything
             userLibrary.removeSong(song);
         }
     }
@@ -605,18 +659,19 @@ public class MainViewController {
 
         userLibrary.validateLibraryFiles();
 
+        // If the user is looking at a musiccollection, then refresh it
         if (currentPlaylistViewController != null) {
             currentPlaylistViewController.customInit(selectedMusicCollection);
             logger.info("Refreshed Playlist View: " + currentPlaylistViewController.getMusicCollection().getCollectionName());
         }
 
+        // If the user is looking at the albums overview, refresh that,
         if (albumsOverviewController != null) {
             albumsOverviewController.populateAlbumGrid();
             logger.info("Refreshed Albums Overview");
         }
 
-
-
+        // Setup alert with the type information
         Alert alert = new Alert(Alert.AlertType.INFORMATION, "Library validation completed. Invalid songs removed.");
         alert.showAndWait();
     }
@@ -643,12 +698,18 @@ public class MainViewController {
                 albumsOverviewController.populateAlbumGrid();
                 logger.info("Refreshed Albums Overview");
             }
+
+            // Refresh playlist view
+            if (currentPlaylistViewController != null) {
+                currentPlaylistViewController.customInit(selectedMusicCollection);
+                logger.info("Refreshed Playlist View: " + currentPlaylistViewController.getMusicCollection().getCollectionName());
+            }
     
-            // Provide feedback to the user
+            // Setup alert with type information
             Alert alert = new Alert(Alert.AlertType.INFORMATION, newFiles.size() + " new files detected and added to the library.");
             alert.showAndWait();
     
-            // Reload the sidebar to reflect updated playlists and albums
+            // Reload the sidebar to update playlists and albums
             reloadSidebar();
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "No new files detected in the Documents folder.");
