@@ -20,7 +20,7 @@
          <children>
             <ImageView fx:id="image_cover" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../images/OasisDefinitelyMaybealbumcover.jpg" />
+                  <Image url="@../../../images/istockphoto-1147544807-612x612.jpg" />
                </image>
                <effect>
                   <DropShadow />
