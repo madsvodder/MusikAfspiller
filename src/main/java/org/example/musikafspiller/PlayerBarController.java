@@ -13,6 +13,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class PlayerBarController {
 
@@ -64,16 +66,27 @@ public class PlayerBarController {
     @FXML
     private Slider slider_songProgress;
 
+    @FXML
+    private MFXSlider MFX_SongProgressSlider;
+
+    @FXML
+    private ImageView imgview_volume;
+
 
     // These images are the ones that we change during runtime.
     private Image playImage;
     private Image pauseImage;
     private Image musicRecordImage;
 
+    private Image mutedImage;
+
+    private Image fullVolumeImage;
+
 
     @Setter QueueViewController queueViewController;
 
     public void customInit() {
+
 
         mediaPlayer = new MediaPlayer(this);
         mediaPlayer.setUserLibrary(userLibrary);
@@ -83,6 +96,8 @@ public class PlayerBarController {
         playImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/LightImages/CircledPlay.png")));
         pauseImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/LightImages/PauseButton.png")));
         musicRecordImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/LightImages/MusicRecord.png")));
+        mutedImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/LightImages/Mute.png")));
+        fullVolumeImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/LightImages/Volume_Full.png")));
 
         // Bind the label in the corner for the song duration
         label_songDuration.textProperty().bind(mediaPlayer.getCurrentTimeProperty());
@@ -101,10 +116,71 @@ public class PlayerBarController {
             slider_Volume.valueProperty().addListener((observable, oldValue, newValue) -> {
                 double volume = newValue.doubleValue() / 100; // Convert to range [0.0, 1.0]
                 mediaPlayer.adjustVolume(volume);
+
+                if (newValue.intValue() == 0) {
+                    imgview_volume.setImage(mutedImage);
+                } else {
+                    imgview_volume.setImage(fullVolumeImage);
+                }
             });
         }
     }
 
+    private void setupSongProgressSlider() {
+        if (mediaPlayer != null) {
+            // Initialize the slider's max value when the media is ready
+            mediaPlayer.getMediaPlayer().setOnReady(() ->
+                    MFX_SongProgressSlider.setMax(mediaPlayer.getMediaPlayer().getTotalDuration().toSeconds())
+            );
+
+            // Track whether the user is interacting with the slider (dragging or clicking)
+            AtomicBoolean isDragging = new AtomicBoolean(false);
+
+            // Update the slider as the song progresses, only if the user is not dragging or mouse pressed
+            mediaPlayer.getMediaPlayer().currentTimeProperty().addListener((observable, oldValue, newValue) -> {
+                if (!isDragging.get() && !MFX_SongProgressSlider.isPressed()) {
+                    // Update the slider only if the user is not dragging
+                    MFX_SongProgressSlider.setValue(newValue.toSeconds());
+                }
+            });
+
+            // Handle mouse press to start dragging
+            MFX_SongProgressSlider.setOnMousePressed(event -> {
+                isDragging.set(true); // Indicate dragging has started
+                // Optionally, update media time immediately on press (if desired)
+                updateMediaTimeBasedOnSlider();
+            });
+
+            // Handle dragging behavior
+            MFX_SongProgressSlider.setOnMouseDragged(event -> {
+                // Do not update the song's time during dragging
+                // We only update the slider value visually as the user drags, without affecting the song's time
+            });
+
+            // Handle mouse release to finalize dragging
+            MFX_SongProgressSlider.setOnMouseReleased(event -> {
+                isDragging.set(false); // Indicate dragging has ended
+                updateMediaTimeBasedOnSlider(); // Seek the media to the final position when released
+            });
+
+            // Handle clicking somewhere on the slider without dragging
+            MFX_SongProgressSlider.setOnMouseClicked(event -> {
+                isDragging.set(false); // Ensure click is treated as final
+                updateMediaTimeBasedOnSlider(); // Seek the media immediately to the clicked position
+            });
+        }
+    }
+
+    // Method to seek the media player to the slider's position
+    private void updateMediaTimeBasedOnSlider() {
+        if (mediaPlayer != null) {
+            double seekTime = MFX_SongProgressSlider.getValue();
+            mediaPlayer.getMediaPlayer().seek(Duration.seconds(seekTime));
+        }
+    }
+
+
+    /* OLD METHOD FOR SONG PROGRESS SLIDER
     private void setupSongProgressSlider() {
         if (mediaPlayer != null) {
             // Set the max value for the slider when the media is ready
@@ -150,6 +226,35 @@ public class PlayerBarController {
         }
     }
 
+
+    // Method to seek to the position when the user releases the slider
+    private void seekToSliderPosition() {
+        double targetTimeInSeconds = slider_songProgress.getValue();
+        mediaPlayer.getMediaPlayer().seek(Duration.seconds(targetTimeInSeconds));
+    }
+    */
+
+    @FXML
+    private void onButtonVolume() {
+        if (mediaPlayer != null) {
+            mediaPlayer.mute();
+
+            if (mediaPlayer.isMuted()) {
+                imgview_volume.setImage(mutedImage);
+
+                if (mediaPlayer.getMediaPlayer() != null) {
+                    slider_Volume.setValue(mediaPlayer.getMediaPlayer().getVolume());
+                }
+            } else {
+                imgview_volume.setImage(fullVolumeImage);
+                if (mediaPlayer.getMediaPlayer() != null) {
+                    slider_Volume.setValue(mediaPlayer.getMediaPlayer().getVolume()*100);
+                }
+
+            }
+        }
+    }
+
     // Helper method to format Duration into a string (MM:SS)
     private String formatTime(Duration duration) {
         int minutes = (int) duration.toMinutes();
@@ -157,11 +262,7 @@ public class PlayerBarController {
         return String.format("%02d:%02d", minutes, seconds);
     }
 
-    // Method to seek to the position when the user releases the slider
-    private void seekToSliderPosition() {
-        double targetTimeInSeconds = slider_songProgress.getValue();
-        mediaPlayer.getMediaPlayer().seek(Duration.seconds(targetTimeInSeconds));
-    }
+
 
     public void updateSongUI(Song songToPlay) {
         if (songToPlay != null) {

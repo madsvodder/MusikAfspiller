@@ -8,12 +8,6 @@
     -fx-padding: 0.208333em; /* Adjust padding if needed */
 }
 
-/* Thumb is invisible by default */
-.slider .thumb {
-    -fx-background-color: transparent; /* Make the thumb invisible */
-    -fx-opacity: 0; /* Make the thumb invisible when not hovered */
-}
-
 /* Show the thumb and track when hovered */
 .slider:hover .thumb {
     -fx-background-color: #2196F3;  /* Make the thumb visible when hovered */

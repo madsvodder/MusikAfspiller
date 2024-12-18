@@ -81,8 +81,9 @@
                   <Label fx:id="label_songDuration" maxWidth="42.0" minWidth="30.0" prefHeight="17.0" prefWidth="42.0" text="0:00" textFill="WHITE" />
                   <StackPane maxWidth="365.0" minWidth="365.0" prefWidth="365.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <ProgressBar fx:id="progressBar_SongProgress" maxHeight="10.0" maxWidth="355.0" minWidth="355.0" prefHeight="10.0" prefWidth="355.0" progress="0.0" StackPane.alignment="CENTER" />
-                        <Slider fx:id="slider_songProgress" maxHeight="10.0" maxWidth="365.0" minWidth="365.0" prefHeight="10.0" prefWidth="365.0" StackPane.alignment="CENTER">
+                        <MFXSlider fx:id="MFX_SongProgressSlider" maxHeight="8.0" maxWidth="360.0" minHeight="8.0" minWidth="360.0" popupPadding="100.0" popupSide="OTHER_SIDE" prefHeight="8.0" prefWidth="360.0" stylesheets="@../../../css/MFXSlider.css" />
+                        <ProgressBar fx:id="progressBar_SongProgress" maxHeight="10.0" maxWidth="355.0" minHeight="12.0" minWidth="355.0" prefHeight="12.0" prefWidth="355.0" progress="0.0" visible="false" StackPane.alignment="CENTER" />
+                        <Slider fx:id="slider_songProgress" maxHeight="10.0" maxWidth="365.0" minWidth="365.0" prefHeight="10.0" prefWidth="365.0" visible="false" StackPane.alignment="CENTER">
                            <StackPane.margin>
                               <Insets />
                            </StackPane.margin>
@@ -100,16 +101,16 @@
       <Region prefHeight="80.0" prefWidth="80.0" HBox.hgrow="ALWAYS" />
       <HBox alignment="CENTER">
          <children>
-            <Button fx:id="button_Volume" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Button">
+            <Button fx:id="button_Volume" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#onButtonVolume" text="Button">
                <graphic>
-                  <ImageView fx:id="imgview_Shuffle1" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imgview_volume" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../../images/LightImages/Volume_Full.png" />
                      </image>
                   </ImageView>
                </graphic>
             </Button>
-            <MFXSlider fx:id="slider_Volume" value="100.0" />
+            <MFXSlider fx:id="slider_Volume" stylesheets="@../../../css/MFXSlider.css" value="100.0" />
          </children>
       </HBox>
       <Button fx:id="button_Shuffle" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" layoutX="1228.0" layoutY="38.0" mnemonicParsing="false" onAction="#toggleShuffle" opacity="0.3" text="Button">

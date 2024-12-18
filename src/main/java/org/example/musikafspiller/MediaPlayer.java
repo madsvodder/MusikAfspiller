@@ -29,7 +29,10 @@ public class MediaPlayer {
 
     @Getter private ArrayList<Song> songQueue = new ArrayList<>();
     private Song lastPlayedSong;
-    private Double mediaVolume = 0.5;
+
+    private double lastMediaVolume;
+    private Double mediaVolume = 1.0;
+    @Getter private boolean muted = false;
 
     @Setter
     UserLibrary userLibrary;
@@ -40,6 +43,17 @@ public class MediaPlayer {
 
     @Getter
     public boolean isSongPlaying = false;
+
+    public void mute() {
+        if (!muted) {
+            muted = true;
+            lastMediaVolume = mediaVolume;
+            adjustVolume(0);
+        } else {
+            muted = false;
+            adjustVolume(lastMediaVolume);
+        }
+    }
 
     public MediaPlayer(PlayerBarController playerBarController) {
         this.playerBarController = playerBarController;
@@ -118,6 +132,12 @@ public class MediaPlayer {
         mediaVolume = volume;
         if (mediaPlayer != null) {
             mediaPlayer.setVolume(mediaVolume);
+
+            if (volume == 0.0) {
+                muted = true;
+            } else {
+                muted = false;
+            }
         }
     }
 

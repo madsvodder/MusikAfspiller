@@ -1,6 +1,7 @@
 package org.example.musikafspiller;
 
 import atlantafx.base.theme.PrimerDark;
+import io.github.palexdev.materialfx.theming.MaterialFXStylesheets;
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
