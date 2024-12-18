@@ -238,7 +238,7 @@ public class PlaylistViewController {
         MenuItem removeItem = new MenuItem("Remove");
         MenuItem queueSong = new MenuItem("Add To Queue");
 
-        // Add the remove item to the context menu - Only add remove if it's a playlist, and not a album
+        // Add the remove item to the context menu - Only add remove if it's a playlist, and not an album
         contextMenu.getItems().add(removeItem);
         contextMenu.getItems().add(queueSong);
 

@@ -18,12 +18,17 @@ public class PlaylistItemController {
 
     @Setter
     MainViewController mainViewController;
+
     @Setter @Getter
     Playlist playlist;
+
+    @Setter @Getter
+    MusicCollection musicCollection;
+
     @Setter @Getter
     Album album;
 
-    @FXML @ Getter
+    @FXML @Getter
     private HBox hbox_playlist;
 
     @FXML

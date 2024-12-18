@@ -503,6 +503,7 @@ public class MainViewController {
                 controller.customInit(musicCollection);
 
                 // Set reference to selected playlist
+                System.out.println("Setting up playlist: " + musicCollection);
                 selectedMusicCollection = (Playlist) musicCollection;
 
                 // Log for debugging

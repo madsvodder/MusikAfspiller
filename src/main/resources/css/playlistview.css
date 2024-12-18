@@ -133,7 +133,7 @@
 
 /* Removes the weird box above the scroll bar */
 .table-view .filler {
-    -fx-background-color: transparent; /* Match this to your theme */
+    -fx-background-color: transparent;
 }
 
 
