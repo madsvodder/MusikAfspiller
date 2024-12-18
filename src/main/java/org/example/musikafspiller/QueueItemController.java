@@ -4,15 +4,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import lombok.Getter;
 import lombok.Setter;
 
 public class QueueItemController {
 
    @Setter Song song;
 
-   @Setter MediaPlayer mediaPlayer;
+   @Setter
+   CustomMediaPlayer mediaPlayer;
 
    @Setter QueueViewController queueViewController;
 

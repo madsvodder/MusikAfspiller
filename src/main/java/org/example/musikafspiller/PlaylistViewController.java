@@ -4,7 +4,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -76,7 +75,7 @@ public class PlaylistViewController {
     @Setter
     private PlayerBarController playerBarController;
 
-    private MediaPlayer mediaPlayer;
+    private CustomMediaPlayer mediaPlayer;
 
     private ObservableList<Song> songObservableList = FXCollections.observableArrayList();
 

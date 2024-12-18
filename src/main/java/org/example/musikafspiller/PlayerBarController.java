@@ -14,12 +14,11 @@ import lombok.Setter;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class PlayerBarController {
 
     @Getter @Setter
-    MediaPlayer mediaPlayer;
+    CustomMediaPlayer mediaPlayer;
 
     @Setter
     private MainViewController mainViewController;
@@ -81,6 +80,8 @@ public class PlayerBarController {
     private Image mutedImage;
 
     private Image fullVolumeImage;
+    private Image halfVolumeImage;
+    private Image lowVolumeImage;
 
 
     @Setter QueueViewController queueViewController;
@@ -88,7 +89,7 @@ public class PlayerBarController {
     public void customInit() {
 
 
-        mediaPlayer = new MediaPlayer(this);
+        mediaPlayer = new CustomMediaPlayer(this);
         mediaPlayer.setUserLibrary(userLibrary);
         mediaPlayer.setMainViewController(mainViewController);
 
@@ -98,6 +99,9 @@ public class PlayerBarController {
         musicRecordImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/LightImages/MusicRecord.png")));
         mutedImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/LightImages/Mute.png")));
         fullVolumeImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/LightImages/Volume_Full.png")));
+        halfVolumeImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/LightImages/Volume_Half.png")));
+        lowVolumeImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/LightImages/Volume_Low.png")));
+
 
         // Bind the label in the corner for the song duration
         label_songDuration.textProperty().bind(mediaPlayer.getCurrentTimeProperty());
@@ -117,12 +121,22 @@ public class PlayerBarController {
                 double volume = newValue.doubleValue() / 100; // Convert to range [0.0, 1.0]
                 mediaPlayer.adjustVolume(volume);
 
-                if (newValue.intValue() == 0) {
-                    imgview_volume.setImage(mutedImage);
-                } else {
-                    imgview_volume.setImage(fullVolumeImage);
-                }
+                updateSpeakerImage(newValue.doubleValue());
             });
+        }
+    }
+
+    private void updateSpeakerImage(double intValue) {
+        if (intValue == 0) {
+            imgview_volume.setImage(mutedImage);
+        } else {
+            if (intValue <= 33) {
+                imgview_volume.setImage(lowVolumeImage);
+            } else if (intValue <= 66) {
+                imgview_volume.setImage(halfVolumeImage);
+            } else {
+                imgview_volume.setImage(fullVolumeImage);
+            }
         }
     }
 
@@ -236,24 +250,24 @@ public class PlayerBarController {
 
     @FXML
     private void onButtonVolume() {
-        if (mediaPlayer != null) {
-            mediaPlayer.mute();
 
-            if (mediaPlayer.isMuted()) {
-                imgview_volume.setImage(mutedImage);
-
-                if (mediaPlayer.getMediaPlayer() != null) {
-                    slider_Volume.setValue(mediaPlayer.getMediaPlayer().getVolume());
-                }
-            } else {
-                imgview_volume.setImage(fullVolumeImage);
-                if (mediaPlayer.getMediaPlayer() != null) {
-                    slider_Volume.setValue(mediaPlayer.getMediaPlayer().getVolume()*100);
-                }
-
-            }
+        // Stop if any of these are null
+        if (mediaPlayer == null) {
+            return;
         }
+
+        mediaPlayer.mute();
+
+        if (mediaPlayer.isMuted()) {
+            imgview_volume.setImage(mutedImage);
+            slider_Volume.setValue(mediaPlayer.getMediaVolume());
+        } else {
+            slider_Volume.setValue(mediaPlayer.getMediaVolume()*100);
+        }
+
+        updateSpeakerImage(mediaPlayer.getMediaVolume());
     }
+
 
     // Helper method to format Duration into a string (MM:SS)
     private String formatTime(Duration duration) {

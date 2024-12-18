@@ -5,8 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,12 +12,12 @@ import java.util.ArrayList;
 public class QueueViewController {
 
 
-    MediaPlayer mediaPlayer;
+    CustomMediaPlayer mediaPlayer;
 
     @FXML
     private VBox vbox_queueItems;
 
-    public void customInit(MediaPlayer mediaPlayer) {
+    public void customInit(CustomMediaPlayer mediaPlayer) {
 
         System.out.println("Refreshed Queue");
 

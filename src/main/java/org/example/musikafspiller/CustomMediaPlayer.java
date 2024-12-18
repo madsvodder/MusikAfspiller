@@ -13,12 +13,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.logging.Logger;
 
-public class MediaPlayer {
+public class CustomMediaPlayer {
 
     @Setter
     MainViewController mainViewController;
     private PlayerBarController playerBarController;
-    private static final Logger logger = Logger.getLogger(MediaPlayer.class.getName());
+    private static final Logger logger = Logger.getLogger(CustomMediaPlayer.class.getName());
 
     @Getter @Setter private boolean shuffle = false;
     @Getter private StringProperty currentTimeProperty = new SimpleStringProperty("0:00");
@@ -31,7 +31,7 @@ public class MediaPlayer {
     private Song lastPlayedSong;
 
     private double lastMediaVolume;
-    private Double mediaVolume = 1.0;
+    @Getter private Double mediaVolume = 1.0;
     @Getter private boolean muted = false;
 
     @Setter
@@ -53,9 +53,11 @@ public class MediaPlayer {
             muted = false;
             adjustVolume(lastMediaVolume);
         }
+
+        System.out.println("Muted: " + muted);
     }
 
-    public MediaPlayer(PlayerBarController playerBarController) {
+    public CustomMediaPlayer(PlayerBarController playerBarController) {
         this.playerBarController = playerBarController;
     }
 
