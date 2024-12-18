@@ -356,7 +356,8 @@ public class PlaylistViewController {
         TextField searchField = new TextField();
         searchField.setPromptText("Search songs...");
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            // Search and show songs in userlibrary that fits the search
+
+            // Search and show songs in user library that fit the search
             ObservableList<Song> filteredList = FXCollections.observableArrayList(
                     userLibrary.getSongs().stream()
                             .filter(song -> song.getSongTitle().toLowerCase().contains(newValue.toLowerCase()) ||
@@ -370,26 +371,33 @@ public class PlaylistViewController {
         VBox content = new VBox(searchField, listSelectionView);
         content.setSpacing(10);
         content.setPrefWidth(600);
-
-        // SelectionView Size
         listSelectionView.setPrefHeight(400);
 
-        // Show the dialog
-        Optional<ButtonType> result = showDialogWithContent(
-                "Add Songs to Playlist",
-                "Select the songs you want to add to the playlist:",
-                content
-        );
+        // Create a Dialog to show the content
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Add Songs to Playlist");
+        dialog.setHeaderText("Select the songs you want to add to the playlist:");
+        dialog.getDialogPane().setContent(content);
 
-        // If the user presses ok, add the songs to the playlist
+        // Add OK and Cancel buttons
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        // Make the dialog resizable
+        dialog.getDialogPane().setPrefSize(800, 600);
+        dialog.getDialogPane().setMinSize(400, 300);
+        dialog.setResizable(true);
+
+        // Show the dialog and wait for the result
+        Optional<ButtonType> result = dialog.showAndWait();
+
+        // If the user presses OK, add the songs to the playlist
         result.ifPresent(buttonType -> {
             if (buttonType.equals(ButtonType.OK)) {
                 List<Song> selectedSongs = new ArrayList<>(listSelectionView.getTargetItems());
 
                 if (selectedSongs != null && !selectedSongs.isEmpty()) {
-                    // Tilføj de valgte sange til playlisten
+                    // Add the selected songs to the playlist
                     for (Song song : selectedSongs) {
-
                         // Add to playlist
                         musicCollection.addSong(song);
 
@@ -405,6 +413,7 @@ public class PlaylistViewController {
             }
         });
     }
+
 
     // Helper method to set up and show a dialog with custom content
     private Optional<ButtonType> showDialogWithContent(String title, String headerText, Node content) {

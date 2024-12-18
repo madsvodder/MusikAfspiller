@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -45,8 +46,11 @@
                      <font>
                         <Font size="18.0" />
                      </font>
+                     <effect>
+                        <DropShadow />
+                     </effect>
                   </Label>
-                  <SearchableComboBox fx:id="cb_Artists" maxHeight="30.0" prefHeight="30.0" />
+                  <SearchableComboBox fx:id="cb_Artists" maxHeight="30.0" prefHeight="30.0" stylesheets="@../../../css/ModernaDarkMode.css" />
                </children>
                <padding>
                   <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />

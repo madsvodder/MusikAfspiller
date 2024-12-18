@@ -12,3 +12,32 @@
 .scroll-pane .corner {
     -fx-background-color: transparent; /* Optional: make the corner transparent (no background) */
 }
+
+/* Scrollbar */
+
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical {
+    -fx-background-color: #1A191B;
+}
+
+.scroll-bar:horizontal {
+    -fx-background-color: #1A191B;
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #2B292D;
+    -fx-background-radius: 5em;
+}
+
+.scroll-pane > .corner {
+    -fx-background-color: #1A191B;
+}
+
+/* Removes the weird box above the scroll bar */
+.table-view .filler {
+    -fx-background-color: transparent; /* Match this to your theme */
+}
