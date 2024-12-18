@@ -1,0 +1,31 @@
+/* Dark Mode Button Style for JavaFX */
+
+/* General Button Style */
+.button {
+    -fx-background-color: #333333; /* Dark background */
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-font-size: 14px; /* Font size */
+    -fx-padding: 10px 20px; /* Padding */
+    -fx-border-radius: 5px; /* Rounded corners */
+    -fx-background-radius: 5px; /* Rounded corners */
+    -fx-border-width: 2px; /* Border width */
+    -fx-border-color: #444444; /* Dark border color */
+}
+
+/* Button Hover Style */
+.button:hover {
+    -fx-background-color: #444444; /* Lighter dark background */
+    -fx-border-color: #555555; /* Lighter border color */
+}
+
+/* Button Pressed Style */
+.button:pressed {
+    -fx-background-color: #555555; /* Even darker background */
+    -fx-border-color: #666666; /* Darker border color */
+}
+
+/* Button Focus Style */
+.button:focused {
+    -fx-border-color: #00aaff; /* Blue border when focused */
+    -fx-background-color: #444444; /* Background color when focused */
+}
