@@ -406,8 +406,7 @@ public class MainViewController {
 
                 // Retrieve the PlaylistItemController from userData
                 Object userData = node.getUserData();
-                if (userData instanceof PlaylistItemController) {
-                    PlaylistItemController itemController = (PlaylistItemController) userData;
+                if (userData instanceof PlaylistItemController itemController) {
 
                     // Compare UUIDs to identify the correct playlist
                     if (itemController.getPlaylist().getUuid().equals(playlist.getUuid())) {

@@ -121,18 +121,18 @@ public class PlayerBarController {
                 double volume = newValue.doubleValue() / 100; // Convert to range [0.0, 1.0]
                 mediaPlayer.adjustVolume(volume);
 
-                updateSpeakerImage(newValue.doubleValue());
+                updateSpeakerImage(volume);
             });
         }
     }
 
-    private void updateSpeakerImage(double intValue) {
-        if (intValue == 0) {
+    private void updateSpeakerImage(double value) {
+        if (value == 0) {
             imgview_volume.setImage(mutedImage);
         } else {
-            if (intValue <= 33) {
+            if (value <= 0.33) {
                 imgview_volume.setImage(lowVolumeImage);
-            } else if (intValue <= 66) {
+            } else if (value <= 0.66) {
                 imgview_volume.setImage(halfVolumeImage);
             } else {
                 imgview_volume.setImage(fullVolumeImage);
