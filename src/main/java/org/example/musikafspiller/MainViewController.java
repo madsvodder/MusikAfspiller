@@ -319,7 +319,7 @@ public class MainViewController {
         addItemToSidebar(userLibrary.newPlaylist());
     }
 
-    private void addItemToSidebar(Object item) {
+    private void addItemToSidebar(MusicCollection musicCollection) {
         try {
 
             // Load FXML file and add it to the side
@@ -330,7 +330,7 @@ public class MainViewController {
             logger.info("Added item to sidebar");
 
             // Get the controller from the FXML
-            PlaylistItemController playlistItemController = getPlaylistItemController(item, loader);
+            PlaylistItemController playlistItemController = getPlaylistItemController(musicCollection, loader);
 
             // Set the userData of the HBox to the controller.
             // I have no idea why, but it breaks if i don't do it
@@ -347,10 +347,15 @@ public class MainViewController {
         }
     }
 
-    private PlaylistItemController getPlaylistItemController(Object item, FXMLLoader loader) {
+    private PlaylistItemController getPlaylistItemController(MusicCollection item, FXMLLoader loader) {
         PlaylistItemController playlistItemController = loader.getController();
 
+        if (playlistItemController == null) {
+            logger.warning("PlaylistItemController is null");
+        }
+
         // Set reference to MainViewController
+        assert playlistItemController != null;
         playlistItemController.setMainViewController(this);
 
         // Determine the type of item and initialize appropriately
@@ -393,7 +398,7 @@ public class MainViewController {
 
 
     // This is a mess
-    public void updatePlaylistNameInSidebar(Playlist playlist) {
+    public void updatePlaylistNameInSidebar(MusicCollection playlist) {
 
         // Log the UUID of the playlist being updated for debugging
         logger.info("Attempting to update playlist with UUID: " + playlist.getUuid());
@@ -406,20 +411,27 @@ public class MainViewController {
 
                 // Retrieve the PlaylistItemController from userData
                 Object userData = node.getUserData();
-                if (userData instanceof PlaylistItemController itemController) {
 
-                    // Compare UUIDs to identify the correct playlist
-                    if (itemController.getPlaylist().getUuid().equals(playlist.getUuid())) {
-                        logger.info("UUIDs match! Updating playlist name in UI.");
-                        itemController.updatePlaylistNameUI();
+                if (!(userData instanceof PlaylistItemController itemController)) {
+                    logger.warning("Unexpected userData type or null for node: " + node);
+                    continue;
+                }
 
-                        // Exit once the playlist is found and updated
-                        return;
-                    } else {
-                        logger.fine("UUID mismatch for playlist: " + itemController.getPlaylist().getUuid());
-                    }
+                // Check if the Playlist is null
+                if (itemController.getPlaylist() == null) {
+                    logger.info("Playlist in itemController is null for node: " + node + " : Is this an album?");
+                    continue;
+                }
+
+                // Compare UUIDs to identify the correct playlist
+                if (itemController.getPlaylist().getUuid().equals(playlist.getUuid())) {
+                    logger.info("UUIDs match! Updating playlist name in UI.");
+                    itemController.updatePlaylistNameUI();
+
+                    // Exit once the playlist is found and updated
+                    return;
                 } else {
-                    logger.warning("User data is not a PlaylistItemController for node: " + node);
+                    logger.fine("UUID mismatch for playlist: " + itemController.getPlaylist().getUuid());
                 }
             } else {
                 logger.fine("Node is not an HBox: " + node);
@@ -429,6 +441,7 @@ public class MainViewController {
         // Log if no match was found
         logger.warning("No matching playlist found in the sidebar for UUID: " + playlist.getUuid());
     }
+
 
 
     // Window for viewing all the albums that's imported
