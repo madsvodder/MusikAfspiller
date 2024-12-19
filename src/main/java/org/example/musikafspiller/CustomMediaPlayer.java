@@ -77,21 +77,24 @@ public class CustomMediaPlayer {
     }
 
     public void skipSong() {
-        cleanupMediaPlayer();
-        isSongPlaying = false;
 
-        if (!songQueue.isEmpty()) {
-            System.out.println("Play Next In Queue");
-            playNextInQueue();
-        } else if (shuffle) {
-            playRandomSong();
-        } else if (isNextSongAvailable()) {
-            playNextSong();
-        } else {
-            handleNoSongsAvailable();
+        if (mediaPlayer != null) {
+            cleanupMediaPlayer();
+            isSongPlaying = false;
+
+            if (!songQueue.isEmpty()) {
+                System.out.println("Play Next In Queue");
+                playNextInQueue();
+            } else if (shuffle) {
+                playRandomSong();
+            } else if (isNextSongAvailable()) {
+                playNextSong();
+            } else {
+                handleNoSongsAvailable();
+            }
+
+            playerBarController.queueViewController.refreshQueue(getSongQueue());
         }
-
-        playerBarController.queueViewController.refreshQueue(getSongQueue());
     }
 
     public void previousSong() {

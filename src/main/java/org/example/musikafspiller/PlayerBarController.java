@@ -141,7 +141,7 @@ public class PlayerBarController {
     }
 
     private void setupSongProgressSlider() {
-        if (mediaPlayer != null) {
+        if (mediaPlayer != null && mediaPlayer.getMediaPlayer() != null) {
             // Initialize the slider's max value when the media is ready
             mediaPlayer.getMediaPlayer().setOnReady(() ->
                     MFX_SongProgressSlider.setMax(mediaPlayer.getMediaPlayer().getTotalDuration().toSeconds())
@@ -279,7 +279,7 @@ public class PlayerBarController {
 
 
     public void updateSongUI(Song songToPlay) {
-        if (songToPlay != null) {
+        if (songToPlay != null && mediaPlayer.getMediaPlayer() != null) {
             label_currentArtistName.setText(songToPlay.getSongArtist());
             label_CurrentSongName.setText(songToPlay.getSongTitle());
             image_currentAlbumPlaying.setImage(songToPlay.getAlbumCover());
